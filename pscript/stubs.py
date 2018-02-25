@@ -9,7 +9,7 @@ class RawJS:
     """ An object to wrap verbatim code to be included in the generated
     JavaScript. This serves a number of purposes:
     
-    * Using code in PyScript that is not valid Python syntax, like regular
+    * Using code in PScript that is not valid Python syntax, like regular
       expressions or the jQuery object ``$``.
     * Write high performance code that avoids Pythonic features like operator
       overloading.
@@ -17,7 +17,7 @@ class RawJS:
       Python that *does* have a value in JS. This value can imported in other
       modules, leading to a shared value also in JS.
     
-    PyScript does not verify the syntax of the code, so write carefully!
+    PScript does not verify the syntax of the code, so write carefully!
     To allow the features in the 3d point, this object has a magic touch:
     the ``__module__`` attribute of an instance refers to the module in which it
     was instantiated, and if it's a global, its defining name can be obtained.

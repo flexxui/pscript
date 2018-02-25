@@ -382,7 +382,7 @@ class Parser0:
             self.use_std_method('x', dep, [])
     
     def use_std_function(self, name, arg_nodes):
-        """ Use a function from the PyScript standard library.
+        """ Use a function from the PScript standard library.
         """
         self._handle_std_deps(stdlib.FUNCTIONS[name])
         self._std_functions.add(name)
@@ -392,7 +392,7 @@ class Parser0:
         return '%s(%s)' % (mangled_name, ', '.join(args))
     
     def use_std_method(self, base, name, arg_nodes):
-        """ Use a method from the PyScript standard library.
+        """ Use a method from the PScript standard library.
         """
         self._handle_std_deps(stdlib.METHODS[name])
         self._std_methods.add(name)

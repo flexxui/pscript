@@ -1,15 +1,15 @@
-from flexx.util.testing import run_tests_if_main, raises
+from pscript.testing import run_tests_if_main, raises
 
-from flexx import pyscript
-from flexx.pyscript import RawJS
+import pscript
+from pscript import RawJS
 
 
 def test_stubs():
-    from flexx.pyscript.stubs import window, undefined, omgnotaname
+    from pscript.stubs import window, undefined, omgnotaname
     
-    assert isinstance(window, pyscript.JSConstant)
-    assert isinstance(undefined, pyscript.JSConstant)
-    assert isinstance(omgnotaname, pyscript.JSConstant)
+    assert isinstance(window, pscript.JSConstant)
+    assert isinstance(undefined, pscript.JSConstant)
+    assert isinstance(omgnotaname, pscript.JSConstant)
 
 
 def test_raw_js():

@@ -6,7 +6,7 @@ The basics
 Most types just work, common Python names are converted to their JavaScript
 equivalents.
 
-.. pyscript_example::
+.. psscript_example::
     
     # Simple operations
     3 + 4 -1
@@ -26,7 +26,7 @@ equivalents.
 Slicing and subscriping
 -----------------------
 
-.. pyscript_example::
+.. pscript_example::
 
     # Slicing lists
     foo = [1, 2, 3, 4, 5]
@@ -49,7 +49,7 @@ String formatting
 
 Basic string formatting is supported for "%s", "%f", and "%i".
 
-.. pyscript_example::
+.. pscript_example::
     
     "value: %f" % val
     "%s: %f" % (name, val)
@@ -61,7 +61,7 @@ Assignments
 Declaration of variables is handled automatically. Also support for
 tuple packing and unpacking (a.k.a. destructuring assignment).
 
-.. pyscript_example::
+.. pscript_example::
     
     # Declare foo
     foo = 3
@@ -86,7 +86,7 @@ tuple packing and unpacking (a.k.a. destructuring assignment).
 Comparisons
 -----------
 
-.. pyscript_example::
+.. pscript_example::
     
     # Identity
     foo is bar
@@ -113,10 +113,10 @@ Truthy and Falsy
 ----------------
 
 In JavaScript, an empty array and an empty dict are interpreted as
-truthy. PyScript fixes this, so that you can do ``if an_array:`` as
+truthy. PScript fixes this, so that you can do ``if an_array:`` as
 usual.
 
-.. pyscript_example::
+.. pscript_example::
 
     # These evaluate to False:
     0
@@ -138,7 +138,7 @@ Function calls
 As in Python, the default return value of a function is ``None`` (i.e.
 ``null`` in JS).
 
-.. pyscript_example::
+.. pscript_example::
     
     # Business as usual
     foo(a, b)
@@ -149,11 +149,11 @@ As in Python, the default return value of a function is ``None`` (i.e.
 Imports
 -------
 
-Imports are not supported syntax in PyScript. Imports "from pyscript"
+Imports are not supported syntax in PScript. Imports "from pscript"
 and "from __future__" are ignored to help writing hybrid Python/JS
 modules.
 
-PyScript does provide functionality to package code in JS modules,
+PScript does provide functionality to package code in JS modules,
 but these follow the ``require`` pattern.
 
 """
@@ -703,7 +703,7 @@ class Parser1(Parser0):
 
     def parse_Import(self, node):
         
-        if node.root and 'pyscript' in node.root:
+        if node.root and 'pscript' in node.root:
             # User is probably importing names from here to allow
             # writing the JS code and command to parse it in one module.
             # Ignore this import.
@@ -711,8 +711,8 @@ class Parser1(Parser0):
         if node.root and node.root == '__future__':
             return []  # stuff to help the parser
         if node.root is 'time':
-            return []  # PyScript natively supports time() and perf_counter()
-        raise JSError('PyScript does not support imports.')
+            return []  # PScript natively supports time() and perf_counter()
+        raise JSError('PScript does not support imports.')
     
     def parse_Module(self, node):
         # Module level. Every piece of code has a module as the root.

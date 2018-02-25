@@ -1,14 +1,14 @@
 """
-The pyscript module provides functionality for transpiling Python code
+The psscript module provides functionality for transpiling Python code
 to JavaScript.
 
 Quick intro
 -----------
 
-This is a brief intro for using PyScript. For more details see the
+This is a brief intro for using PScript. For more details see the
 sections below.
 
-PyScript is a tool to write JavaScript using (a subset) of the Python
+PScript is a tool to write JavaScript using (a subset) of the Python
 language. All relevant buildins, and the methods of list, dict and str
 are supported. Not supported are set, slicing with steps, ``yield`` and
 imports. Other than that, most Python code should work as expected ...
@@ -17,9 +17,9 @@ shine through. As a rule of thumb, the code should behave as expected
 when correct, but error reporting may not be very Pythonic.
 
 The most important functions you need to know about are
-:func:`py2js <flexx.pyscript.py2js>` and 
-:func:`evalpy <flexx.pyscript.evalpy>`.
-In principal you do not need knowledge of JavaScript to write PyScript
+:func:`py2js <pscript.py2js>` and 
+:func:`evalpy <pscript.evalpy>`.
+In principal you do not need knowledge of JavaScript to write PScript
 code, though it does help in corner cases.
 
 
@@ -28,7 +28,7 @@ Goals
 
 There is an increase in Python projects that target web technology to
 handle visualization and user interaction.
-PyScript grew out of a desire to allow writing JavaScript callbacks in
+PScript grew out of a desire to allow writing JavaScript callbacks in
 Python, to allow user-defined interaction to be flexible, fast, and
 stand-alone.
 
@@ -40,23 +40,23 @@ This resulted in the following two main goals:
 * To allow JavaScript snippets to be defined naturally inside a Python
   program.
 
-Code produced by PyScript works standalone. Any (PyScript-compatible)
+Code produced by PScript works standalone. Any (PScript-compatible)
 Python snippet can be converted to JS; you don't need another JS library
 to run it.
 
-PyScript can also be used to develop standalone JavaScript (AMD) modules.
+PScript can also be used to develop standalone JavaScript (AMD) modules.
 
 
-PyScript is just JavaScript
----------------------------
+PScript is just JavaScript
+--------------------------
 
 The purpose of projects like Skulpt or PyJS is to enable full Python
 support in the browser. This approach will always be plagued by a
 fundamental limitation: libraries that are not pure Python (like numpy)
 will not work.
 
-PyScript takes a more modest approach; it is a tool that allows one to
-write JavaScript with a Python syntax. PyScript is just JavaScript.
+PScript takes a more modest approach; it is a tool that allows one to
+write JavaScript with a Python syntax. PScript is just JavaScript.
 
 This means that depending on what you want to achieve, you may still need
 to know a thing or two about how JavaScript works. Further, not all Python
@@ -67,7 +67,7 @@ lists and dicts are really just JavaScript arrays and objects, respectively.
 Pythonic
 --------
 
-PyScript makes writing JS more "Pythonic". Apart from allowing Python syntax
+PScript makes writing JS more "Pythonic". Apart from allowing Python syntax
 for loops, classes, etc, all relevant Python buildins are supported,
 as well as the methods of list, dict and str. E.g. you can use
 ``print()``, ``range()``, ``L.append()``, ``D.update()``, etc.
@@ -82,15 +82,15 @@ lists/dicts. Lists can be combined with the plus operator, and lists
 and strings can be repeated with the multiply (star) operator. Class
 methods are bound functions.
 
-.. _pyscript-caveats:
+.. _pscript-caveats:
 
 Caveats
 -------
 
-PyScript fixes some of JS's quirks, but it's still just JavaScript.
+PScript fixes some of JS's quirks, but it's still just JavaScript.
 Here's a list of things to keep an eye out for. This list is likely
 incomplete. We recommend familiarizing yourself with JavaScript if you
-plan to make heavy use of PyScript.
+plan to make heavy use of PScript.
 
 * JavasScript has a concept of ``null`` (i.e. ``None``), as well as
   ``undefined``. Sometimes you may want to use ``if x is None or x is
@@ -99,29 +99,29 @@ plan to make heavy use of PyScript.
   AttributeError but yield ``undefined``.
 * Magic functions on classes (e.g. for operator overloading) do not work.
 * Calling an object that starts with a capital letter is assumed to be
-  a class instantiation (using ``new``): PyScript classes *must* start
+  a class instantiation (using ``new``): PScript classes *must* start
   with a capital letter, and any other callables must not.
 * A function can accept keyword arguments if it has a ``**kwargs`` parameter
   or named arguments after ``*args``. Passing keywords to a function that does
   not handle keyword arguments might result in confusing errors.
 
 
-PyScript is valid Python
+PScript is valid Python
 ------------------------
 
-Other than e.g. RapydScript, PyScript is valid Python. This allows
-creating modules that are a mix of real Python and PyScript. You can easily
-write code that runs correctly both as Python and PyScript. Raw JS can
+Other than e.g. RapydScript, PScript is valid Python. This allows
+creating modules that are a mix of real Python and PScript. You can easily
+write code that runs correctly both as Python and PScript. Raw JS can
 be included where needed (e.g. for performance).
 
-PyScript's compiler is written in Python. Perhaps PyScript can
+PScript's compiler is written in Python. Perhaps PScript can
 at some point compile itself, so that it becomes possible to define
-PyScript inside HTML documents.
+PScript inside HTML documents.
 
 Performance
 -----------
 
-Because PyScript produces relatively bare JavaScript, it is pretty fast.
+Because PScript produces relatively bare JavaScript, it is pretty fast.
 Faster than CPython, and significantly faster than Brython and friends.
 Check out ``examples/app/benchmark.py``.
 
@@ -130,12 +130,12 @@ have a negative impact on performance in tight loops (in comparison to
 writing the JS by hand). The recommended approach is to write
 performance critical code in pure JavaScript if necessary. 
 
-.. _pyscript-support:
+.. _pscript-support:
 
 Support
 -------
 
-This is an overview of the language features that PyScript
+This is an overview of the language features that PScript
 supports/lacks. 
 
 Not currently supported:
@@ -200,7 +200,7 @@ Supported Python conveniences:
 Other functionality
 -------------------
 
-The PyScript package provides a few other "utilities" to deal with JS code,
+The PScript package provides a few other "utilities" to deal with JS code,
 such as renaming function/class definitions, and creating JS modules
 (AMD, UMD, etc.).
 

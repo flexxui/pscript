@@ -4,7 +4,7 @@ If statements
 -------------
 
 
-.. pyscript_example::
+.. pscript_example::
 
     if val > 7:
         result = 42
@@ -25,7 +25,7 @@ Both support ``continue``, ``break`` and the ``else`` clause.
 
 While loops map well to JS
 
-.. pyscript_example::
+.. pscript_example::
 
     val = 0
     while val < 10:
@@ -33,7 +33,7 @@ While loops map well to JS
 
 Explicit iterating over arrays (and strings):
 
-.. pyscript_example::
+.. pscript_example::
 
     # Using range() yields true for-loops
     for i in range(10):
@@ -53,7 +53,7 @@ Explicit iterating over arrays (and strings):
 
 Iterations over dicts:
 
-.. pyscript_example::
+.. pscript_example::
 
     # Plain iteration over a dict has a minor overhead
     for key in d:
@@ -72,7 +72,7 @@ Iterations over dicts:
 
 We can iterate over anything:
 
-.. pyscript_example::
+.. pscript_example::
 
     # Strings
     for char in "foo bar":
@@ -85,7 +85,7 @@ We can iterate over anything:
 Buildin functions intended for iterations are supported too: 
 enumerate, zip, reversed, sorted, filter, map.
 
-.. pyscript_example::
+.. pscript_example::
 
     for i, x in enumerate(foo):
         pass
@@ -106,7 +106,7 @@ enumerate, zip, reversed, sorted, filter, map.
 Comprehensions
 --------------
 
-.. pyscript_example::
+.. pscript_example::
     
     # List comprehensions just work
     x = [i*2 for i in some_array if i>0]
@@ -116,7 +116,7 @@ Comprehensions
 Defining functions
 ------------------
 
-.. pyscript_example::
+.. pscript_example::
 
     def display(val):
         print(val)
@@ -144,7 +144,7 @@ which means that they should play well with other JS libraries and e.g.
 `instanceof`. Inheritance is supported, but not multiple inheritance.
 Further, `super()` works just as in Python 3.
 
-.. pyscript_example::
+.. pscript_example::
     
     class Foo:
         a_class_attribute = 4
@@ -178,7 +178,7 @@ raised. When catching exceptions the name attribute is checked (if its
 an Error object. You can raise strings or any other kind of object, but
 you can only catch Error objects.
 
-.. pyscript_example::
+.. pscript_example::
     
     # Throwing/raising exceptions
     raise SomeError('asd')
@@ -201,7 +201,7 @@ you can only catch Error objects.
 Globals and nonlocal
 --------------------
 
-.. pyscript_example::
+.. pscript_example::
     
     a = 3
     def foo():
@@ -439,7 +439,7 @@ class Parser2(Parser1):
                      isinstance(node.test_node.left_node, ast.Name) and
                      node.test_node.left_node.name == '__name__'):
             # Ignore ``__name__ == '__main__'``, since it may be
-            # used inside a PyScript file for the compiling.
+            # used inside a PScript file for the compiling.
             return []
         
         # Shortcut for this_is_js() cases, discarting the else to reduce code
@@ -1088,7 +1088,7 @@ class Parser2(Parser1):
 
 def get_class_definition(name, base='Object', docstring=''):
     """ Get a list of lines that defines a class in JS.
-    Used in the parser as well as by flexx.ui.Model.
+    Used in the parser as well as by flexx.app.Component.
     """
     code = []
     

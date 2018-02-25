@@ -6,9 +6,9 @@ meta tests.
 
 import sys
 
-from flexx.util.testing import run_tests_if_main, raises
+from pscript.testing import run_tests_if_main, raises
 
-from flexx.pyscript import py2js, evaljs, evalpy, Parser3, stdlib
+from pscript import py2js, evaljs, evalpy, Parser3, stdlib
 
 
 def test_stdlib_full_and_partial():

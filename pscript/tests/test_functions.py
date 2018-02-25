@@ -1,12 +1,12 @@
-""" Tests for PyScript functions
+""" Tests for PScript functions
 """
 
 import os
 import tempfile
 
-from flexx.util.testing import run_tests_if_main, raises
+from pscript.testing import run_tests_if_main, raises
 
-from flexx.pyscript import py2js, evaljs, evalpy, script2js
+from pscript import py2js, evaljs, evalpy, script2js
 
 
 def test_dotted_unknowns():
@@ -224,7 +224,7 @@ f2 = function () {
 def test_scripts():
     # Prepare
     pycode = 'foo = 42; print(foo)'
-    pyname = os.path.join(tempfile.gettempdir(), 'flexx_test.py')
+    pyname = os.path.join(tempfile.gettempdir(), 'pscript_test.py')
     with open(pyname, 'wb') as f:
         f.write(pycode.encode())
     jsname = pyname[:-3] + '.js'

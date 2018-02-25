@@ -2,7 +2,7 @@
 Example to demonstrate simple transpiling and evaluating.
 """
 
-from flexx.pyscript import py2js, evaljs, evalpy
+from pscript import py2js, evaljs, evalpy
 
 def foo(a, b=1, *args):
     print(a)

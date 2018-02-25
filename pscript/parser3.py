@@ -13,7 +13,7 @@ Further all methods for list, dict and str are implemented (except str
 methods: encode, decode, format, format_map, isdecimal, isdigit,
 isprintable, maketrans).
 
-.. pyscript_example::
+.. pscript_example::
 
     # "self" is replaced with "this"
     self.foo
@@ -65,7 +65,7 @@ The isinstance function (and friends)
 The ``isinstance()`` function works for all JS primitive types, but also
 for user-defined classes.
 
-.. pyscript_example::
+.. pscript_example::
 
     # Basic types
     isinstance(3, float)  # in JS there are no ints
@@ -96,7 +96,7 @@ for user-defined classes.
 hasattr, getattr, setattr and delattr
 -------------------------------------
 
-.. pyscript_example::
+.. pscript_example::
     
     a = {'foo': 1, 'bar': 2}
     
@@ -117,7 +117,7 @@ hasattr, getattr, setattr and delattr
 Creating sequences
 ------------------
 
-.. pyscript_example::
+.. pscript_example::
     
     range(10)
     range(2, 10, 2)
@@ -135,7 +135,7 @@ Creating sequences
 List methods
 ------------
 
-.. pyscript_example::
+.. pscript_example::
 
     # Call a.append() if it exists, otherwise a.push()
     a.append(x)
@@ -147,7 +147,7 @@ List methods
 Dict methods
 ------------
 
-.. pyscript_example::
+.. pscript_example::
     
     a = {'foo': 3}
     a['foo']
@@ -159,7 +159,7 @@ Dict methods
 Str methods
 -----------
 
-.. pyscript_example::
+.. pscript_example::
 
     "foobar".startswith('foo')
     "foobar".replace('foo', 'bar')
@@ -169,7 +169,7 @@ Str methods
 Using JS specific functionality
 -------------------------------
 
-When writing PyScript inside Python modules, we recommend that where
+When writing PScript inside Python modules, we recommend that where
 specific JavaScript functionality is used, that the references are
 prefixed with ``window.`` Where ``window`` represents the global JS 
 namespace. All global JavaScript objects, functions, and variables
@@ -177,13 +177,13 @@ automatically become members of the ``window`` object. This helps
 make it clear that the functionality is specific to JS, and also
 helps static code analysis tools like flake8.
 
-.. pyscript_example::
+.. pscript_example::
     
-    from flexx.pyscript import window  # this is a stub
+    from pscript import window  # this is a stub
     def foo(a):
         return window.Math.cos(a)
 
-Aside from ``window``, ``flexx.pyscript`` also provides ``undefined``,
+Aside from ``window``, ``pscript`` also provides ``undefined``,
 ``Inifinity``, and ``NaN``.
 
 """
@@ -223,7 +223,7 @@ class Parser3(Parser2):
         if len(node.arg_nodes) == 1:
             if not isinstance(node.arg_nodes[0], ast.Str):
                 raise JSError('RawJS needs a verbatim string (use multiple '
-                              'args to bypass PyScript\'s RawJS).')
+                              'args to bypass PScript\'s RawJS).')
             lines = RawJS._str2lines(node.arg_nodes[0].value.strip())
             nl = '\n' + (self._indent * 4) * ' '
             return nl.join(lines)

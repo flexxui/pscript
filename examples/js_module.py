@@ -1,13 +1,13 @@
 """
-Example on how to create a JavaScript module using PyScript.
+Example on how to create a JavaScript module using PScript.
 
-PyScript creates AMD modules that can be used in the browser, in nodejs,
+PScript creates AMD modules that can be used in the browser, in nodejs,
 and in combination with browserify and related tools.
 """
 
-# This import is ignored by PyScript, it allows using these variable
+# This import is ignored by PScript, it allows using these variable
 # names without triggering pyflakes (a static Python source analysis tool).
-from flexx.pyscript import undefined, window  # noqa
+from pscript import undefined, window  # noqa
 
 class Foo:
     
@@ -28,5 +28,5 @@ class Bar(Foo):
 
 
 if __name__ == '__main__':
-    from flexx.pyscript import script2js
+    from pscript import script2js
     script2js(__file__, 'mymodule')

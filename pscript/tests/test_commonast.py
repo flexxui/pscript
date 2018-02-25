@@ -8,11 +8,11 @@ import ast
 import json
 import time
 
-from flexx.util.testing import run_tests_if_main, raises, skipif
+from pscript.testing import run_tests_if_main, raises, skipif
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 import commonast
-#from flexx.pyscript import commonast
+#from pscript import commonast
 
 
 dirname = os.path.dirname(__file__)

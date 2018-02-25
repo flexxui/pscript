@@ -1,7 +1,6 @@
-from flexx.util.testing import run_tests_if_main, raises
+from pscript.testing import run_tests_if_main, raises
 
-from flexx.pyscript.parser0 import JSError, unify
-from flexx import pyscript
+from pscript.parser0 import JSError, unify
 
 
 def test_unify():

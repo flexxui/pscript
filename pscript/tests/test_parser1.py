@@ -1,7 +1,7 @@
-from flexx.util.testing import run_tests_if_main, raises
+from pscript.testing import run_tests_if_main, raises
 
-from flexx import pyscript
-from flexx.pyscript import JSError, py2js, evaljs, evalpy, Parser
+import pscript
+from pscript import JSError, py2js, evaljs, evalpy, Parser
 
 
 def nowhitespace(s):
@@ -315,7 +315,7 @@ class TestExpressions:
             assert evalpy('bla="foo";a={bla: 3, bar: 4};a') == '{ foo: 3, bar: 4 }'
     
     def test_ignore_import_of_compiler(self):
-        modname = pyscript.__name__
+        modname = pscript.__name__
         assert py2js('from %s import x, y, z\n42' % modname) == '42;'
     
     def test_import(self):

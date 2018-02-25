@@ -1,5 +1,5 @@
 """
-PyScript standard functions.
+PScript standard functions.
 
 Functions are declared as ... functions. Methods are written as methods
 (using this), but declared as functions, and then "apply()-ed" to the
@@ -68,7 +68,7 @@ def _update_deps(code, function_deps, method_deps):
 
 def get_partial_std_lib(func_names, method_names, indent=0,
                         func_prefix=None, method_prefix=None):
-    """ Get the code for the PyScript standard library consisting of
+    """ Get the code for the PScript standard library consisting of
     the given function and method names. The given indent specifies how
     many sets of 4 spaces to prepend.
     """
@@ -92,7 +92,7 @@ def get_partial_std_lib(func_names, method_names, indent=0,
 
 
 def get_full_std_lib(indent=0):
-    """ Get the code for the full PyScript standard library.
+    """ Get the code for the full PScript standard library.
     
     The given indent specifies how many sets of 4 spaces to prepend.
     If the full stdlib is made available in JavaScript, multiple
@@ -248,7 +248,7 @@ FUNCTIONS['float'] = 'Number // nargs: 1'
 
 FUNCTIONS['str'] = 'String // nargs: 0 1'
 
-# Note use of "_IS_COMPONENT" to check for Flexx.app component classes.
+# Note use of "_IS_COMPONENT" to check for flexx.app component classes.
 FUNCTIONS['repr'] = """function (x) { // nargs: 1
     var res; try { res = JSON.stringify(x); } catch (e) { res = undefined; }
     if (typeof res === 'undefined') { res = x._IS_COMPONENT ? x.id : String(x); }
