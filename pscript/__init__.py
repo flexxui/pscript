@@ -208,12 +208,12 @@ such as renaming function/class definitions, and creating JS modules
 
 __version__ = '0.5.0'
 
+import sys
 import logging
+
 logger = logging.getLogger(__name__)
-del logging
 
 # Assert compatibility and redirect to legacy version on Python 2.7
-import sys
 ok = True
 if sys.version_info[0] == 2:  # pragma: no cover
     if sys.version_info < (2, 7):
@@ -246,3 +246,6 @@ if ok:
     from .functions import script2js, js_rename, create_js_module
     from .stdlib import get_full_std_lib, get_all_std_names
     from .stubs import RawJS, JSConstant, window, undefined
+
+
+del logging, sys, ok
