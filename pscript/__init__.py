@@ -212,6 +212,16 @@ import logging
 logger = logging.getLogger(__name__)
 del logging
 
+# Assert compatibility and redirect to legacy version on Python 2.7
+import sys
+ok = True
+if sys.version_info[0] == 2:  # pragma: no cover
+    if sys.version_info < (2, 7):
+        raise RuntimeError('PScript needs at least Python 2.7')
+    if type(b'') == type(''):  # noqa - will be str and unicode after conversion
+        sys.modules[__name__] = __import__(__name__ + '_legacy')
+        ok = False
+
 # NOTE: The code for the parser is quite long, especially if you want
 # to document it well. Therefore it is split in multiple modules, which
 # are simply numbered 0, 1, 2, etc. Here in the __init__, we define
@@ -224,57 +234,15 @@ del logging
 
 # flake8: noqa
 
-from .parser0 import Parser0, JSError
-from .parser1 import Parser1
-from .parser2 import Parser2
-from .parser3 import Parser3
-
-
-class BasicParser(Parser2):
-    """ A parser without the Pythonic features for converting builtin
-    functions and common methods.
-    """
-    pass
-
-
-class Parser(Parser3):
-    """ Parser to convert Python to JavaScript.
+if ok:
+        
+    from .parser0 import Parser0, JSError
+    from .parser1 import Parser1
+    from .parser2 import Parser2
+    from .parser3 import Parser3
+    from .base import *
     
-    Instantiate this class with the Python code. Retrieve the JS code
-    using the dump() method.
-    
-    In a subclass, you can implement methods called "function_x" or
-    "method_x", which will then be called during parsing when a
-    function/method with name "x" is encountered. Several methods and
-    functions are already implemented in this way.
-    
-    While working on ast parsing, this resource is very helpful:
-    https://greentreesnakes.readthedocs.org
-    
-    Parameters:
-        code (str): the Python source code.
-        pysource (tuple): the filename and line number that contain the source.
-        indent (int): the base indentation level (default 0). One
-            indentation level means 4 spaces.
-        docstrings (bool): whether docstrings are included in JS
-            (default True).
-        inline_stdlib (bool): whether the used stdlib functions are inlined
-            (default True). Set to False if the stdlib is already loaded.
-    """
-    pass
-
-
-from .functions import py2js, evaljs, evalpy, JSString
-from .functions import script2js, js_rename, create_js_module
-from .stdlib import get_full_std_lib, get_all_std_names
-from .stubs import RawJS, JSConstant, window, undefined
-
-# Create stubs that mean something
-Infinity = float('inf')
-NaN = float('nan')
-
-def this_is_js():
-    """ Function available in both JS and Py that returns whether the code is running
-    on Python or JavaScript.
-    """
-    return False
+    from .functions import py2js, evaljs, evalpy, JSString
+    from .functions import script2js, js_rename, create_js_module
+    from .stdlib import get_full_std_lib, get_all_std_names
+    from .stubs import RawJS, JSConstant, window, undefined
