@@ -6,7 +6,7 @@ The basics
 Most types just work, common Python names are converted to their JavaScript
 equivalents.
 
-.. psscript_example::
+.. pscript_example::
     
     # Simple operations
     3 + 4 -1

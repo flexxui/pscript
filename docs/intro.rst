@@ -1,0 +1,4 @@
+PScript introduction
+====================
+
+.. automodule:: pscript
