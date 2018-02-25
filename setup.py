@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Flexx setup script.
+PScript setup script.
 """
 
 import os
@@ -72,10 +72,10 @@ def package_tree(pkgroot):
 def copy_for_legacy_python(src_dir, dest_dir):
     from translate_to_legacy import LegacyPythonTranslator
     # Dirs and files to explicitly not translate
-    skip = ['pyscript/tests/python_sample.py', 
-            'pyscript/tests/python_sample2.py',
-            'pyscript/tests/python_sample3.py']
-    # Make a fresh copy of the flexx package
+    skip = ['tests/python_sample.py', 
+            'tests/python_sample2.py',
+            'tests/python_sample3.py']
+    # Make a fresh copy of the package
     if os.path.isdir(dest_dir):
         shutil.rmtree(dest_dir)
     ignore = lambda src, names: [n for n in names if n == '__pycache__']
@@ -84,30 +84,18 @@ def copy_for_legacy_python(src_dir, dest_dir):
     LegacyPythonTranslator.translate_dir(dest_dir, skip=skip)
 
 
-def get_all_resources():
-    import logging  # noqa - prevent mixup with logging module inside flexx.util
-    sys.path.insert(0, os.path.join(THIS_DIR, 'flexx', 'util'))
-    from getresource import RESOURCES, get_resoure_path
-    for name in RESOURCES.keys():
-        get_resoure_path(name)
-    sys.path.pop(0)
-
-
 ## Collect info for setup()
 
 THIS_DIR = os.path.dirname(__file__)
 
 # Define name and description
-name = 'flexx'
-description = "Write desktop and web apps in pure Python."
+name = 'pscript'
+description = "Python to JavaScript compiler."
 
 # Get version and docstring (i.e. long description)
 version, doc = get_version_and_doc(os.path.join(THIS_DIR, name, '__init__.py'))
 if os.path.isfile(os.path.join(THIS_DIR, 'README.md')):
     doc = get_readme_as_rst(os.path.join(THIS_DIR, 'README.md'))
-
-# Install resources (e.g. phosphor.js)
-get_all_resources()
 
 # Support for legacy Python: we install a second package with the
 # translated code. We generate that code when we can. We use
@@ -117,27 +105,29 @@ if os.path.isfile(os.path.join(THIS_DIR, 'translate_to_legacy.py')):
     copy_for_legacy_python(os.path.join(THIS_DIR, name),
                            os.path.join(THIS_DIR, name_legacy))
 
+
+# todo:  XX
+doc = "TESTING, not a release yet!"
 ## Setup
 
 setup(
     name=name,
     version=version,
-    author='Flexx contributors',
+    author='Almar Klein and contributors',
     author_email='almar.klein@gmail.com',
     license='(new) BSD',
-    url='http://flexx.readthedocs.io',
-    download_url='https://pypi.python.org/pypi/flexx',
-    keywords="ui design, GUI, web, runtime, pyscript, events, properties",
+    url='http://pscript.readthedocs.io',
+    download_url='https://pypi.python.org/pypi/pscript',
+    keywords="Python, JavaScript, compiler, transpiler",
     description=description,
     long_description=doc,
     platforms='any',
     provides=[name],
-    install_requires=['tornado'],  # react, pyscript and webruntime require nothing
+    install_requires=[],
     packages=package_tree(name) + package_tree(name_legacy),
     package_dir={name: name, name_legacy: name_legacy},
-    package_data={name: ['resources/*'], name_legacy: ['resources/*']},
-    entry_points={'console_scripts': ['flexx = flexx.__main__:main'], },
-    zip_safe=False,
+    # entry_points={'console_scripts': ['pscript = pscript.__main__:main'], },
+    zip_safe=True,
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',

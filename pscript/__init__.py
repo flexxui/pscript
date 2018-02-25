@@ -206,6 +206,8 @@ such as renaming function/class definitions, and creating JS modules
 
 """
 
+__version__ = '0.5.0'
+
 import logging
 logger = logging.getLogger(__name__)
 del logging

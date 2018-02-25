@@ -39,9 +39,9 @@ def test_unit(rel_path='.'):
         sys.exit('Cannot do unit tests, pytest not installed')
     # Get path to test
     py2 = sys.version_info[0] == 2
-    rel_path = 'flexx_legacy/' + rel_path if py2 else 'flexx/' + rel_path
+    rel_path = 'pscript_legacy/' + rel_path if py2 else 'pscript/' + rel_path
     test_path = os.path.join(ROOT_DIR, rel_path)
-    # Import flexx, from installed, or from ROOT_DIR
+    # Import from installed, or from ROOT_DIR
     if py2 or os.getenv('TEST_INSTALL', '').lower() in ('1', 'yes', 'true'):
         if ROOT_DIR in sys.path:
             sys.path.remove(ROOT_DIR)
@@ -97,7 +97,7 @@ def test_style(rel_path='.'):
         sys.exit('Cannot do style test: ' + str(err))
     # Prepare
     os.chdir(ROOT_DIR)
-    sys.argv[1:] = ['flexx/' + rel_path]
+    sys.argv[1:] = ['pscript/' + rel_path]
     # Do test
     print('Running flake8 tests ...')
     app = Application()
