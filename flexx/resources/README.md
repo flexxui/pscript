@@ -1,1 +1,0 @@
-This is where static resources that Flexx needs are placed.
