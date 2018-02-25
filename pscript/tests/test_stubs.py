@@ -2,10 +2,10 @@ from pscript.testing import run_tests_if_main, raises
 
 import pscript
 from pscript import RawJS
+from pscript.stubs import window, undefined, omgnotaname
 
 
 def test_stubs():
-    from pscript.stubs import window, undefined, omgnotaname
     
     assert isinstance(window, pscript.JSConstant)
     assert isinstance(undefined, pscript.JSConstant)
