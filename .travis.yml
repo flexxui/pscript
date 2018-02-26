@@ -1,4 +1,4 @@
-# Travis CI configuration file for Flexx
+# Travis CI configuration file for PScript
 # Validate this at http://lint.travis-ci.org/
 
 language: python
@@ -19,9 +19,9 @@ matrix:
           env: TEST_UNIT=0 TEST_DOCS=1
         #
         - python: "2.7"
-          env: TEST_UNIT=legacy TEST_INSTALL=1
+          env: TEST_UNIT=1 TEST_INSTALL=1
         - python: "pypy-5.7.1"
-          env: TEST_UNIT=legacy TEST_INSTALL=1
+          env: TEST_UNIT=1 TEST_INSTALL=1
         #
         - python: "pypy3"
           env: TEST_UNIT=1
@@ -63,21 +63,14 @@ before_install:
 install:
     - cd ${SRC_DIR}
     - pip install invoke
-    - if [ "${TEST_UNIT}" == "legacy" ]; then
-        pip install pytest-cov;
-        pip install tornado;
-      fi;
     - if [ "${TEST_UNIT}" == "1" ]; then
         pip install pytest-cov;
-        pip install tornado;
-        pip install selenium;
       fi;
     - if [ "${TEST_INSTALL}" == "1" ]; then
         python setup.py install;
       fi;
     - if [ "${TEST_DOCS}" == "1" ]; then
         pip install sphinx;
-        pip install tornado;
       fi;
     - if [ "${TEST_STYLE}" == "1" ]; then
         pip install pycodestyle;
@@ -94,15 +87,10 @@ before_script:
 script: 
     - cd ${SRC_DIR};
     - python -c "import sys; print(sys.version, '\n', sys.prefix)"
-    - if [ "${TEST_UNIT}" == "legacy" ]; then
-        invoke test --unit=dialite;
-        invoke test --unit=pyscript;
-      fi;
     - if [ "${TEST_UNIT}" == "1" ]; then
         invoke test --unit;
       fi;
     - if [ "${TEST_DOCS}" == "1" ]; then
-        python -c 'import flexx.ui';
         invoke docs --clean --build;
       fi;
     - if [ "${TEST_STYLE}" == "1" ]; then

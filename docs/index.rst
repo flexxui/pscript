@@ -1,23 +1,33 @@
-.. Flexx documentation master file, created by
-   sphinx-quickstart on Fri Apr 10 15:35:18 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Welcome to PScript's documentation!
+===================================
 
-Welcome to Flexx's documentation!
-=================================
+PScript is a Python to JavaScript compiler, and is also the name of the subset
+of Python that this compiler supports. It was developed as a part of
+`Flexx <http://flexx.live>`_ (as ``flexx.pyscript``) and is now represented
+by its own project. Although it is still an important part of Flexx, it can
+also be useful by itself.
 
-.. automodule:: flexx
+A short example:
 
-Flexx has a modular design, consisting of a few subpackages, which can
-also be used by themselves. See the table of contents below. For building
-apps these three modules are the most relevant:
+.. code-block:: py
 
-* :doc:`flexx.ui <ui/index>` - the widgets
-  (see :doc:`intro <ui/intro>`, :doc:`api <ui/api>`, :doc:`examples <ui/examples>`)
-* :doc:`flexx.app <app/index>` - the event loop and server
-  (see :doc:`intro <app/intro>`, :doc:`api <app/api>`, :doc:`examples <app/examples>`)
-* :doc:`flexx.event <event/index>` - properties and events
-  (see :doc:`intro <event/intro>`, :doc:`api <event/api>`, :doc:`examples <event/examples>`)
+   from pscript import py2js
+   
+   def foo(a, b=2):
+      print(a - b)
+   
+   print(py2js(foo))
+
+Gives:
+
+.. code-block:: js
+   
+   var foo;
+   foo = function flx_foo (a, b) {
+      b = (b === undefined) ? 2: b;
+      console.log((a - b));
+      return null;
+   };
 
 
 Contents
@@ -26,17 +36,9 @@ Contents
 .. toctree::
    :maxdepth: 2
    
-   start
-   
-   ui/index
-   app/index
-   event/index
-   pyscript/index
-   webruntime/index
-   dialite/index
-   util/index
-   
-   cli_and_config
+   intro
+   api
+   guide
    releasenotes
 
 

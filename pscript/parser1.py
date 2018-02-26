@@ -6,7 +6,7 @@ The basics
 Most types just work, common Python names are converted to their JavaScript
 equivalents.
 
-.. psscript_example::
+.. pscript_example::
     
     # Simple operations
     3 + 4 -1
@@ -165,7 +165,7 @@ from . import stdlib
 from .parser0 import Parser0, JSError, unify, reprs  # noqa
 
 
-# Define buildin stuff for which we know that it returns a bool or int
+# Define builtin stuff for which we know that it returns a bool or int
 _bool_funcs = 'hasattr', 'all', 'any', 'op_contains', 'op_equals', 'truthy'
 _bool_meths = ('count', 'isalnum', 'isalpha', 'isidentifier', 'islower',
                'isnumeric', 'isspace', 'istitle', 'isupper', 'startswith')

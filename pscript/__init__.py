@@ -9,7 +9,7 @@ This is a brief intro for using PScript. For more details see the
 sections below.
 
 PScript is a tool to write JavaScript using (a subset) of the Python
-language. All relevant buildins, and the methods of list, dict and str
+language. All relevant builtins, and the methods of list, dict and str
 are supported. Not supported are set, slicing with steps, ``yield`` and
 imports. Other than that, most Python code should work as expected ...
 mostly, see caveats below. If you try hard enough the JavaScript may
@@ -35,7 +35,7 @@ stand-alone.
 This resulted in the following two main goals: 
 
 * To make writing JavaScript easier and less frustrating, by letting
-  people write it with the Python syntax and buildins, and fixing some
+  people write it with the Python syntax and builtins, and fixing some
   of JavaScripts quirks.
 * To allow JavaScript snippets to be defined naturally inside a Python
   program.
@@ -68,7 +68,7 @@ Pythonic
 --------
 
 PScript makes writing JS more "Pythonic". Apart from allowing Python syntax
-for loops, classes, etc, all relevant Python buildins are supported,
+for loops, classes, etc, all relevant Python builtins are supported,
 as well as the methods of list, dict and str. E.g. you can use
 ``print()``, ``range()``, ``L.append()``, ``D.update()``, etc.
 
@@ -77,7 +77,7 @@ true), and ``isinstance()`` just works (whereas JS' ``typeof`` is
 broken). 
 
 Deep comparisons are supported (e.g. for ``==`` and ``in``), so you can
-actually compare two lists or dicts, or even a structure of nested
+compare two lists or dicts, or even a structure of nested
 lists/dicts. Lists can be combined with the plus operator, and lists
 and strings can be repeated with the multiply (star) operator. Class
 methods are bound functions.
@@ -96,7 +96,7 @@ plan to make heavy use of PScript.
   ``undefined``. Sometimes you may want to use ``if x is None or x is
   undefined: ...``.
 * Accessing an attribute that does not exist will not raise an
-  AttributeError but yield ``undefined``.
+  AttributeError but yield ``undefined``. Though this may change.
 * Magic functions on classes (e.g. for operator overloading) do not work.
 * Calling an object that starts with a capital letter is assumed to be
   a class instantiation (using ``new``): PScript classes *must* start
@@ -111,7 +111,8 @@ PScript is valid Python
 
 Other than e.g. RapydScript, PScript is valid Python. This allows
 creating modules that are a mix of real Python and PScript. You can easily
-write code that runs correctly both as Python and PScript. Raw JS can
+write code that runs correctly both as Python and PScript, and
+:func:`raw JavaScript <pscript.RawJS>` can
 be included where needed (e.g. for performance).
 
 PScript's compiler is written in Python. Perhaps PScript can
@@ -122,13 +123,14 @@ Performance
 -----------
 
 Because PScript produces relatively bare JavaScript, it is pretty fast.
-Faster than CPython, and significantly faster than Brython and friends.
+Faster than CPython, and significantly faster than e.g. Brython.
 Check out ``examples/app/benchmark.py``.
 
 Nevertheless, the overhead to realize the more Pythonic behavior can
 have a negative impact on performance in tight loops (in comparison to
 writing the JS by hand). The recommended approach is to write
-performance critical code in pure JavaScript if necessary. 
+performance critical code in pure JavaScript
+(using :func:`RawJS <pscript.RawJS>`) if necessary. 
 
 .. _pscript-support:
 
@@ -178,7 +180,7 @@ Supported Python conveniences:
 * ``isinstance()`` Just Works (for primitive types as well as
   user-defined classes)
 * an empty list or dict evaluates to False as in Python.
-* all Python buildin functions that make sense in JS are supported:
+* all Python builtin functions that make sense in JS are supported:
   isinstance, issubclass, callable, hasattr, getattr, setattr, delattr,
   print, len, max, min, chr, ord, dict, list, tuple, range, pow, sum,
   round, int, float, str, bool, abs, divmod, all, any, enumerate, zip,
@@ -208,9 +210,19 @@ such as renaming function/class definitions, and creating JS modules
 
 __version__ = '0.5.0'
 
+import sys
 import logging
+
 logger = logging.getLogger(__name__)
-del logging
+
+# Assert compatibility and redirect to legacy version on Python 2.7
+ok = True
+if sys.version_info[0] == 2:  # pragma: no cover
+    if sys.version_info < (2, 7):
+        raise RuntimeError('PScript needs at least Python 2.7')
+    if type(b'') == type(''):  # noqa - will be str and unicode after conversion
+        sys.modules[__name__] = __import__(__name__ + '_legacy')
+        ok = False
 
 # NOTE: The code for the parser is quite long, especially if you want
 # to document it well. Therefore it is split in multiple modules, which
@@ -224,57 +236,18 @@ del logging
 
 # flake8: noqa
 
-from .parser0 import Parser0, JSError
-from .parser1 import Parser1
-from .parser2 import Parser2
-from .parser3 import Parser3
-
-
-class BasicParser(Parser2):
-    """ A parser without the Pythonic features for converting builtin
-    functions and common methods.
-    """
-    pass
-
-
-class Parser(Parser3):
-    """ Parser to convert Python to JavaScript.
+if ok:
+        
+    from .parser0 import Parser0, JSError
+    from .parser1 import Parser1
+    from .parser2 import Parser2
+    from .parser3 import Parser3
+    from .base import *
     
-    Instantiate this class with the Python code. Retrieve the JS code
-    using the dump() method.
-    
-    In a subclass, you can implement methods called "function_x" or
-    "method_x", which will then be called during parsing when a
-    function/method with name "x" is encountered. Several methods and
-    functions are already implemented in this way.
-    
-    While working on ast parsing, this resource is very helpful:
-    https://greentreesnakes.readthedocs.org
-    
-    Parameters:
-        code (str): the Python source code.
-        pysource (tuple): the filename and line number that contain the source.
-        indent (int): the base indentation level (default 0). One
-            indentation level means 4 spaces.
-        docstrings (bool): whether docstrings are included in JS
-            (default True).
-        inline_stdlib (bool): whether the used stdlib functions are inlined
-            (default True). Set to False if the stdlib is already loaded.
-    """
-    pass
+    from .functions import py2js, evaljs, evalpy, JSString
+    from .functions import script2js, js_rename, create_js_module
+    from .stdlib import get_full_std_lib, get_all_std_names
+    from .stubs import RawJS, JSConstant, window, undefined
 
 
-from .functions import py2js, evaljs, evalpy, JSString
-from .functions import script2js, js_rename, create_js_module
-from .stdlib import get_full_std_lib, get_all_std_names
-from .stubs import RawJS, JSConstant, window, undefined
-
-# Create stubs that mean something
-Infinity = float('inf')
-NaN = float('nan')
-
-def this_is_js():
-    """ Function available in both JS and Py that returns whether the code is running
-    on Python or JavaScript.
-    """
-    return False
+del logging, sys, ok

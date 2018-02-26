@@ -29,12 +29,12 @@ def py2js(ob=None, new_name=None, **parser_options):
             also be used to turn functions into methods using
             "MyClass.prototype.foo". Double-underscore name mangling is taken
             into account in the process.
-        parser_options: Additional options for the parser. See Parser class
-            for details.
+        parser_options: Additional options, see
+            :class:`Parser class <pscript.Parser>` for details.
     
     Returns:
-        str: The JavaScript code as a special str object that
-        has a ``meta`` attribute that contains the following fields:
+        str: The JavaScript code as a str object that
+        has a ``meta`` attribute with the following fields:
         
         * filename (str): the name of the file that defines the object.
         * linenr (int): the starting linenr for the object definition.

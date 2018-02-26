@@ -17,6 +17,30 @@ PScript requires Python 2.7 or 3.5+ and also works on pypy.
 * ``pip install pscript``
 
 
+Short example
+-------------
+
+```py
+
+   from pscript import py2js
+   
+   def foo(a, b=2):
+      print(a - b)
+   
+   print(py2js(foo))
+```
+
+Gives:
+
+```js
+   var foo;
+   foo = function flx_foo (a, b) {
+      b = (b === undefined) ? 2: b;
+      console.log((a - b));
+      return null;
+   };
+```
+
 License
 -------
 

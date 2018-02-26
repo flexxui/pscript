@@ -3,7 +3,7 @@
 Python Builtins
 ---------------
 
-Most buildin functions (that make sense in JS) are automatically
+Most builtin functions (that make sense in JS) are automatically
 translated to JavaScript: isinstance, issubclass, callable, hasattr,
 getattr, setattr, delattr, print, len, max, min, chr, ord, dict, list,
 tuple, range, pow, sum, round, int, float, str, bool, abs, divmod, all,
@@ -230,7 +230,7 @@ class Parser3(Parser2):
         else:
             return None  # maybe RawJS is a thing
     
-    ## Python buildin functions
+    ## Python builtin functions
     
     
     def function_isinstance(self, node):

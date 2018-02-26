@@ -331,7 +331,7 @@ class Parser0:
         return ns
     
     def get_declarations(self, ns):
-        """ Get string with variable (and buildin-function) declarations.
+        """ Get string with variable (and builtin-function) declarations.
         """
         if not ns:
             return ''

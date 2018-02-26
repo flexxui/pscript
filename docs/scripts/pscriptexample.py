@@ -1,5 +1,5 @@
 """
-Small sphinx extension to show PyScript code and corresponding JS.
+Small sphinx extension to show PScript code and corresponding JS.
 """
 
 import os
@@ -12,7 +12,7 @@ from pygments.formatters import HtmlFormatter
 from docutils.parsers.rst import Directive
 from docutils import nodes
 
-from flexx.pyscript import py2js
+from pscript import py2js
 
 pythonLexer, javaScriptLexer = get_lexer_by_name('py'), get_lexer_by_name('js')
 htmlFormatter = HtmlFormatter()
@@ -31,9 +31,9 @@ htmlFormatter = HtmlFormatter()
 def my_highlight(code):
     return highlight(code, PythonLexer(), HtmlFormatter())
 
-class pyscript_example(nodes.raw): pass
+class pscript_example(nodes.raw): pass
 
-def visit_pyscript_example_html(self, node):
+def visit_pscript_example_html(self, node):
     
     # Fix for rtd
     if not hasattr(node, 'code'):
@@ -56,7 +56,7 @@ def visit_pyscript_example_html(self, node):
     self.body.append("<style> div.hiddenjs {overflow:hidden; font-size: small; min-width:200px; min-height:30px;} div.hiddenjs > .js {display:none} div.hiddenjs:hover > .js {display:block} div.hiddenjs:hover > .ph {display:none;} </style>\n")
     
     self.body.append("<table>")
-    #self.body.append("<tr><td style='text-align:right;'> <i>PyScript</i>&nbsp;&nbsp; </td><td>&nbsp;&nbsp; <i>JS</i> </td></tr>")
+    #self.body.append("<tr><td style='text-align:right;'> <i>PScript</i>&nbsp;&nbsp; </td><td>&nbsp;&nbsp; <i>JS</i> </td></tr>")
     
     for py in parts:
         
@@ -82,10 +82,10 @@ def visit_pyscript_example_html(self, node):
         
     self.body.append("</table>")
     
-def depart_pyscript_example_html(self, node):
+def depart_pscript_example_html(self, node):
     pass
 
-class PyscriptExampleDirective(Directive):
+class PscriptExampleDirective(Directive):
         has_content = True
         def run(self):
             # Get code and extact height
@@ -98,7 +98,7 @@ class PyscriptExampleDirective(Directive):
                  code = code.split('\n', 1)[1].strip()
             
             # iframe
-            table = pyscript_example('')
+            table = pscript_example('')
             table.code = code
             
             return[table]
@@ -109,5 +109,5 @@ def setup(Sphynx):
     #Sphynx.add_javascript('js-image-slider.js')
     #Sphynx.add_stylesheet('js-image-slider.css')
     
-    Sphynx.add_node(pyscript_example, html=(visit_pyscript_example_html, depart_pyscript_example_html))
-    Sphynx.add_directive('pyscript_example', PyscriptExampleDirective)
+    Sphynx.add_node(pscript_example, html=(visit_pscript_example_html, depart_pscript_example_html))
+    Sphynx.add_directive('pscript_example', PscriptExampleDirective)
