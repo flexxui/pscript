@@ -106,8 +106,6 @@ if os.path.isfile(os.path.join(THIS_DIR, 'translate_to_legacy.py')):
                            os.path.join(THIS_DIR, name_legacy))
 
 
-# todo:  XX
-doc = "TESTING, not a release yet!"
 ## Setup
 
 setup(
