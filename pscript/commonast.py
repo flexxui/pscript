@@ -1,7 +1,7 @@
 """
 Module that defines a common AST description, independent from Python
 version and implementation. Also provides a function ``parse()`` to
-generate this common AST by using the buildin ast module and converting
+generate this common AST by using the builtin ast module and converting
 the result. Supports CPython 2.7, CPython 3.2+, Pypy.
 
 https://github.com/almarklein/commonast

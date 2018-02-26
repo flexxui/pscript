@@ -36,7 +36,7 @@ class TestSpecials:
         assert '        y -=' in code
 
 
-class TestHardcoreBuildins:
+class TestHardcoreBuiltins:
     
     def test_isinstance(self):
         # The resulting code is not particularly pretty, so we just
@@ -192,7 +192,7 @@ class TestHardcoreBuildins:
         assert evalpy('list(range(10, 3, -2))') == '[ 10, 8, 6, 4 ]'
 
 
-class TestOtherBuildins:
+class TestOtherBuiltins:
     
     # def test_allow_overload(self):
     #     assert evalpy('sum([3, 4])') == '7'

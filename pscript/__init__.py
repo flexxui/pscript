@@ -9,7 +9,7 @@ This is a brief intro for using PScript. For more details see the
 sections below.
 
 PScript is a tool to write JavaScript using (a subset) of the Python
-language. All relevant buildins, and the methods of list, dict and str
+language. All relevant builtins, and the methods of list, dict and str
 are supported. Not supported are set, slicing with steps, ``yield`` and
 imports. Other than that, most Python code should work as expected ...
 mostly, see caveats below. If you try hard enough the JavaScript may
@@ -35,7 +35,7 @@ stand-alone.
 This resulted in the following two main goals: 
 
 * To make writing JavaScript easier and less frustrating, by letting
-  people write it with the Python syntax and buildins, and fixing some
+  people write it with the Python syntax and builtins, and fixing some
   of JavaScripts quirks.
 * To allow JavaScript snippets to be defined naturally inside a Python
   program.
@@ -68,7 +68,7 @@ Pythonic
 --------
 
 PScript makes writing JS more "Pythonic". Apart from allowing Python syntax
-for loops, classes, etc, all relevant Python buildins are supported,
+for loops, classes, etc, all relevant Python builtins are supported,
 as well as the methods of list, dict and str. E.g. you can use
 ``print()``, ``range()``, ``L.append()``, ``D.update()``, etc.
 
@@ -77,7 +77,7 @@ true), and ``isinstance()`` just works (whereas JS' ``typeof`` is
 broken). 
 
 Deep comparisons are supported (e.g. for ``==`` and ``in``), so you can
-actually compare two lists or dicts, or even a structure of nested
+compare two lists or dicts, or even a structure of nested
 lists/dicts. Lists can be combined with the plus operator, and lists
 and strings can be repeated with the multiply (star) operator. Class
 methods are bound functions.
@@ -96,7 +96,7 @@ plan to make heavy use of PScript.
   ``undefined``. Sometimes you may want to use ``if x is None or x is
   undefined: ...``.
 * Accessing an attribute that does not exist will not raise an
-  AttributeError but yield ``undefined``.
+  AttributeError but yield ``undefined``. Though this may change.
 * Magic functions on classes (e.g. for operator overloading) do not work.
 * Calling an object that starts with a capital letter is assumed to be
   a class instantiation (using ``new``): PScript classes *must* start
@@ -111,7 +111,8 @@ PScript is valid Python
 
 Other than e.g. RapydScript, PScript is valid Python. This allows
 creating modules that are a mix of real Python and PScript. You can easily
-write code that runs correctly both as Python and PScript. Raw JS can
+write code that runs correctly both as Python and PScript, and
+:func:`raw JavaScript <pscript.RawJS>` can
 be included where needed (e.g. for performance).
 
 PScript's compiler is written in Python. Perhaps PScript can
@@ -122,13 +123,14 @@ Performance
 -----------
 
 Because PScript produces relatively bare JavaScript, it is pretty fast.
-Faster than CPython, and significantly faster than Brython and friends.
+Faster than CPython, and significantly faster than e.g. Brython.
 Check out ``examples/app/benchmark.py``.
 
 Nevertheless, the overhead to realize the more Pythonic behavior can
 have a negative impact on performance in tight loops (in comparison to
 writing the JS by hand). The recommended approach is to write
-performance critical code in pure JavaScript if necessary. 
+performance critical code in pure JavaScript
+(using :func:`RawJS <pscript.RawJS>`) if necessary. 
 
 .. _pscript-support:
 
@@ -178,7 +180,7 @@ Supported Python conveniences:
 * ``isinstance()`` Just Works (for primitive types as well as
   user-defined classes)
 * an empty list or dict evaluates to False as in Python.
-* all Python buildin functions that make sense in JS are supported:
+* all Python builtin functions that make sense in JS are supported:
   isinstance, issubclass, callable, hasattr, getattr, setattr, delattr,
   print, len, max, min, chr, ord, dict, list, tuple, range, pow, sum,
   round, int, float, str, bool, abs, divmod, all, any, enumerate, zip,

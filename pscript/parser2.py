@@ -82,7 +82,7 @@ We can iterate over anything:
     for i, j in [[1, 2], [3, 4]]:
         print(i+j)
 
-Buildin functions intended for iterations are supported too: 
+Builtin functions intended for iterations are supported too: 
 enumerate, zip, reversed, sorted, filter, map.
 
 .. pscript_example::

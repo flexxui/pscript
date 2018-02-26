@@ -113,7 +113,7 @@ def get_all_std_names():
 
 ## ----- Functions
 
-## Special functions: not really in buildins, but important enough to support
+## Special functions: not really in builtins, but important enough to support
 
 FUNCTIONS['perf_counter'] = """function() { // nargs: 0
     if (typeof(process) === "undefined"){return performance.now()*1e-3;}

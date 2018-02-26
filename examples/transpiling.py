@@ -23,5 +23,5 @@ print(py2js('isinstance(x, Bar)'))
 # Evaluate js in nodejs
 print(evaljs('10 * 10'))
 
-# Evaluate PyScript in nodejs
+# Evaluate PScript in nodejs
 print(evalpy('10**10'))
