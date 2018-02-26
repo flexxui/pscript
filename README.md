@@ -11,7 +11,8 @@ also be useful by itself.
 Installation
 ------------
 
-PScript requires Python 2.7 or 3.5+ and also works on pypy. 
+PScript is pure Python and requires Python 2.7 or 3.5+ (including Pypy).
+It has no further dependencies.
 
 * ``conda install pscript -c conda-forge``, or
 * ``pip install pscript``
