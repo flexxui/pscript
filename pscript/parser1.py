@@ -214,6 +214,8 @@ class Parser1(Parser0):
             if isinstance(key, (ast.Num, ast.NameConstant)):
                 code += self.parse(key)
             elif isinstance(key, ast.Str):
+                if ' ' in key.value:
+                    raise JSError('Keys in a literal dict cannot contain spaces.')
                 code += key.value
             else:
                 # code += ['['] + self.parse(key) + [']']  # this actually breaks on IE
