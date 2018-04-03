@@ -1,6 +1,10 @@
 PScript
 ========
 
+[![Build Status](https://travis-ci.org/flexxui/pscript.svg)](https://travis-ci.org/flexxui/pscript)
+[![Documentation Status](https://readthedocs.org/projects/pscript/badge/?version=latest)](https://pscript.readthedocs.org)
+
+
 PScript is a Python to JavaScript compiler, and is also the name of the subset
 of Python that this compiler supports. It was developed as a part of
 [Flexx](http://flexx.live) (as `flexx.pyscript`) and is now represented
