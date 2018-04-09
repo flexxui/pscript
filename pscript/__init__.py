@@ -186,7 +186,7 @@ Supported Python conveniences:
   round, int, float, str, bool, abs, divmod, all, any, enumerate, zip,
   reversed, sorted, filter, map.
 * all methods of list, dict and str are supported (except a few string
-  methods: encode, format, format_map, isdecimal, isdigit, isprintable, maketrans)
+  methods: encode, format_map, isprintable, maketrans).
 * the default return value of a function is ``None``/``null`` instead
   of ``undefined``.
 * list concatenation using the plus operator, and list/str repeating

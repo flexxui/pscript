@@ -557,7 +557,7 @@ class Parser2(Parser1):
                 start, end, step = nums[0], nums[1], nums[2]
             # Build for-loop in JS
             t = 'for ({i} = {start}; {i} < {end}; {i} += {step})'
-            if step.lstrip('+-').isnumeric() and float(step) < 0:
+            if step.lstrip('+-').isdecimal() and float(step) < 0:
                 t = t.replace('<', '>')
             assert len(target) == 1
             t = t.format(i=target[0], start=start, end=end, step=step) + ' {'

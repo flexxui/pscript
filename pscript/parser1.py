@@ -195,7 +195,8 @@ from .parser0 import Parser0, JSError, unify, reprs  # noqa
 # Define builtin stuff for which we know that it returns a bool or int
 _bool_funcs = 'hasattr', 'all', 'any', 'op_contains', 'op_equals', 'truthy'
 _bool_meths = ('count', 'isalnum', 'isalpha', 'isidentifier', 'islower',
-               'isnumeric', 'isspace', 'istitle', 'isupper', 'startswith')
+               'isnumeric', 'isdigit', 'isdecimal', 'isspace', 'istitle',
+               'isupper', 'startswith')
 returning_bool = tuple([stdlib.FUNCTION_PREFIX + x + '(' for x in _bool_funcs] +
                        [stdlib.METHOD_PREFIX + x + '.' for x in _bool_meths])
 
