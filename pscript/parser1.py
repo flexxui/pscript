@@ -47,12 +47,39 @@ Slicing and subscriping
 String formatting
 -----------------
 
-Basic string formatting is supported for "%s", "%f", and "%i".
+String formatting is supported in various forms.
 
 .. pscript_example::
     
-    "value: %f" % val
-    "%s: %f" % (name, val)
+    # Old school
+    "value: %g" % val
+    "%s: %0.2f" % (name, val)
+    
+    # Modern
+    "value: {:g}".format(val)
+    "{}: {:3.2f}".format(name, val)
+    
+    # F-strings (python 3.6+)
+    f"value: {val:g}"
+    f"{name}: {val:3.2f}"
+    
+    # This also works
+    t = "value: {:g}"
+    t.format(val)
+    
+    # But this does not
+    t = "value: %g"
+    t % val
+
+Kinds of formatting that is supported:
+
+* Float, exponential en "general" number formatting.
+* Specifying precision for numbers.
+* Padding of number with "+" or " ".
+* Repr-formatting.
+
+At the moment, PScript does not support advanced features such as string
+padding.
 
 
 Assignments
@@ -189,6 +216,37 @@ class Parser1(Parser0):
     
     def parse_Str(self, node):
         return reprs(node.value)
+    
+    def parse_JoinedStr(self, node):
+        parts, value_nodes = [], []
+        for n in node.value_nodes:
+            if isinstance(n, ast.Str):
+                parts.append(n.value)
+            else:
+                assert isinstance(n, ast.FormattedValue)
+                parts.append('{' + self._parse_FormattedValue_fmt(n) + '}')
+                value_nodes.append(n.value_node)
+        thestring = reprs(''.join(parts))
+        return self.use_std_method(thestring, 'format', value_nodes)
+    
+    def parse_FormattedValue(self, node):  # can als be present standalone
+        thestring = "{" + self._parse_FormattedValue_fmt(node) + "}"
+        return self.use_std_method(thestring, 'format', [node.value_node])
+    
+    def _parse_FormattedValue_fmt(self, node):
+        """ Return fmt for a FormattedValue node.
+        """
+        fmt = ''
+        if node.conversion:
+            fmt += '!' + node.conversion
+        if node.format_node and len(node.format_node.value_nodes) > 0:
+            if len(node.format_node.value_nodes) > 1:
+                raise JSError('String formatting only supports singleton format spec.')
+            spec_node = node.format_node.value_nodes[0]
+            if not isinstance(spec_node, ast.Str):
+                raise JSError('String formatting only supports string format spec.')
+            fmt += ':' + spec_node.value
+        return fmt
     
     def parse_Bytes(self, node):
         raise JSError('No Bytes in JS')
@@ -328,30 +386,27 @@ class Parser1(Parser0):
         # Get items
         right = node.right_node
         if isinstance(right, (ast.Tuple, ast.List)):
-            items = [unify(self.parse(n)) for n in right.element_nodes]
+            value_nodes = right.element_nodes
         else:
-            items = [unify(self.parse(right))]
+            value_nodes = [right]
         # Get matches
         matches = list(re.finditer(r'%[0-9\.\+\-\#]*[srdeEfgGioxXc]', left))
-        if len(matches) != len(items):
+        if len(matches) != len(value_nodes):
             raise JSError('In string formatting, number of placeholders '
                             'does not match number of replacements')
         # Format
-        code = []
+        parts = []
         start = 0
-        for i, m in enumerate(matches):
+        for m in matches:
             fmt = m.group(0)
-            if fmt in ('%s', '%f', '%i', '%d', '%g'):
-                code.append(sep + left[start:m.start()] + sep)
-                code.append(' + ' + items[i] + ' + ')
-            elif fmt == '%r':
-                code.append(sep + left[start:m.start()] + sep)
-                code.append(' + %s + ' % self.use_std_function('repr', [items[i]]))
-            else:
-                raise JSError('Unsupported string formatting %r' % fmt)
+            fmt = {'%r': '!r', '%s': ''}.get(fmt, ':' + fmt[1:])
+            # Add the part in front of the match (and after prev match)
+            parts.append(left[start:m.start()])
+            parts.append("{%s}" % fmt)
             start = m.end()
-        code.append(sep + left[start:] + sep)
-        return code
+        parts.append(left[start:])
+        thestring = sep + ''.join(parts) + sep
+        return self.use_std_method(thestring, 'format', value_nodes)
     
     def _wrap_truthy(self, node):
         """ Wraps an operation in a truthy call, unless its not necessary. """

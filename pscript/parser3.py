@@ -415,6 +415,9 @@ class Parser3(Parser2):
                 else:
                     raise JSError('Invalid keyword argument for sort: %r' % kw.name)
             return self.use_std_method(base, 'sort', [key, reverse])
+    
+    def method_format(self, node, base):
+        return self.use_std_method(base, 'format', node.arg_nodes)
 
 
 # Add functions and methods to the class, using the stdib functions ...

@@ -223,6 +223,30 @@ class Str(Node):
     """
     __slots__ = 'value',
 
+class FormattedValue(Node):
+    """ Node representing a single formatting field in an f-string. If the
+    string contains a single formatting field and nothing else the node can be
+    isolated, otherwise it appears in JoinedStr.
+    
+    Attributes:
+        value_node: an expression (can be anything).
+        conversion: a string, '' means no formatting, 's' means !s string
+            formatting, 'r' means !r repr formatting, 'a' means !a ascii
+            formatting.
+        format_node:  a JoinedStr node reprensenting the formatting, or None
+            if no format was specified. Both conversion and format_node can be
+            set at the same time.
+    """
+    __slots__ = 'value_node', 'conversion', 'format_node'
+
+class JoinedStr(Node):
+    """ An f-string, comprising a series of FormattedValue and Str nodes.
+    
+    Attributes:
+        value_nodes: list of Str and FormattedValue nodes.
+    """
+    __slots__ = 'value_nodes',
+
 class Bytes(Node):
     """
     Attributes:
@@ -807,6 +831,15 @@ class NativeAstConverter:
             if 'b' in pre:
                 return Bytes(n.s)
         return Str(n.s)
+    
+    def _convert_JoinedStr(self, n):
+        c = self._convert
+        return JoinedStr([c(x) for x in n.values])
+    
+    def _convert_FormattedValue(self, n):
+        conversion = '' if n.conversion < 0 else chr(n.conversion)
+        return FormattedValue(self._convert(n.value), conversion,
+                              self._convert(n.format_spec))
     
     def _convert_Bytes(self, n):
         return Bytes(n.s)

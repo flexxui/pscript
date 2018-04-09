@@ -225,7 +225,7 @@ FUNCTIONS['list'] = """function (x) {
 }"""
 
 FUNCTIONS['range'] = """function (start, end, step) {
-var i, res = [];
+    var i, res = [];
     var val = start;
     var n = (end - start) / step;
     for (i=0; i<n; i++) {
@@ -235,6 +235,59 @@ var i, res = [];
     return res;
 }"""
 
+FUNCTIONS['format'] = """function (v, fmt) {  // nargs: 2
+    fmt = fmt.toLowerCase();
+    var s = String(v);
+    if (fmt.indexOf('!r') >= 0) {
+        try { s = JSON.stringify(v); } catch (e) { s = undefined; }
+        if (typeof s === 'undefined') { s = v._IS_COMPONENT ? v.id : String(v); }
+    }
+    var i0 = fmt.indexOf(':');
+    if (i0 < 0) {
+    } else if (fmt.indexOf('i', i0) > i0) { // integer formatting
+        s = Number.parseInt(v).toFixed(0);
+    } else if (fmt.indexOf('f', i0) > i0) {  // float formatting
+        v = Number.parseFloat(v);
+        var spec = fmt.slice(i0+1, fmt.indexOf('f', i0));
+        var decimals = 6;
+        if (spec.indexOf('.') >= 0) {
+            var decimals = Number(spec.slice(spec.indexOf('.')+1));
+        }
+        s = v.toFixed(decimals);
+    } else if (fmt.indexOf('e', i0) > i0) {  // exp formatting
+        v = Number.parseFloat(v);
+        var precision = 6;
+        var spec = fmt.slice(i0+1, fmt.indexOf('e', i0));
+        if (spec.indexOf('.') >= 0) {
+            precision = Number(spec.slice(spec.indexOf('.')+1)) || 1;
+        }
+        s = v.toExponential(precision);
+    } else if (fmt.indexOf('g', i0) > i0) {  // "general" formatting
+        v = Number.parseFloat(v);
+        var precision = 6;
+        var spec = fmt.slice(i0+1, fmt.indexOf('g', i0));
+        if (spec.indexOf('.') >= 0) {
+            precision = Number(spec.slice(spec.indexOf('.')+1)) || 1;
+        }
+        // Exp or decimal?
+        s = v.toExponential(precision-1);
+        var s1 = s.slice(0, s.indexOf('e')), s2 = s.slice(s.indexOf('e'));
+        if (s2.length == 3) { s2 = 'e' + s2[1] + '0' + s2[2]; }
+        var exp = Number(s2.slice(1));
+        if (exp >= -4 && exp < precision) { s1=v.toPrecision(precision); s2=''; }
+        // Skip trailing zeros and dot
+        var j = s1.length-1;
+        while (j>0 && s1[j] == '0') { j-=1; }
+        s1 = s1.slice(0, j+1);
+        if (s1.endsWith('.')) { s1 = s1.slice(0, s1.length-1); }
+        s = s1 + s2;
+    }
+    if (i0 >= 0 && v > 0) {
+        if (fmt[i0+1] == '+') { s = '+' + s; }
+        if (fmt[i0+1] == ' ') { s = ' ' + s; }
+    }
+    return s;
+}"""
 
 ## Normal functions
 
@@ -564,7 +617,7 @@ METHODS['values'] = """function () { // nargs: 0
 
 ## String only
 
-# ignores: encode, decode, format, format_map, isdecimal, isdigit,
+# ignores: encode, decode, format_map, isdecimal, isdigit,
 # isprintable, maketrans
 
 # Not a Python method, but a method that we need, and is only ECMA 6
@@ -619,6 +672,28 @@ METHODS['find'] = """function (x, start, stop) { // nargs: 1 2 3
     var i = this.slice(start, stop).indexOf(x);
     if (i >= 0) return i + start;
     return -1;
+}"""
+
+METHODS['format'] = """function () {
+    if (this.constructor !== String) return this.KEY.apply(this, arguments);
+    var parts = [], i = 0, i1, i2;
+    var itemnr = -1;
+    while (i < this.length) {
+        // find opening
+        i1 = this.indexOf('{', i);
+        if (i1 < 0 || i1 == this.length-1) { break; }
+        if (this[i1+1] == '{') {parts.push(this.slice(i, i1+1)); i = i1 + 2; continue;}
+        // find closing
+        i2 = this.indexOf('}', i1);
+        if (i2 < 0) { break; }
+        // parse
+        itemnr += 1;
+        var s = FUNCTION_PREFIXformat(arguments[itemnr], this.slice(i1+1, i2));
+        parts.push(this.slice(i, i1), s);
+        i = i2 + 1;
+    }
+    parts.push(this.slice(i));
+    return parts.join('');
 }"""
 
 METHODS['isalnum'] = """function () { // nargs: 0
