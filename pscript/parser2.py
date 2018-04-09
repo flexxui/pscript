@@ -501,6 +501,7 @@ class Parser2(Parser1):
             elif isinstance(f, ast.Name) and f.name in ('xrange', 'range'):
                 sure_is_range = [''.join(self.parse(arg)) for arg in 
                                  node.iter_node.arg_nodes]
+                iter = 'range'  # stub to prevent the parsing of iter_node below
         
         # Otherwise we parse the iter
         if iter is None:
