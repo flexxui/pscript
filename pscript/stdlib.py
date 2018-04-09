@@ -688,7 +688,10 @@ METHODS['format'] = """function () {
         if (i2 < 0) { break; }
         // parse
         itemnr += 1;
-        var s = FUNCTION_PREFIXformat(arguments[itemnr], this.slice(i1+1, i2));
+        var fmt = this.slice(i1+1, i2);
+        var index = fmt.split(':')[0].split('!')[0];
+        index = index? Number(index) : itemnr
+        var s = FUNCTION_PREFIXformat(arguments[index], fmt);
         parts.push(this.slice(i, i1), s);
         i = i2 + 1;
     }
