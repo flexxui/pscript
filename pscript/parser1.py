@@ -173,6 +173,10 @@ returning_bool = tuple([stdlib.FUNCTION_PREFIX + x + '(' for x in _bool_funcs] +
                        [stdlib.METHOD_PREFIX + x + '.' for x in _bool_meths])
 
 
+# precompile regexp to help determine whether a string is an identifier
+isidentifier1 = re.compile(r'^\w+$', re.UNICODE)
+
+
 class Parser1(Parser0):
     """ Parser that add basic functionality like assignments,
     operations, function calls, and indexing.
@@ -209,25 +213,33 @@ class Parser1(Parser0):
     def parse_Dict(self, node):
         # Oh JS; without the outer braces, it would only be an Object if used
         # in an assignment ...
+        use_make_dict_func = False
         code = ['({']
         for key, val in zip(node.key_nodes, node.value_nodes):
             if isinstance(key, (ast.Num, ast.NameConstant)):
                 code += self.parse(key)
-            elif isinstance(key, ast.Str):
-                if ' ' in key.value:
-                    raise JSError('Keys in a literal dict cannot contain spaces.')
+            elif (isinstance(key, ast.Str) and isidentifier1.match(key.value) and
+                                               key.value[0] not in '0123456789'):
                 code += key.value
             else:
-                # code += ['['] + self.parse(key) + [']']  # this actually breaks on IE
-                raise JSError('Computed dict attributes are not supported on IE :/')
+                use_make_dict_func = True
+                break
             code.append(': ')
             code += self.parse(val)
             code.append(', ')
         if node.key_nodes:
             code.pop(-1)  # skip last comma
         code.append('})')
-        return code
         
+        # Do we need to use the fallback?
+        if use_make_dict_func:
+            func_args = []
+            for key, val in zip(node.key_nodes, node.value_nodes):
+                func_args += [unify(self.parse(key)), unify(self.parse(val))]
+            self.use_std_function('create_dict', [])
+            return stdlib.FUNCTION_PREFIX + 'create_dict(' + ', '.join(func_args) + ')'
+        return code
+    
     def parse_Set(self, node):
         raise JSError('No Set in JS')
     
