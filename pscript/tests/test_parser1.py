@@ -311,8 +311,18 @@ class TestExpressions:
         
         assert py2js('{"foo": 3, "bar": 4}') == '({foo: 3, bar: 4});'
         assert evalpy('a={"foo": 3, "bar": 4};a') == '{ foo: 3, bar: 4 }'
-        with raises(JSError):
-            assert evalpy('bla="foo";a={bla: 3, bar: 4};a') == '{ foo: 3, bar: 4 }'
+    
+    def test_dict_literals(self):
+        # JS has a different way to define dict literals, with limitation
+        # (especially on IE), so we add some magic sause to make it work.
+        
+        def tester1():
+            a = 'foo'
+            d = {a: 'bar1', 2: 'bar2', 'sp' + 'am': 'bar3'}
+            print(d.foo, d[2], d.spam)
+        
+        js = py2js(tester1)
+        assert evaljs(js + 'tester1()') == 'bar1 bar2 bar3\nnull'
     
     def test_ignore_import_of_compiler(self):
         modname = pscript.__name__

@@ -141,6 +141,12 @@ FUNCTIONS['op_instantiate'] = """function (ob, args) { // nargs: 2
     }
 }"""
 
+FUNCTIONS['create_dict'] = """function () {
+    var d = {};
+    for (var i=0; i<arguments.length; i+=2) { d[arguments[i]] = arguments[i+1]; }
+    return d;
+}"""
+
 FUNCTIONS['merge_dicts'] = """function () {
     var res = {};
     for (var i=0; i<arguments.length; i++) {
