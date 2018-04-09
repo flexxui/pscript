@@ -1,5 +1,7 @@
 from pscript.testing import run_tests_if_main, raises
 
+import sys
+
 import pscript
 from pscript import JSError, py2js, evaljs, evalpy, Parser
 
@@ -68,16 +70,53 @@ class TestExpressions:
         assert evalpy('True or False') == 'true'
         # Bug
         assert evalpy('(9-3-3)/3') == '1'
-        
-        # string formatting
+    
+    def test_string_formatting1(self):
+        # string formatting that we already had
         assert evalpy('"%s" % "bar"') == 'bar'
         assert evalpy('"-%s-" % "bar"') == '-bar-'
         assert evalpy('"foo %s foo" % "bar"') == 'foo bar foo'
         assert evalpy('"x %i" % 6') == 'x 6'
-        assert evalpy('"x %f" % 6') == 'x 6'
-        assert evalpy('"%s: %f" % ("value", 6)') == 'value: 6'
+        assert evalpy('"x %g" % 6') == 'x 6'
+        assert evalpy('"%s: %f" % ("value", 6)') == 'value: 6.000000'
         assert evalpy('"%r: %r" % ("value", 6)') == '"value": 6'
     
+    def test_string_formatting2(self):
+        
+        py2jslight = lambda x: py2js(x, inline_stdlib=False)
+        
+        # Verify that percent-formatting produces same JS as str.format
+        assert py2jslight("'hi %i' % a") == py2jslight("'hi {:i}'.format(a)")
+        assert py2jslight("'hi %i %+i' % (a, b)") == py2jslight("'hi {:i} {:+i}'.format(a, b)")
+        assert py2jslight("'hi %f %1.2f' % (a, b)") == py2jslight("'hi {:f} {:1.2f}'.format(a, b)")
+        assert py2jslight("'hi %s %r' % (a, b)") == py2jslight("'hi {} {!r}'.format(a, b)")
+        
+        if sys.version_info < (3, 6):
+            return
+        
+        # Verify that f-string formatting produces same JS as str.format - Python 3.6+
+        assert py2jslight("f'hi {a:i}'") == py2jslight("'hi {:i}'.format(a)")
+        assert py2js("f'hi {a:i} {b:+i}'") == py2js("'hi {:i} {:+i}'.format(a, b)")
+        assert py2jslight("f'hi {a:f} {b:1.2f}'") == py2jslight("'hi {:f} {:1.2f}'.format(a, b)")
+        assert py2jslight("f'hi {a} {b!r}'") == py2jslight("'hi {} {!r}'.format(a, b)")
+    
+    def test_string_formatting3(self):
+        # Verify fancy formatting (mosly for numbers)
+        # We don't support every kind of fortting that Python does.
+        
+        x = 'a = 3.1415926535; b = 7; c = "foo"; d = 314159265.35; e = 0.0031415926535;'
+        # i formatting
+        assert evalpy(x + "'hi {:i}'.format(b)") == 'hi 7'
+        # f formatting
+        assert evalpy(x + "'hi {:i} {:+i} {: i}'.format(b, b, b)") == 'hi 7 +7  7'
+        assert evalpy(x + "'hi {:f} {:1.0f} {:1.2f}'.format(a, a, a)") == 'hi 3.141593 3 3.14'
+        # g formatting, these outputs are (manually) validated with Python
+        assert evalpy(x + "'hi {:g} {:.1g} {:.3g}'.format(a, a, a)") == 'hi 3.14159 3 3.14'
+        assert evalpy(x + "'hi {:g} {:.1g} {:.3g}'.format(d, d, d)") == 'hi 3.14159e+08 3e+08 3.14e+08'
+        assert evalpy(x + "'hi {:g} {:.1g} {:.3g}'.format(e, e, e)") == 'hi 0.00314159 0.003 0.00314'
+        # String and repr formatting
+        assert evalpy(x + "'hi {} {!s} {!r}'.format(c, c, c)") == 'hi foo foo "foo"'
+        
     def test_overloaded_list_ops(self):
         assert evalpy('[1, 2] + [3, 4]') == '[ 1, 2, 3, 4 ]'
         assert evalpy('[3, 4] + [1, 2]') == '[ 3, 4, 1, 2 ]'
