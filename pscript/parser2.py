@@ -446,9 +446,11 @@ class Parser2(Parser1):
         if (True and isinstance(node.test_node, ast.Call) and
                      isinstance(node.test_node.func_node, ast.Name) and
                      node.test_node.func_node.name == 'this_is_js'):
-            code = [self.lf('{ /* if this_is_js() */')]
+            code = [self.lf('if ('), 'true', ') ', '{ /* if this_is_js() */']
+            self._indent += 1
             for stmt in node.body_nodes:
                 code += self.parse(stmt)
+            self._indent -= 1
             code.append(self.lf('}'))
             return code
         
