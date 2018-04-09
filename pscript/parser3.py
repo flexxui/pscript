@@ -10,8 +10,7 @@ tuple, range, pow, sum, round, int, float, str, bool, abs, divmod, all,
 any, enumerate, zip, reversed, sorted, filter, map.
 
 Further all methods for list, dict and str are implemented (except str
-methods: encode, decode, format, format_map, isdecimal, isdigit,
-isprintable, maketrans).
+methods: encode, decode, format_map, isprintable, maketrans).
 
 .. pscript_example::
 

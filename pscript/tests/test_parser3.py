@@ -607,6 +607,20 @@ class TestStrMethods:
         assert evalpy('"0a1b2c".isalpha()') == 'false'
         assert evalpy('"0a_".isalpha()') == 'false'
     
+    def test_isdecimal(self):
+        assert evalpy('"".isdecimal()') == 'false'
+        assert evalpy('"012".isdecimal()') == 'true'
+        assert evalpy('"abc".isdecimal()') == 'false'
+        assert evalpy('"0a1b2c".isdecimal()') == 'false'
+        assert evalpy('"0a_".isdecimal()') == 'false'
+    
+    def test_isdigit(self):
+        assert evalpy('"".isdigit()') == 'false'
+        assert evalpy('"012".isdigit()') == 'true'
+        assert evalpy('"abc".isdigit()') == 'false'
+        assert evalpy('"0a1b2c".isdigit()') == 'false'
+        assert evalpy('"0a_".isdigit()') == 'false'
+    
     def test_isnumeric(self):
         assert evalpy('"".isnumeric()') == 'false'
         assert evalpy('"012".isnumeric()') == 'true'
@@ -783,7 +797,7 @@ class TestStrMethods:
     def test_that_all_str_methods_are_tested(self):
         tested = set([x.split('_')[1] for x in dir(self) if x.startswith('test_')])
         needed = set([x for x in dir(str) if not x.startswith('_')])
-        ignore = 'encode decode format format_map isdecimal isdigit isprintable maketrans'
+        ignore = 'encode decode format_map isprintable maketrans'
         needed = needed.difference(ignore.split(' '))
         
         not_tested = needed.difference(tested)

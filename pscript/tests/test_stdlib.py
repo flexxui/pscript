@@ -46,9 +46,9 @@ def test_stdlib_has_all_dict_methods():
 def test_stdlib_has_all_str_methods():
     method_names = [m for m in dir(str) if not m.startswith('_')]
     if sys.version_info[0] == 2:
-        ignore = 'encode decode format isdigit'
+        ignore = 'encode decode'
     else:
-        ignore = 'encode format format_map isdecimal isdigit isprintable maketrans'
+        ignore = 'encode format_map isprintable maketrans'
     for name in ignore.split(' '):
         method_names.remove(name)
     for method_name in method_names:

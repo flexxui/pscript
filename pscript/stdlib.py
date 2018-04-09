@@ -617,8 +617,7 @@ METHODS['values'] = """function () { // nargs: 0
 
 ## String only
 
-# ignores: encode, decode, format_map, isdecimal, isdigit,
-# isprintable, maketrans
+# ignores: encode, decode, format_map, isprintable, maketrans
 
 # Not a Python method, but a method that we need, and is only ECMA 6
 # http://stackoverflow.com/a/5450113/2271927
@@ -709,13 +708,6 @@ METHODS['isalpha'] = """function () { // nargs: 0
     return Boolean(/^[A-Za-z]+$/.test(this));
 }"""
 
-# METHODS['isdecimal'] = """function () {
-#     if (this.constructor !== String) return this.KEY.apply(this, arguments);
-#     return Boolean(/^[0-9]+$/.test(this));
-# }"""
-# 
-# METHODS['isdigit'] = METHODS['isdecimal']
-
 METHODS['isidentifier'] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return Boolean(/^[A-Za-z_][A-Za-z0-9_]*$/.test(this));
@@ -727,10 +719,24 @@ METHODS['islower'] = """function () { // nargs: 0
     return low != high && low == this;
 }"""
 
-METHODS['isnumeric'] = """function () { // nargs: 0
+METHODS['isdecimal'] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return Boolean(/^[0-9]+$/.test(this));
 }"""
+
+# The thing about isdecimal, isdigit and isnumeric.
+# https://stackoverflow.com/a/36800319/2271927
+#
+# * isdecimal() (Only Decimal Numbers)
+# * str.isdigit() (Decimals, Subscripts, Superscripts)
+# * isnumeric() (Digits, Vulgar Fractions, Subscripts, Superscripts,
+#   Roman Numerals, Currency Numerators)
+#
+# In other words, isdecimal is the most strict. We used to have
+# isnumeric with isdecimal's implementation, so we provide isnumeric
+# and isdigit as aliases for now.
+
+METHODS['isnumeric'] = METHODS['isdigit'] = METHODS['isdecimal']
 
 METHODS['isspace'] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
