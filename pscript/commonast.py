@@ -790,19 +790,22 @@ class NativeAstConverter:
         return Num(n.n)
     
     def _convert_Str(self, n):
-        # Get string modifier char
-        line = self._lines[n.lineno-1]
-        pre = ''
-        if line[n.col_offset] not in '"\'':
-            pre += line[n.col_offset]
-            if line[n.col_offset + 1] not in '"\'':
-                pre += line[n.col_offset + 1]
-        # Formatted, bytes?
-        if 'f' in pre:
-            raise RuntimeError('Cannot do formatted string literals yet: ' +
-                               line)
-        if pyversion < (3, ) and 'b' in pre:
-            return Bytes(n.s)
+        # We check the string prefix here. We only really need it in Python 2,
+        # because u is not needed in py3, and b and r are resolved by the lexer,
+        # and f as well (resulting in  JoinedStr or  FormattedValue).
+        # Note that the col_offset of the node seems 1 off when the string is
+        # a key in a dict :/ (PScript issue #15)
+        if pyversion < (3, ):
+            line = self._lines[n.lineno-1]
+            i = n.col_offset
+            i = i - 1 if (i > 0 and line[i-1] in 'rufb"\'') else i
+            pre = ''
+            if line[i] not in '"\'':
+                pre += line[i]
+                if line[i + 1] not in '"\'':
+                    pre += line[i + 1]
+            if 'b' in pre:
+                return Bytes(n.s)
         return Str(n.s)
     
     def _convert_Bytes(self, n):
