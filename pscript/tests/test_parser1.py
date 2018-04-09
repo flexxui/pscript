@@ -116,7 +116,20 @@ class TestExpressions:
         assert evalpy(x + "'hi {:g} {:.1g} {:.3g}'.format(e, e, e)") == 'hi 0.00314159 0.003 0.00314'
         # String and repr formatting
         assert evalpy(x + "'hi {} {!s} {!r}'.format(c, c, c)") == 'hi foo foo "foo"'
+    
+    def test_string_formatting4(self):
         
+        x = 'a = 3; b = 4; '
+        
+        # Setting positions in format string
+        assert evalpy(x + "'hi {1:g} {1:+g} {0}'.format(a, b)") == 'hi 4 +4 3'
+        
+        # Using a predefined template string for .format()
+        assert evalpy(x + "t = 'hi {} {}'; t.format(a, b)") == 'hi 3 4'
+        
+        # Using a predefined template string for % - we cannot do this, unfortunately!
+        # assert evalpy(x + "t = 'hi %i %i'; t % (a, b)") == 'hi 3 4'
+    
     def test_overloaded_list_ops(self):
         assert evalpy('[1, 2] + [3, 4]') == '[ 1, 2, 3, 4 ]'
         assert evalpy('[3, 4] + [1, 2]') == '[ 3, 4, 1, 2 ]'

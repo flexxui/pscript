@@ -67,7 +67,7 @@ String formatting is supported in various forms.
     t = "value: {:g}"
     t.format(val)
     
-    # But this does not
+    # But this does not (because PScrip cannot know whether t is str or float)
     t = "value: %g"
     t % val
 
@@ -380,15 +380,23 @@ class Parser1(Parser0):
         return [left, op, right]
     
     def _format_string(self, node):
-        # Get left end, stripped from the separator
+        # Get value_nodes
+        if isinstance(node.right_node, (ast.Tuple, ast.List)):
+            value_nodes = node.right_node.element_nodes
+        else:
+            value_nodes = [node.right_node]
+        
+        # Is the left side a string? If not, exit early
+        # This works, but we cannot know whether the left was a string or number :P
+        # if not isinstance(node.left_node, ast.Str):
+        #     thestring = unify(self.parse(node.left_node))
+        #     thestring += ".replace(/%([0-9\.\+\-\#]*[srdeEfgGioxXc])/g, '{:$1}')"
+        #     return self.use_std_method(thestring, 'format', value_nodes) 
+        
+        assert isinstance(node.left_node, ast.Str)
         left = ''.join(self.parse(node.left_node))
         sep, left = left[0], left[1:-1]
-        # Get items
-        right = node.right_node
-        if isinstance(right, (ast.Tuple, ast.List)):
-            value_nodes = right.element_nodes
-        else:
-            value_nodes = [right]
+        
         # Get matches
         matches = list(re.finditer(r'%[0-9\.\+\-\#]*[srdeEfgGioxXc]', left))
         if len(matches) != len(value_nodes):

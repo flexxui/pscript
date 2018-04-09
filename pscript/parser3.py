@@ -417,6 +417,8 @@ class Parser3(Parser2):
             return self.use_std_method(base, 'sort', [key, reverse])
     
     def method_format(self, node, base):
+        if node.kwarg_nodes:
+            raise JSError('Method format() does not support keyword args.')
         return self.use_std_method(base, 'format', node.arg_nodes)
 
 
