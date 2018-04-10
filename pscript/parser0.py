@@ -299,7 +299,7 @@ class Parser0:
         lineno = getattr(node, 'lineno', -1)
         if self._pysource:
             filename, lineno = self._pysource
-            lineno += node.lineno - 1
+            lineno += node.lineno
         
         msg = 'Error processing %s-node' % (node.__class__.__name__)
         if classNode:
