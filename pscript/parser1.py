@@ -204,6 +204,20 @@ returning_bool = tuple([stdlib.FUNCTION_PREFIX + x + '(' for x in _bool_funcs] +
 # precompile regexp to help determine whether a string is an identifier
 isidentifier1 = re.compile(r'^\w+$', re.UNICODE)
 
+reserved_names = (
+    'abstract', 'instanceof', 'boolean', 'enum', 'switch', 'export',
+    'interface', 'synchronized', 'extends', 'let', 'case', 'false', 'throw',
+    'catch', 'final', 'native', 'throws', 'new', 'transient', 'null', 'true',
+    'const', 'package', 'function', 'private', 'typeof', 'debugger', 'goto',
+    'protected', 'var', 'default', 'public', 'void', 'delete', 'implements',
+    'volatile', 'do', 'static',
+    # Commented, because are disallowed in Python too.
+    # 'else', 'break', 'finally', 'class', 'for', 'try', 'continue', 'if',
+    # 'return', 'import', 'while', 'in', 'with',
+    # Commented for pragmatic reasons
+    # 'super', 'float', 'this', 'int', 'byte', 'long', 'char', 'short', 'double',
+    )
+
 
 class Parser1(Parser0):
     """ Parser that add basic functionality like assignments,
@@ -317,6 +331,8 @@ class Parser1(Parser0):
     def parse_Name(self, node, fullname=None):
         # node.ctx can be Load, Store, Del -> can be of use somewhere?
         name = node.name
+        if name in reserved_names:
+            raise JSError('Cannot use reserved name %s as a variable name!' % name)
         if self.vars.is_known(name):
             return self.with_prefix(name)
         if self._scope_prefix:
