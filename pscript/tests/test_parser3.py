@@ -794,6 +794,11 @@ class TestStrMethods:
         code = "table = {'a':'x', 'b':'y', 'c': None}\n"
         assert evalpy(code + "'abcde'.translate(table)") == "xyde"
     
+    def test_format(self):
+        # Covered more extensively in test_parser1(), but we need the method
+        # to pass the test below ...
+        assert evalpy("'{:+0.2f}'.format(1.23456)") == "+1.23"
+    
     def test_that_all_str_methods_are_tested(self):
         tested = set([x.split('_')[1] for x in dir(self) if x.startswith('test_')])
         needed = set([x for x in dir(str) if not x.startswith('_')])
