@@ -50,7 +50,8 @@ def test_stdlib_has_all_str_methods():
     else:
         ignore = 'encode format_map isprintable maketrans isascii'
     for name in ignore.split(' '):
-        method_names.remove(name)
+        if name in method_names:
+            method_names.remove(name)
     for method_name in method_names:
         assert method_name in stdlib.METHODS
 
