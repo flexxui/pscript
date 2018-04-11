@@ -206,8 +206,8 @@ isidentifier1 = re.compile(r'^\w+$', re.UNICODE)
 
 reserved_names = (
     'abstract', 'instanceof', 'boolean', 'enum', 'switch', 'export',
-    'interface', 'synchronized', 'extends', 'let', 'case', 'false', 'throw',
-    'catch', 'final', 'native', 'throws', 'new', 'transient', 'null', 'true',
+    'interface', 'synchronized', 'extends', 'let', 'case', 'throw',
+    'catch', 'final', 'native', 'throws', 'new', 'transient',
     'const', 'package', 'function', 'private', 'typeof', 'debugger', 'goto',
     'protected', 'var', 'default', 'public', 'void', 'delete', 'implements',
     'volatile', 'do', 'static',
@@ -215,7 +215,8 @@ reserved_names = (
     # 'else', 'break', 'finally', 'class', 'for', 'try', 'continue', 'if',
     # 'return', 'import', 'while', 'in', 'with',
     # Commented for pragmatic reasons
-    # 'super', 'float', 'this', 'int', 'byte', 'long', 'char', 'short', 'double',
+    # 'super', 'float', 'this', 'int', 'byte', 'long', 'char', 'short',
+    # 'double', 'null', 'true', 'false',
     )
 
 
