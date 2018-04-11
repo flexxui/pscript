@@ -802,6 +802,10 @@ class NativeAstConverter:
     
     def _convert_Module(self, n):
         node = Module([])
+        # Add back the "docstring" that Python removed; this may actually be
+        # a code snippet and not a module.
+        if pyversion > (3, 7) and n.docstring:
+            node.body_nodes.append(Expr(Str(n.docstring)))
         self._stack.append((node.body_nodes, n.body))
         return node
     
@@ -1161,6 +1165,8 @@ class NativeAstConverter:
             for x in node.arg_nodes + node.kwarg_nodes:
                 assert isinstance(x, Arg)
         
+        if pyversion > (3, 7) and n.docstring:
+            node.body_nodes.append(Expr(Str(n.docstring)))
         self._stack.append((node.body_nodes, n.body))
         return node
     
@@ -1212,5 +1218,7 @@ class NativeAstConverter:
         node = ClassDef(n.name, [c(a) for a in n.decorator_list],
                         arg_nodes, kwarg_nodes, [])
         
+        if pyversion > (3, 7) and n.docstring:
+            node.body_nodes.append(Expr(Str(n.docstring)))
         self._stack.append((node.body_nodes, n.body))
         return node

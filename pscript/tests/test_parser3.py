@@ -802,7 +802,7 @@ class TestStrMethods:
     def test_that_all_str_methods_are_tested(self):
         tested = set([x.split('_')[1] for x in dir(self) if x.startswith('test_')])
         needed = set([x for x in dir(str) if not x.startswith('_')])
-        ignore = 'encode decode format_map isprintable maketrans'
+        ignore = 'encode decode format_map isprintable maketrans isascii'
         needed = needed.difference(ignore.split(' '))
         
         not_tested = needed.difference(tested)
