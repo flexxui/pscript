@@ -67,7 +67,7 @@ String formatting is supported in various forms.
     t = "value: {:g}"
     t.format(val)
     
-    # But this does not (because PScrip cannot know whether t is str or float)
+    # But this does not (because PScript cannot know whether t is str or float)
     t = "value: %g"
     t % val
 
