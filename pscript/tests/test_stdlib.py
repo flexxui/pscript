@@ -48,7 +48,7 @@ def test_stdlib_has_all_str_methods():
     if sys.version_info[0] == 2:
         ignore = 'encode decode'
     else:
-        ignore = 'encode format_map isprintable maketrans'
+        ignore = 'encode format_map isprintable maketrans isascii'
     for name in ignore.split(' '):
         method_names.remove(name)
     for method_name in method_names:
