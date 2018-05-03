@@ -242,33 +242,33 @@ FUNCTIONS['format'] = """function (v, fmt) {  // nargs: 2
         try { s = JSON.stringify(v); } catch (e) { s = undefined; }
         if (typeof s === 'undefined') { s = v._IS_COMPONENT ? v.id : String(v); }
     }
+    var fmt_type = '';
+    if (fmt.endsWith('i') || fmt.endsWith('f') ||
+        fmt.endsWith('e') || fmt.endsWith('g')) {
+            fmt_type = fmt[fmt.length-1]; fmt = fmt.slice(0, fmt.length-1);
+    }
     var i0 = fmt.indexOf(':');
-    if (i0 < 0) {
-    } else if (fmt.indexOf('i', i0) > i0) { // integer formatting
+    var i1 = fmt.indexOf('.');
+    var spec1 = '', spec2 = '';  // before and after dot
+    if (i0 >= 0) {
+        if (i1 > i0) { spec1 = fmt.slice(i0+1, i1); spec2 = fmt.slice(i1+1); }
+        else { spec1 = fmt.slice(i0+1); }
+    }
+    // Format numbers
+    if (fmt_type == '') {
+    } else if (fmt_type == 'i') { // integer formatting, for %i
         s = Number.parseInt(v).toFixed(0);
-    } else if (fmt.indexOf('f', i0) > i0) {  // float formatting
+    } else if (fmt_type == 'f') {  // float formatting
         v = Number.parseFloat(v);
-        var spec = fmt.slice(i0+1, fmt.indexOf('f', i0));
-        var decimals = 6;
-        if (spec.indexOf('.') >= 0) {
-            var decimals = Number(spec.slice(spec.indexOf('.')+1));
-        }
+        var decimals = spec2 ? Number(spec2) : 6;
         s = v.toFixed(decimals);
-    } else if (fmt.indexOf('e', i0) > i0) {  // exp formatting
+    } else if (fmt_type == 'e') {  // exp formatting
         v = Number.parseFloat(v);
-        var precision = 6;
-        var spec = fmt.slice(i0+1, fmt.indexOf('e', i0));
-        if (spec.indexOf('.') >= 0) {
-            precision = Number(spec.slice(spec.indexOf('.')+1)) || 1;
-        }
+        var precision = (spec2 ? Number(spec2) : 6) || 1;
         s = v.toExponential(precision);
-    } else if (fmt.indexOf('g', i0) > i0) {  // "general" formatting
+    } else if (fmt_type == 'g') {  // "general" formatting
         v = Number.parseFloat(v);
-        var precision = 6;
-        var spec = fmt.slice(i0+1, fmt.indexOf('g', i0));
-        if (spec.indexOf('.') >= 0) {
-            precision = Number(spec.slice(spec.indexOf('.')+1)) || 1;
-        }
+        var precision = (spec2 ? Number(spec2) : 6) || 1;
         // Exp or decimal?
         s = v.toExponential(precision-1);
         var s1 = s.slice(0, s.indexOf('e')), s2 = s.slice(s.indexOf('e'));
@@ -282,11 +282,17 @@ FUNCTIONS['format'] = """function (v, fmt) {  // nargs: 2
         if (s1.endsWith('.')) { s1 = s1.slice(0, s1.length-1); }
         s = s1 + s2;
     }
-    if (i0 >= 0 && v > 0) {
-        if (fmt[i0+1] == '+') { s = '+' + s; }
-        if (fmt[i0+1] == ' ') { s = ' ' + s; }
+    // prefix/padding
+    var prefix = '';
+    if (spec1) {
+        if (spec1[0] == '+' && v > 0) { prefix = '+'; spec1 = spec1.slice(1); }
+        else if (spec1[0] == ' ' && v > 0) { prefix = ' '; spec1 = spec1.slice(1); }
     }
-    return s;
+    if (spec1 && spec1[0] == '0') {
+        var padding = Number(spec1.slice(1)) - (s.length + prefix.length);
+        s = '0'.repeat(Math.max(0, padding)) + s;
+    }
+    return prefix + s;
 }"""
 
 ## Normal functions

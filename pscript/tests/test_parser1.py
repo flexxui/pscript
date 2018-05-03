@@ -107,13 +107,17 @@ class TestExpressions:
         x = 'a = 3.1415926535; b = 7; c = "foo"; d = 314159265.35; e = 0.0031415926535;'
         # i formatting
         assert evalpy(x + "'hi {:i}'.format(b)") == 'hi 7'
+        assert evalpy(x + "'hi {:03i} {:+03i}'.format(b, b)") == 'hi 007 +07'
+        assert evalpy(x + "'hi {:03} {:+03}'.format(b, b)") == 'hi 007 +07'
         # f formatting
         assert evalpy(x + "'hi {:i} {:+i} {: i}'.format(b, b, b)") == 'hi 7 +7  7'
         assert evalpy(x + "'hi {:f} {:1.0f} {:1.2f}'.format(a, a, a)") == 'hi 3.141593 3 3.14'
+        assert evalpy(x + "'hi {:05f} {:05.1f} {:+05.1f}'.format(a, a, a)") == 'hi 3.141593 003.1 +03.1'
         # g formatting, these outputs are (manually) validated with Python
         assert evalpy(x + "'hi {:g} {:.1g} {:.3g}'.format(a, a, a)") == 'hi 3.14159 3 3.14'
         assert evalpy(x + "'hi {:g} {:.1g} {:.3g}'.format(d, d, d)") == 'hi 3.14159e+08 3e+08 3.14e+08'
         assert evalpy(x + "'hi {:g} {:.1g} {:.3g}'.format(e, e, e)") == 'hi 0.00314159 0.003 0.00314'
+        assert evalpy(x + "'hi {:05g} {:05.1g} {:+05.1g}'.format(a, a, a)") == 'hi 3.14159 00003 +0003'
         # String and repr formatting
         assert evalpy(x + "'hi {} {!s} {!r}'.format(c, c, c)") == 'hi foo foo "foo"'
     
