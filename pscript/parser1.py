@@ -60,8 +60,8 @@ String formatting is supported in various forms.
     "{}: {:3.2f}".format(name, val)
     
     # F-strings (python 3.6+)
-    f"value: {val:g}"
-    f"{name}: {val:3.2f}"
+    #f"value: {val:g}"
+    #f"{name}: {val:3.2f}"
     
     # This also works
     t = "value: {:g}"
