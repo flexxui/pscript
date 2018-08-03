@@ -1,5 +1,5 @@
 """
-The psscript module provides functionality for transpiling Python code
+The pscript module provides functionality for transpiling Python code
 to JavaScript.
 
 Quick intro
@@ -97,6 +97,7 @@ plan to make heavy use of PScript.
   undefined: ...``.
 * Accessing an attribute that does not exist will not raise an
   AttributeError but yield ``undefined``. Though this may change.
+* Keys in a dictionary are implicitly converted to strings.
 * Magic functions on classes (e.g. for operator overloading) do not work.
 * Calling an object that starts with a capital letter is assumed to be
   a class instantiation (using ``new``): PScript classes *must* start
@@ -104,6 +105,7 @@ plan to make heavy use of PScript.
 * A function can accept keyword arguments if it has a ``**kwargs`` parameter
   or named arguments after ``*args``. Passing keywords to a function that does
   not handle keyword arguments might result in confusing errors.
+* Divide by zero results in `inf` instead of raising ZeroDivisionError.
 
 
 PScript is valid Python
@@ -118,6 +120,9 @@ be included where needed (e.g. for performance).
 PScript's compiler is written in Python. Perhaps PScript can
 at some point compile itself, so that it becomes possible to define
 PScript inside HTML documents.
+
+There are things you can do, which you cannot do in Python:
+
 
 Performance
 -----------
