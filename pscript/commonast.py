@@ -670,7 +670,16 @@ class Lambda(Node):
     """
     __slots__ = ('arg_nodes', 'kwarg_nodes', 'args_node', 'kwargs_node', 
                  'body_node')
+
+class AsyncFunctionDef(Node):
+    """ Asynchronous function definition.
     
+    Same as FunctionDef, but async.
+    """
+    __slots__ = ('name', 'decorator_nodes', 'annotation_node',
+                 'arg_nodes', 'kwarg_nodes', 'args_node', 'kwargs_node', 
+                 'body_nodes')
+
 class Arg(Node):
     """ Function argument for a FunctionDef.
     
@@ -700,6 +709,13 @@ class YieldFrom(Node):
     """
     Attributes:
         value_node: the value to yield.
+    """
+    __slots__ = 'value_node',
+
+class Await(Node):
+    """
+    Attributes:
+        value_node: the value to return.
     """
     __slots__ = 'value_node',
 
@@ -1123,7 +1139,7 @@ class NativeAstConverter:
     
     ## Function and class definitions
     
-    def _convert_FunctionDef(self, n):
+    def _convert_functiondefs(self, n, cls):
         c = self._convert
         args = n.args
         # Parse arg_nodes and kwarg_nodes
@@ -1154,9 +1170,9 @@ class NativeAstConverter:
             kwargs_node = c(args.kwarg)
         
         returns = None if pyversion < (3, ) else c(n.returns)
-        node = FunctionDef(n.name, [c(x) for x in n.decorator_list], returns,
-                           arg_nodes, kwarg_nodes, args_node, kwargs_node,
-                           [])
+        Cls = cls  # noqa
+        node = Cls(n.name, [c(x) for x in n.decorator_list], returns,
+                   arg_nodes, kwarg_nodes, args_node, kwargs_node, [])
         if docheck:
             assert isinstance(node.args_node, (NoneType, Arg))
             assert isinstance(node.kwargs_node, (NoneType, Arg))
@@ -1165,6 +1181,9 @@ class NativeAstConverter:
         
         self._stack.append((node.body_nodes, n.body))
         return node
+    
+    def _convert_FunctionDef(self, n):
+        return self._convert_functiondefs(n, FunctionDef)
     
     def _convert_Lambda(self, n):
         c = self._convert
@@ -1181,7 +1200,10 @@ class NativeAstConverter:
         
         return Lambda(arg_nodes, kwarg_nodes,
                       c(args.vararg), c(args.kwarg), c(n.body))
-        
+    
+    def _convert_AsyncFunctionDef(self, n):
+        return self._convert_functiondefs(n, AsyncFunctionDef)
+    
     def _convert_arg(self, n):
         # Value is initially None
         return Arg(n.arg or None, None, self._convert(n.annotation))
@@ -1194,6 +1216,9 @@ class NativeAstConverter:
     
     def _convert_YieldFrom(self, n):
         return YieldFrom(self._convert(n.value))
+    
+    def _convert_Await(self, n):
+        return Await(self._convert(n.value))
     
     def _convert_Global(self, n):
         return Global(n.names)

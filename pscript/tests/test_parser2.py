@@ -822,6 +822,22 @@ class TestFunctions:
         assert evaljs(code + 'func("x", 10)') == 'x10'
         
         assert code.count('// docstring') == 1
+    
+    def test_async_and_await(self):
+        if sys.version_info < (3, 6):
+            return
+        
+        foo = py2js('async def foo(): return 42\n\n')
+        spam = py2js('async def spam(): print(await foo())\n\n')
+        eggs = py2js('async def eggs(): return await foo()\n\n')
+        js = foo + spam + eggs
+        
+        assert 'Promise' in evaljs(js + 'foo()')
+        assert 'Promise' in evaljs(js + 'spam()')
+        assert 'Promise' in evaljs(js + 'eggs()')
+        
+        assert '42' in evaljs(js + 'spam()')
+        assert '42' not in evaljs(js + 'eggs()')
 
 
 class TestClasses:

@@ -18,8 +18,9 @@ Installation
 PScript is pure Python and requires Python 2.7 or 3.5+ (including Pypy).
 It has no further dependencies.
 
-* ``conda install pscript -c conda-forge``, or
-* ``pip install pscript``
+* ``pip install pscript``, or
+* ``conda install pscript -c conda-forge``
+
 
 
 Short example
@@ -45,6 +46,14 @@ Gives:
       return null;
    };
 ```
+
+
+Supported browsers
+------------------
+
+PScript aims to support all modern browsers, including Firefox, Chrome and Edge.
+Some constructs (e.g. ``async`` and ``await``) do not work in Internet Explorer though.
+
 
 License
 -------

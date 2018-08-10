@@ -136,6 +136,16 @@ Defining functions
     foo = lambda x: x**2
 
 
+PScript also supports async functions and await syntax. (These map to
+``async`` and ``await`` in JS, which work in about every browser except IE.):
+
+.. pscript_example::
+
+    async def getresult(uri):
+        response = await window.fetch(uri)
+        return await response.text()
+
+
 Defining classes
 ----------------
 
@@ -808,8 +818,8 @@ class Parser2(Parser1):
             return ' '.join(code)
     
     ## Functions and class definitions
-    
-    def parse_FunctionDef(self, node, lambda_=False):
+
+    def parse_FunctionDef(self, node, lambda_=False, asyn=False):
         # Common code for the FunctionDef and Lambda nodes.
         
         has_self = node.arg_nodes and node.arg_nodes[0].name in ('self', 'this')
@@ -835,7 +845,8 @@ class Parser2(Parser1):
                 self.vars.add(node.name)
                 self._seen_func_names.add(node.name)
             code.append(self.lf('%s = ' % prefixed))
-        code.append('%sfunction %s%s(' % ('(' if binder else '',
+        code.append('%s%sfunction %s%s(' % ('(' if binder else '',
+                                          'async ' if asyn else '',
                                           func_name,
                                           ' ' if func_name else ''))
         
@@ -1004,6 +1015,9 @@ class Parser2(Parser1):
     def parse_Lambda(self, node):
         return self.parse_FunctionDef(node, True)
     
+    def parse_AsyncFunctionDef(self, node):
+        return self.parse_FunctionDef(node, False, True)
+    
     def parse_Return(self, node):
         if node.value_node is not None:
             return self.lf('return %s;' % ''.join(self.parse(node.value_node)))
@@ -1077,6 +1091,9 @@ class Parser2(Parser1):
     
     #def parse_Yield
     #def parse_YieldFrom
+    
+    def parse_Await(self, node):
+        return 'await %s' % ''.join(self.parse(node.value_node))
     
     def parse_Global(self, node):
         for name in node.names:

@@ -127,7 +127,7 @@ setup(
     # entry_points={'console_scripts': ['pscript = pscript.__main__:main'], },
     zip_safe=True,
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'Intended Audience :: Education',
         'Intended Audience :: Developers',

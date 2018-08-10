@@ -92,7 +92,7 @@ def py2js(ob=None, new_name=None, **parser_options):
                 else:
                     lines[i] = line[indent:]
             # Skip any decorators
-            while not lines[0].lstrip().startswith(thetype):
+            while not lines[0].lstrip().startswith((thetype, 'async ' + thetype)):
                 lines.pop(0)
             # join lines and rename
             pycode = ''.join(lines)
@@ -200,6 +200,8 @@ def js_rename(jscode, cur_name, new_name):
     # Always do this
     jscode = jscode.replace('%s = function' % cur_name, 
                             '%s = function' % new_name, 1)
+    jscode = jscode.replace('%s = async function' % cur_name, 
+                            '%s = async function' % new_name, 1)
     if '.' in new_name:
         jscode = jscode.replace('var %s;\n' % cur_name, '', 1)
     else:
