@@ -7,7 +7,7 @@ PScript
 
 PScript is a Python to JavaScript compiler, and is also the name of the subset
 of Python that this compiler supports. It was developed as a part of
-[Flexx](http://flexx.live) (as `flexx.pyscript`) and is now represented
+[Flexx](https://flexx.app) (as `flexx.pyscript`) and is now represented
 by its own project. Although it is still an important part of Flexx, it can
 also be useful by itself.
 
@@ -52,7 +52,8 @@ Supported browsers
 ------------------
 
 PScript aims to support all modern browsers, including Firefox, Chrome and Edge.
-Some constructs (e.g. ``async`` and ``await``) do not work in Internet Explorer though.
+Internet Explorer is in principal supported from version 9, though some constructs
+(e.g. ``async`` and ``await``) do not work in Internet Explorer.
 
 
 License
