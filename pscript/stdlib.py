@@ -243,8 +243,8 @@ FUNCTIONS['format'] = """function (v, fmt) {  // nargs: 2
         if (typeof s === 'undefined') { s = v._IS_COMPONENT ? v.id : String(v); }
     }
     var fmt_type = '';
-    if (fmt.endsWith('i') || fmt.endsWith('f') ||
-        fmt.endsWith('e') || fmt.endsWith('g')) {
+    if (fmt.slice(-1) == 'i' || fmt.slice(-1) == 'f' ||
+        fmt.slice(-1) == 'e' || fmt.slice(-1) == 'g') {
             fmt_type = fmt[fmt.length-1]; fmt = fmt.slice(0, fmt.length-1);
     }
     var i0 = fmt.indexOf(':');
@@ -257,17 +257,17 @@ FUNCTIONS['format'] = """function (v, fmt) {  // nargs: 2
     // Format numbers
     if (fmt_type == '') {
     } else if (fmt_type == 'i') { // integer formatting, for %i
-        s = Number.parseInt(v).toFixed(0);
+        s = parseInt(v).toFixed(0);
     } else if (fmt_type == 'f') {  // float formatting
-        v = Number.parseFloat(v);
+        v = parseFloat(v);
         var decimals = spec2 ? Number(spec2) : 6;
         s = v.toFixed(decimals);
     } else if (fmt_type == 'e') {  // exp formatting
-        v = Number.parseFloat(v);
+        v = parseFloat(v);
         var precision = (spec2 ? Number(spec2) : 6) || 1;
         s = v.toExponential(precision);
     } else if (fmt_type == 'g') {  // "general" formatting
-        v = Number.parseFloat(v);
+        v = parseFloat(v);
         var precision = (spec2 ? Number(spec2) : 6) || 1;
         // Exp or decimal?
         s = v.toExponential(precision-1);
@@ -279,7 +279,7 @@ FUNCTIONS['format'] = """function (v, fmt) {  // nargs: 2
         var j = s1.length-1;
         while (j>0 && s1[j] == '0') { j-=1; }
         s1 = s1.slice(0, j+1);
-        if (s1.endsWith('.')) { s1 = s1.slice(0, s1.length-1); }
+        if (s1.slice(-1) == '.') { s1 = s1.slice(0, s1.length-1); }
         s = s1 + s2;
     }
     // prefix/padding
