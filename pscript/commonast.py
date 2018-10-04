@@ -7,10 +7,6 @@ the result. Supports CPython 2.7, CPython 3.2+, Pypy.
 https://github.com/almarklein/commonast
 """
 
-# Notes:
-# Python 3.6 introduced ast.Constant, which seems to be added so that 3d
-# party code can use it, but ast.parse does not produce it afaik.
-
 from __future__ import print_function, absolute_import
 
 import sys
@@ -20,6 +16,7 @@ from base64 import encodestring as encodebytes, decodestring as decodebytes
 
 pyversion = sys.version_info
 NoneType = None.__class__
+_Ellipsis = Ellipsis
 
 if pyversion >= (3, ):
     basestring = str  # noqa
@@ -825,6 +822,20 @@ class NativeAstConverter:
     
     ## Literals
     
+    def _convert_Constant(self, n):
+        val = n.value
+        if val is None or val is True or val is False:
+            return NameConstant(val)
+        if isinstance(val, (int, float, complex)):
+            return Num(val)
+        if isinstance(val, str):
+            return Str(val)
+        if isinstance(val, bytes):
+            return Bytes(val)
+        if val is _Ellipsis:
+            return Ellipsis()
+        raise RuntimeError('Cannot convert %s constants.' % type(val).__name__)
+    
     def _convert_Num(self, n):
         if pyversion < (3, ) and str(n.n).startswith('-'):
             # -4 is a unary sub on 4, dont forget complex numbers
@@ -904,7 +915,26 @@ class NativeAstConverter:
         return Attribute(self._convert(n.value), n.attr)
     
     def _convert_Subscript(self, n):
-        return Subscript(self._convert(n.value), self._convert(n.slice))
+        return Subscript(self._convert(n.value), self._convert_slice(n.slice))
+    
+    if pyversion >= (3, 8):
+        def _convert_slice(self, n):
+            c = self._convert
+            ast_Slice = ast.Slice
+            if isinstance(n, ast_Slice):
+                return c(n)
+            if (isinstance(n, ast.Tuple) and
+                    any(isinstance(x, ast_Slice) for x in n.elts)):
+                dims = [
+                    self._convert_Slice(x) if isinstance(x, ast_Slice)
+                    else Index(c(x))
+                    for x in n.elts
+                ]
+                return ExtSlice(dims)
+            else:
+                return Index(c(n))
+    else:
+        _convert_slice = _convert
     
     def _convert_Index(self, n):
         return Index(self._convert(n.value))
