@@ -305,7 +305,8 @@ FUNCTIONS['sum'] = """function (x) {  // nargs: 1
 
 FUNCTIONS['round'] = 'Math.round // nargs: 1'
 
-FUNCTIONS['int'] = """function (x) { // nargs: 1
+FUNCTIONS['int'] = """function (x, base) { // nargs: 1 2
+    if(base !== undefined) return parseInt(x, base);
     return x<0 ? Math.ceil(x): Math.floor(x);
 }"""
 
