@@ -383,7 +383,12 @@ class Parser1(Parser0):
         
         if node.op == node.OPS.Add:
             C = ast.Num, ast.Str
-            if not (isinstance(node.left_node, C) or isinstance(node.right_node, C)):
+            if not (isinstance(node.left_node, C) or
+                    isinstance(node.right_node, C) or
+                    (isinstance(node.left_node, ast.BinOp) and
+                        node.left_node.op == node.OPS.Add and "op_add" not in left) or
+                    (isinstance(node.right_node, ast.BinOp) and
+                        node.right_node.op == node.OPS.Add and "op_add" not in right)):
                 return self.use_std_function('op_add', [left, right])
         elif node.op == node.OPS.Mult:
             C = ast.Num
@@ -728,7 +733,7 @@ class Parser1(Parser0):
         value = ''.join(self.parse(node.value_node))
         
         nl = self.lf()
-        if node.op == node.OPS.Add:
+        if node.op == node.OPS.Add and not isinstance(node.value_node, (ast.Num, ast.Str)):
             return [nl, target, ' = ',
                     self.use_std_function('op_add', [target, value]), ';']
         elif node.op == node.OPS.Mult:
