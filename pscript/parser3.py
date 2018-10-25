@@ -265,7 +265,7 @@ class Parser3(Parser2):
             # proposed, which might be better in theory, but is > 50% slower
             return ["({}).toString.call(",
                     ob,
-                    ").match(/\s([a-zA-Z]+)/)[1].toLowerCase() === ",
+                    r").match(/\s([a-zA-Z]+)/)[1].toLowerCase() === ",
                     "'%s'" % cmp.lower()
                     ]
         else:
