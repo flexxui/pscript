@@ -733,7 +733,8 @@ class Parser1(Parser0):
         value = ''.join(self.parse(node.value_node))
         
         nl = self.lf()
-        if node.op == node.OPS.Add and not isinstance(node.value_node, (ast.Num, ast.Str)):
+        if node.op == node.OPS.Add and not isinstance(node.value_node,
+                                                      (ast.Num, ast.Str)):
             return [nl, target, ' = ',
                     self.use_std_function('op_add', [target, value]), ';']
         elif node.op == node.OPS.Mult:
