@@ -2,7 +2,6 @@
 Release notes
 -------------
 
-
 **v0.6.0** (10-08-2018)
 
 * Support for ``async`` and ``await``.
