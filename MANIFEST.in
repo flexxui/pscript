@@ -1,5 +1,7 @@
 include LICENSE README.md
 
+recursive-include tasks *
+
 global-exclude .git*
 global-exclude *.pyo
 global-exclude *.pyc
