@@ -2,6 +2,12 @@
 Release notes
 -------------
 
+**v0.7.0** (08-11-2018)
+
+* Add ability to reduce overloading of add, mul, equals and truthy.
+  https://pscript.readthedocs.io/en/latest/intro.html#pscript-overload
+
+
 **v0.6.0** (10-08-2018)
 
 * Support for ``async`` and ``await``.
