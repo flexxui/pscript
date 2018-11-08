@@ -137,6 +137,32 @@ writing the JS by hand). The recommended approach is to write
 performance critical code in pure JavaScript
 (using :func:`RawJS <pscript.RawJS>`) if necessary. 
 
+
+.. _pscript-overload:
+
+Using PSCRIPT_OVERLOAD to increase performance
+----------------------------------------------
+
+To improve the performance of critical code, it's possible to disable
+some of the overloading that make PScript more Pythonic. This increases 
+the speed of code, but it also makes it more like JavaScript.
+
+To use this feature, write ``PSCRIPT_OVERLOAD = False``. Any code that
+follows will not be subject to overloading. This parser setting can
+only be used inside a function and applies only to (the scope of) that
+function (i.e. not to functions defined inside that function nor any
+outer scope). If needed, overloading can also be enabled again by
+writing ``PSCRIPT_OVERLOAD = True``.
+
+Things that are no longer overloaded:
+
+* The add operator (``+``), so list concatenation cannot be done with ``+``.
+* The multiply operator (``*``), so repeating a list or string cannot be done with ``*``.
+* The equals operator (``==``), so deep comparisons of tuples/lists and dicts does not work.
+* The implicit truthy operator (as e.g. used in an if-statement),
+  so empty tuples/lists and dicts evaluate to True. Note that functions like
+  ``bool()``, ``all()`` and ``any()`` still use the overloaded truthy.
+
 .. _pscript-support:
 
 Support
