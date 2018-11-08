@@ -3,8 +3,9 @@
 
 language: python
 
-# use container-based infrastructure
-sudo : false
+# Needed to be able to run 37 (https://github.com/travis-ci/travis-ci/issues/9069#issuecomment-425720905)
+sudo : required
+dist: xenial
 
 # Only run travis build on push for master branch
 branches:
@@ -29,7 +30,7 @@ matrix:
           env: TEST_UNIT=1 TEST_INSTALL=1
         - python: "3.6"
           env: TEST_UNIT=1
-        - python: "3.7-dev"
+        - python: "3.7"
           env: TEST_UNIT=1
 
 before_install:
