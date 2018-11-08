@@ -7,8 +7,8 @@ Installation
 PScript has no dependencies except Python. It requires Python 2.7 or 3.4+.
 Use either of these to install PScript:
     
-    * ``conda install pscript``
     * ``pip install pscript``
+    * ``conda install pscript``
 
 
 Basic usage
