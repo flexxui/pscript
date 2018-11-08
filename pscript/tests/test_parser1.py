@@ -452,4 +452,149 @@ class TestModules:
         assert code.count('// docstring') == 1
 
 
+class TestOverload:
+    
+    def test_overload_add_and_mul(self):
+        
+        def foo():
+            PSCRIPT_OVERLOAD = False
+            a, b = 3, 4
+            return a + b * a
+        
+        js = py2js(foo)
+        assert "PSCRIPT_OVERLOAD" not in js
+        assert "pyfunc" not in js
+        assert evaljs(js + '\nfoo();') == '15'
+        
+        def bar():
+            PSCRIPT_OVERLOAD = False
+            a, b = 3, 4
+            a += b
+            a *= b
+            return a
+        
+        js = py2js(bar)
+        assert "PSCRIPT_OVERLOAD" not in js
+        assert "pyfunc" not in js
+        assert evaljs(js + '\nbar();') == '28'
+    
+    def test_overload_equals(self):
+        
+        def foo():
+            PSCRIPT_OVERLOAD = False
+            c = 4
+            print(c == 4)  # we dont't *need* overloading here
+            print(c == 5)  # or here
+            return [3, 4] == [3, 4]  # but beware of this!
+        
+        js = py2js(foo)
+        assert "PSCRIPT_OVERLOAD" not in js
+        assert "pyfunc" not in js
+        assert evaljs(js + '\nfoo();') == 'true\nfalse\nfalse'
+    
+    def test_overload_truthy(self):
+        
+        def foo():
+            PSCRIPT_OVERLOAD = False
+            for v in [true, 0, "a", "", [], {}]:
+                if v:
+                    print('1')
+                else:
+                    print('0')
+            return None or False
+        
+        js = py2js(foo)
+        assert "PSCRIPT_OVERLOAD" not in js
+        assert "pyfunc" not in js
+        ans = '1', '0', '1', '0', '1', '1', 'false'
+        assert evaljs(js + '\nfoo();') == '\n'.join(ans)
+        
+        
+        def bar():
+            PSCRIPT_OVERLOAD = False
+            for v in [true, 0, "a", "", [], {}]:
+                if v:
+                    print('1' + bool(v))
+                else:
+                    print('0' + bool(v))
+            return None or False
+        
+        js = py2js(bar)
+        assert "PSCRIPT_OVERLOAD" not in js
+        # assert "pyfunc" not in js  # bool() does pyfunc_truthy()
+        ans = '1true', '0false', '1true', '0false', '1false', '1false', 'false'
+        assert evaljs(js + '\nbar();') == '\n'.join(ans)
+
+    
+    def test_overload_usage(self):
+        
+        # Can only use in a function
+        with raises(JSError) as err_info:
+            py2js("PSCRIPT_OVERLOAD=False\n3+4")
+        assert 'PSCRIPT_OVERLOAD inside a function' in str(err_info.value)
+        
+        # Can only use with a bool
+        def foo():
+            PSCRIPT_OVERLOAD = 0
+            return a + b
+        
+        with raises(JSError) as err_info:
+            py2js(foo)
+        assert 'PSCRIPT_OVERLOAD with a bool' in str(err_info.value)
+    
+    def test_overload_scope(self):
+        
+        # Can turn on and off
+        def foo():
+            print({} or 'x')
+            PSCRIPT_OVERLOAD = False
+            print({} or 'x')
+            PSCRIPT_OVERLOAD = True
+            print({} or 'x')
+        #
+        js = py2js(foo)
+        assert evaljs(js + '\nfoo();').replace('\n', ' ') == 'x {} x null'
+        
+        # Scoped per function
+        def foo():
+            
+            def x1():
+                print({} or 'x')
+            def x2():
+                PSCRIPT_OVERLOAD = False
+                print({} or 'x')
+            def x3():
+                print({} or 'x')
+            
+            print({} or 'x')
+            x1()
+            x2()
+            x3()
+            print({} or 'x')
+        #
+        js = py2js(foo)
+        assert evaljs(js + '\nfoo();').replace('\n', ' ') == 'x x {} x x null'
+        
+        # Scope is maintained
+        def foo():
+            PSCRIPT_OVERLOAD = False
+            
+            def x1():
+                print({} or 'x')
+            def x2():
+                PSCRIPT_OVERLOAD = False
+                print({} or 'x')
+            def x3():
+                print({} or 'x')
+            
+            print({} or 'x')
+            x1()
+            x2()
+            x3()
+            print({} or 'x')
+        #
+        js = py2js(foo)
+        assert evaljs(js + '\nfoo();').replace('\n', ' ') == '{} x {} x {} null'
+
+
 run_tests_if_main()

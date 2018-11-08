@@ -63,6 +63,8 @@ class NameSpace(dict):
     * set: variable used here (or in a subscope) but not defined here.
     """
     
+    _pscript_overload = True
+    
     def set_nonlocal(self, key):
         """ Explicitly declare a name as nonlocal """
         self[key] = 2  # also if already exists

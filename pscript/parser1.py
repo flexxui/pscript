@@ -225,6 +225,13 @@ class Parser1(Parser0):
     operations, function calls, and indexing.
     """
     
+    @property
+    def _pscript_overload(self):
+        """ Whether pscript overloads add, mul, equals, and truthy.
+        This setting applies per scope.
+        """
+        return self._stack[-1][2]._pscript_overload
+    
     ## Literals
     
     def parse_Num(self, node):
@@ -383,7 +390,8 @@ class Parser1(Parser0):
         
         if node.op == node.OPS.Add:
             C = ast.Num, ast.Str
-            if not (isinstance(node.left_node, C) or
+            if self._pscript_overload and not (
+                    isinstance(node.left_node, C) or
                     isinstance(node.right_node, C) or
                     (isinstance(node.left_node, ast.BinOp) and
                         node.left_node.op == node.OPS.Add and "op_add" not in left) or
@@ -392,7 +400,9 @@ class Parser1(Parser0):
                 return self.use_std_function('op_add', [left, right])
         elif node.op == node.OPS.Mult:
             C = ast.Num
-            if not (isinstance(node.left_node, C) and isinstance(node.right_node, C)):
+            if self._pscript_overload and not (
+                    isinstance(node.left_node, C) and
+                    isinstance(node.right_node, C)):
                 return self.use_std_function('op_mult', [left, right])
         elif node.op == node.OPS.Pow:
             return ["Math.pow(", left, ", ", right, ")"]
@@ -443,12 +453,16 @@ class Parser1(Parser0):
         """ Wraps an operation in a truthy call, unless its not necessary. """
         eq_name = stdlib.FUNCTION_PREFIX + 'op_equals'
         test = ''.join(self.parse(node))
-        if (False or test.endswith('.length') or test.startswith('!') or
-                     test.isnumeric() or test == 'true' or test == 'false' or
-                     test.count('==') or test.count('>') or test.count('<') or
-                     test.count(eq_name) or
-                     test == '"this_is_js()"' or test.startswith('Array.isArray(') or
-                     (test.startswith(returning_bool) and '||' not in test)):
+        if not self._pscript_overload:
+            return unify(test)
+        elif (
+            test.endswith('.length') or test.startswith('!') or
+            test.isnumeric() or test == 'true' or test == 'false' or
+            test.count('==') or test.count('>') or test.count('<') or
+            test.count(eq_name) or
+            test == '"this_is_js()"' or test.startswith('Array.isArray(') or
+            (test.startswith(returning_bool) and '||' not in test)
+        ):
             return unify(test)
         else:
             return self.use_std_function('truthy', [test])
@@ -468,9 +482,15 @@ class Parser1(Parser0):
         right = unify(self.parse(node.right_node))
         
         if node.op in (node.COMP.Eq, node.COMP.NotEq) and not left.endswith('.length'):
-            code = self.use_std_function('op_equals', [left, right])
-            if node.op == node.COMP.NotEq:
-                code = '!' + code
+            if self._pscript_overload:
+                code = self.use_std_function('op_equals', [left, right])
+                if node.op == node.COMP.NotEq:
+                    code = '!' + code
+            else:
+                if node.op == node.COMP.NotEq:
+                    code = [left, "!=", right]
+                else:
+                    code = [left, "==", right]
             return code
         elif node.op in (node.COMP.In, node.COMP.NotIn):
             self.use_std_function('op_equals', [])  # trigger use of equals
@@ -685,6 +705,20 @@ class Parser1(Parser0):
         """ Variable assignment. """
         code = [self.lf()]
         
+        # Set PScript behavior? Note that its reset on a function exit.
+        if (
+            len(node.target_nodes) == 1 and
+            isinstance(node.target_nodes[0], ast.Name) and
+            node.target_nodes[0].name == 'PSCRIPT_OVERLOAD'
+        ):
+            if self._stack[-1][0] != "function":
+                raise JSError("Can only set PSCRIPT_OVERLOAD inside a function")
+            if not isinstance(node.value_node, ast.NameConstant):
+                raise JSError("Can only set PSCRIPT_OVERLOAD with a bool")
+            else:
+                self._stack[-1][2]._pscript_overload = bool(node.value_node.value)
+                return []
+        
         # Parse targets
         tuple = []
         for target in node.target_nodes:
@@ -733,11 +767,14 @@ class Parser1(Parser0):
         value = ''.join(self.parse(node.value_node))
         
         nl = self.lf()
-        if node.op == node.OPS.Add and not isinstance(node.value_node,
-                                                      (ast.Num, ast.Str)):
+        if (
+            node.op == node.OPS.Add and
+            self._pscript_overload and
+            not isinstance(node.value_node, (ast.Num, ast.Str))
+        ):
             return [nl, target, ' = ',
                     self.use_std_function('op_add', [target, value]), ';']
-        elif node.op == node.OPS.Mult:
+        elif node.op == node.OPS.Mult and self._pscript_overload:
             return [nl, target, ' = ',
                     self.use_std_function('op_mult', [target, value]), ';']
         elif node.op == node.OPS.Pow:
