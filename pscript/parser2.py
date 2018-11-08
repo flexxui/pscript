@@ -976,7 +976,7 @@ class Parser2(Parser1):
             docstring = self.pop_docstring(node)
             if docstring and not node.body_nodes:
                 # Raw JS - but deprecated
-                logger.warn(RAW_DOC_WARNING % node.name)
+                logger.warning(RAW_DOC_WARNING % node.name)
                 for line in docstring.splitlines():
                     code.append(self.lf(line))
             else:
