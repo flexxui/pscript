@@ -42,7 +42,7 @@ def get_std_info(code):
         _update_deps(FUNCTIONS[dep], function_deps, method_deps)
     for dep in list(method_deps):
         _update_deps(METHODS[dep], function_deps, method_deps)
-    
+
     return nargs, sorted(function_deps), sorted(method_deps)
 
 def _update_deps(code, function_deps, method_deps):
@@ -93,7 +93,7 @@ def get_partial_std_lib(func_names, method_names, indent=0,
 
 def get_full_std_lib(indent=0):
     """ Get the code for the full PScript standard library.
-    
+
     The given indent specifies how many sets of 4 spaces to prepend.
     If the full stdlib is made available in JavaScript, multiple
     snippets of code can be transpiled without inlined stdlib parts by
@@ -349,7 +349,7 @@ FUNCTIONS['enumerate'] = """function (iter) { // nargs: 1
     for (i=0; i<iter.length; i++) {res.push([i, iter[i]]);}
     return res;
 }"""
-        
+
 FUNCTIONS['zip'] = """function () { // nargs: 2 3 4 5 6 7 8 9
     var i, j, tup, arg, args = [], res = [], len = 1e20;
     for (i=0; i<arguments.length; i++) {
@@ -375,7 +375,7 @@ FUNCTIONS['sorted'] = """function (iter, key, reverse) { // nargs: 1 2 3
     if ((typeof iter==="object") && (!Array.isArray(iter))) {iter = Object.keys(iter);}
     var comp = function (a, b) {a = key(a); b = key(b);
         if (a<b) {return -1;} if (a>b) {return 1;} return 0;};
-    comp = Boolean(key) ? comp : undefined; 
+    comp = Boolean(key) ? comp : undefined;
     iter = iter.slice().sort(comp);
     if (reverse) iter.reverse();
     return iter;
@@ -404,6 +404,13 @@ FUNCTIONS['truthy'] = """function (v) {
 }"""
 
 FUNCTIONS['op_equals'] = """function op_equals (a, b) { // nargs: 2
+    var a_type = typeof a;
+    // If a (or b actually) is of type string, number or boolean, we don't need
+    // to do all the other type checking below.
+    if (a_type === "string" || a_type === "boolean" || a_type === "number") {
+        return a == b;
+    }
+
     if (a == null || b == null) {
     } else if (Array.isArray(a) && Array.isArray(b)) {
         var i = 0, iseq = a.length == b.length;
@@ -463,7 +470,7 @@ METHODS['append'] = """function (x) { // nargs: 1
 
 METHODS['extend'] = """function (x) { // nargs: 1
     if (!Array.isArray(this)) return this.KEY.apply(this, arguments);
-    this.push.apply(this, x);   
+    this.push.apply(this, x);
 }"""
 
 METHODS['insert'] = """function (i, x) { // nargs: 2
@@ -488,7 +495,7 @@ METHODS['sort'] = """function (key, reverse) { // nargs: 0 1 2
     if (!Array.isArray(this)) return this.KEY.apply(this, arguments);
     var comp = function (a, b) {a = key(a); b = key(b);
         if (a<b) {return -1;} if (a>b) {return 1;} return 0;};
-    comp = Boolean(key) ? comp : undefined; 
+    comp = Boolean(key) ? comp : undefined;
     this.sort(comp);
     if (reverse) this.reverse();
 }"""
@@ -539,14 +546,14 @@ METHODS['count'] = """function (x, start, stop) { // nargs: 1 2 3
     stop = Math.min(this.length, ((stop < 0) ? this.length + stop : stop));
     if (Array.isArray(this)) {
         var count = 0;
-        for (var i=0; i<this.length; i++) { 
+        for (var i=0; i<this.length; i++) {
             if (FUNCTION_PREFIXop_equals(this[i], x)) {count+=1;}
         } return count;
     } else if (this.constructor == String) {
         var count = 0, i = start;
         while (i >= 0 && i < stop) {
             i = this.indexOf(x, i);
-            if (i < 0) break; 
+            if (i < 0) break;
             count += 1;
             i += Math.max(1, x.length);
         } return count;
@@ -764,7 +771,7 @@ METHODS['isupper'] = """function () { // nargs: 0
 
 METHODS['join'] = """function (x) { // nargs: 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
-    return x.join(this);  // call join on the list instead of the string.   
+    return x.join(this);  // call join on the list instead of the string.
 }"""
 
 METHODS['ljust'] = """function (w, fill) { // nargs: 1 2
@@ -793,7 +800,7 @@ METHODS['partition'] = """function (sep) { // nargs: 1
     var i1 = this.indexOf(sep);
     if (i1 < 0) return [this.slice(0), '', '']
     var i2 = i1 + sep.length;
-    return [this.slice(0, i1), this.slice(i1, i2), this.slice(i2)]; 
+    return [this.slice(0, i1), this.slice(i1, i2), this.slice(i2)];
 }"""
 
 METHODS['replace'] = """function (s1, s2, count) {  // nargs: 2 3
@@ -844,7 +851,7 @@ METHODS['rpartition'] = """function (sep) { // nargs: 1
     var i1 = this.lastIndexOf(sep);
     if (i1 < 0) return ['', '', this.slice(0)]
     var i2 = i1 + sep.length;
-    return [this.slice(0, i1), this.slice(i1, i2), this.slice(i2)]; 
+    return [this.slice(0, i1), this.slice(i1, i2), this.slice(i2)];
 }"""
 
 METHODS['rsplit'] = """function (sep, count) { // nargs: 1 2
@@ -965,7 +972,7 @@ for key in METHODS:
         'FUNCTION_PREFIX', FUNCTION_PREFIX).replace(
         'METHOD_PREFIX', METHOD_PREFIX).replace(
         ', )', ')')
-    
+
 for key in FUNCTIONS:
     FUNCTIONS[key] = re.subn(r'METHOD_PREFIX(.+?)\(',
                              r'METHOD_PREFIX\1.call(', FUNCTIONS[key])[0]
