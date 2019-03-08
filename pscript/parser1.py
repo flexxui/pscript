@@ -848,7 +848,7 @@ class Parser1(Parser0):
             return []
         if node.root and node.root == '__future__':
             return []  # stuff to help the parser
-        if node.root is 'time':
+        if node.root == 'time':
             return []  # PScript natively supports time() and perf_counter()
         raise JSError('PScript does not support imports.')
     
