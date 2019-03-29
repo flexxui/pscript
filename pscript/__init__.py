@@ -17,7 +17,7 @@ shine through. As a rule of thumb, the code should behave as expected
 when correct, but error reporting may not be very Pythonic.
 
 The most important functions you need to know about are
-:func:`py2js <pscript.py2js>` and 
+:func:`py2js <pscript.py2js>` and
 :func:`evalpy <pscript.evalpy>`.
 In principal you do not need knowledge of JavaScript to write PScript
 code, though it does help in corner cases.
@@ -32,7 +32,7 @@ PScript grew out of a desire to allow writing JavaScript callbacks in
 Python, to allow user-defined interaction to be flexible, fast, and
 stand-alone.
 
-This resulted in the following two main goals: 
+This resulted in the following two main goals:
 
 * To make writing JavaScript easier and less frustrating, by letting
   people write it with the Python syntax and builtins, and fixing some
@@ -74,7 +74,7 @@ as well as the methods of list, dict and str. E.g. you can use
 
 The empty list and dict evaluate to false (whereas in JS it's
 true), and ``isinstance()`` just works (whereas JS' ``typeof`` is
-broken). 
+broken).
 
 Deep comparisons are supported (e.g. for ``==`` and ``in``), so you can
 compare two lists or dicts, or even a structure of nested
@@ -135,7 +135,7 @@ Nevertheless, the overhead to realize the more Pythonic behavior can
 have a negative impact on performance in tight loops (in comparison to
 writing the JS by hand). The recommended approach is to write
 performance critical code in pure JavaScript
-(using :func:`RawJS <pscript.RawJS>`) if necessary. 
+(using :func:`RawJS <pscript.RawJS>`) if necessary.
 
 
 .. _pscript-overload:
@@ -144,7 +144,7 @@ Using PSCRIPT_OVERLOAD to increase performance
 ----------------------------------------------
 
 To improve the performance of critical code, it's possible to disable
-some of the overloading that make PScript more Pythonic. This increases 
+some of the overloading that make PScript more Pythonic. This increases
 the speed of code, but it also makes it more like JavaScript.
 
 To use this feature, write ``PSCRIPT_OVERLOAD = False``. Any code that
@@ -169,7 +169,7 @@ Support
 -------
 
 This is an overview of the language features that PScript
-supports/lacks. 
+supports/lacks.
 
 Not currently supported:
 
@@ -239,7 +239,7 @@ such as renaming function/class definitions, and creating JS modules
 
 """
 
-__version__ = '0.7.0'
+__version__ = '0.7.1'
 
 import sys
 import logging
@@ -268,13 +268,13 @@ if sys.version_info[0] == 2:  # pragma: no cover
 # flake8: noqa
 
 if ok:
-        
+
     from .parser0 import Parser0, JSError
     from .parser1 import Parser1
     from .parser2 import Parser2
     from .parser3 import Parser3
     from .base import *
-    
+
     from .functions import py2js, evaljs, evalpy, JSString
     from .functions import script2js, js_rename, create_js_module
     from .stdlib import get_full_std_lib, get_all_std_names

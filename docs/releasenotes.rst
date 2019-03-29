@@ -2,6 +2,11 @@
 Release notes
 -------------
 
+**v0.7.1** (29-03-2019)
+
+* Fix the overloaded equals operation to be faster in common cases.
+
+
 **v0.7.0** (08-11-2018)
 
 * Add ability to reduce overloading of add, mul, equals and truthy.
