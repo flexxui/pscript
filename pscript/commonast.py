@@ -915,26 +915,18 @@ class NativeAstConverter:
         return Attribute(self._convert(n.value), n.attr)
     
     def _convert_Subscript(self, n):
-        return Subscript(self._convert(n.value), self._convert_slice(n.slice))
+        return Subscript(self._convert(n.value), self._convert_index_like(n.slice))
     
-    if pyversion >= (3, 8):
-        def _convert_slice(self, n):
-            c = self._convert
-            ast_Slice = ast.Slice
-            if isinstance(n, ast_Slice):
-                return c(n)
-            if (isinstance(n, ast.Tuple) and
-                    any(isinstance(x, ast_Slice) for x in n.elts)):
-                dims = [
-                    self._convert_Slice(x) if isinstance(x, ast_Slice)
-                    else Index(c(x))
-                    for x in n.elts
-                ]
-                return ExtSlice(dims)
-            else:
-                return Index(c(n))
-    else:
-        _convert_slice = _convert
+    def _convert_index_like(self, n):
+        c = self._convert
+        if isinstance(n, (ast.Slice, ast.Index, ast.ExtSlice, ast.Ellipsis)):
+            return c(n)  # Python < 3.8 (and also 3.8 on Windows?)
+        elif isinstance(n, ast.Num):
+            return Index(c(n))
+        else:
+            assert isinstance(n, ast.Tuple)
+            dims = [self._convert_index_like(x) for x in n.elts]
+            return ExtSlice(dims)
     
     def _convert_Index(self, n):
         return Index(self._convert(n.value))
@@ -948,8 +940,7 @@ class NativeAstConverter:
         return Slice(c(n.lower), c(n.upper), step)
     
     def _convert_ExtSlice(self, n):
-        c = self._convert
-        return ExtSlice([c(x) for x in n.dims])
+        return ExtSlice([self._convert_index_like(x) for x in n.dims])
     
     ## Expressions
     
