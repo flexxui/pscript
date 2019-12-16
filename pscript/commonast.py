@@ -917,24 +917,23 @@ class NativeAstConverter:
     def _convert_Subscript(self, n):
         return Subscript(self._convert(n.value), self._convert_slice(n.slice))
     
-    if pyversion >= (3, 8):
-        def _convert_slice(self, n):
-            c = self._convert
-            ast_Slice = ast.Slice
-            if isinstance(n, ast_Slice):
+    def _convert_slice(self, n):
+        c = self._convert
+        if pyversion < (3, 8):
+            return c(n)
+        else:  # Python 3.8 +
+            if isinstance(n, (ast.Slice, ast.Index, ast.ExtSlice)):
                 return c(n)
-            if (isinstance(n, ast.Tuple) and
-                    any(isinstance(x, ast_Slice) for x in n.elts)):
+            elif (isinstance(n, ast.Tuple) and any(isinstance(x, ast.Slice) for x in n.elts)):
+                # AK: does this ever happen? I cannot trigger it.
                 dims = [
-                    self._convert_Slice(x) if isinstance(x, ast_Slice)
+                    self._convert_Slice(x) if isinstance(x, ast.Slice)
                     else Index(c(x))
                     for x in n.elts
                 ]
                 return ExtSlice(dims)
             else:
                 return Index(c(n))
-    else:
-        _convert_slice = _convert
     
     def _convert_Index(self, n):
         return Index(self._convert(n.value))
