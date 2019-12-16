@@ -915,25 +915,18 @@ class NativeAstConverter:
         return Attribute(self._convert(n.value), n.attr)
     
     def _convert_Subscript(self, n):
-        return Subscript(self._convert(n.value), self._convert_slice(n.slice))
+        return Subscript(self._convert(n.value), self._as_index_or_extslice(n.slice))
     
-    def _convert_slice(self, n):
+    def _as_index_or_extslice(self, n):
         c = self._convert
-        if pyversion < (3, 8):
-            return c(n)
-        else:  # Python 3.8 +
-            if isinstance(n, (ast.Slice, ast.Index, ast.ExtSlice)):
-                return c(n)
-            elif (isinstance(n, ast.Tuple) and any(isinstance(x, ast.Slice) for x in n.elts)):
-                # AK: does this ever happen? I cannot trigger it.
-                dims = [
-                    self._convert_Slice(x) if isinstance(x, ast.Slice)
-                    else Index(c(x))
-                    for x in n.elts
-                ]
-                return ExtSlice(dims)
-            else:
-                return Index(c(n))
+        if isinstance(n, (ast.Slice, ast.Index, ast.ExtSlice)):
+            return c(n)  # Python < 3.8 (and also 3.8 on Windows?)
+        elif isinstance(n, ast.Num):
+            return Index(c(n))
+        else:
+            assert isinstance(n, ast.Tuple)
+            dims = [self._as_index_or_extslice(x) for x in n.elts]
+            return ExtSlice(dims)
     
     def _convert_Index(self, n):
         return Index(self._convert(n.value))
@@ -947,8 +940,7 @@ class NativeAstConverter:
         return Slice(c(n.lower), c(n.upper), step)
     
     def _convert_ExtSlice(self, n):
-        c = self._convert
-        return ExtSlice([c(x) for x in n.dims])
+        return ExtSlice([self._as_index_or_extslice(x) for x in n.dims])
     
     ## Expressions
     
