@@ -62,7 +62,7 @@ PScript in the wild
 To give an idea of what PScript can do, here are some examples in the wild:
 
 * Obviously, everything built in Flexx uses PScript, see e.g. [these examples](https://flexx.readthedocs.io/en/stable/examples/)
-* The front-end of https://timeturtle.app is built in Python using PScript.
+* The front-end of [TimeTurtle.app](https://timeturtle.app) is built in Python using PScript.
 
 *Let us know if you know more!*
 
