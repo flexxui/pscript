@@ -11,6 +11,10 @@ branches:
   only:
     - master
 
+# https://benlimmer.com/2019/01/14/travis-ci-xvfb/
+services:
+  - xvfb
+
 matrix:
     include:
         - python: "3.6"
@@ -86,7 +90,7 @@ before_script:
   - sleep 3 # give xvfb some time to start
 
 # Run the tests
-script: 
+script:
     - cd ${SRC_DIR};
     - python -c "import sys; print(sys.version, '\n', sys.prefix)"
     - if [ "${TEST_UNIT}" == "1" ]; then
