@@ -147,7 +147,7 @@ def py2js(ob=None, new_name=None, **parser_options):
 
 re_sub1 = re.compile(r'this\.__(\w*?[a-zA-Z0-9](?!__)\W)', re.UNICODE)
 
-def js_rename(jscode, cur_name, new_name, type):
+def js_rename(jscode, cur_name, new_name, type=None):
     """ Rename a function or class in a JavaScript code string.
     
     The new name can be prefixed (i.e. have dots in it). Functions can be
@@ -159,14 +159,18 @@ def js_rename(jscode, cur_name, new_name, type):
         jscode (str): the JavaScript source code
         cur_name (str): the current name (must be an identifier, e.g. no dots).
         new_name (str): the name to replace the current name with
-        type (str): the Python object type, either 'class' or 'def'
+        type (str): the Python object type, can be 'class' or 'def'. If None,
+          the type is inferred from the object name based on PEP8
     
     Returns:
         str: the modified JavaScript source code
     """
     assert cur_name and '.' not in cur_name
     
-    isclass = type == 'class'
+    if type:
+        isclass = type == 'class'
+    else:
+        isclass = cur_name[0].lower() != cur_name[0]  # For backward compat.
     if isclass:
         # cur_cls_name = cur_name
         new_cls_name = new_name.split('.')[-1]
