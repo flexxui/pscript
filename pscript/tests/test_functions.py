@@ -142,6 +142,10 @@ def foo1():
 def foo2(self):
     return self.__x + self.__y__
 
+# Function name not compliant with PEP8 but that happens.
+def Foo3():
+    return 'a'
+
 
 def test_py2js_rename_class():
     
@@ -162,6 +166,10 @@ def test_py2s_rename_function():
     code = py2js(foo1, 'xx.bar')
     assert 'foo' not in code.lower()
     assert evaljs('var xx={};\n' + code + 'xx.bar();') == '42'
+
+    code = py2js(Foo3, 'bar')
+    assert 'foo' not in code.lower()
+    assert evaljs(code + 'bar()') == 'a'
     
 
 def test_py2s_rename_function_to_method():
