@@ -2,6 +2,22 @@
 Release notes
 -------------
 
+
+**v0.7.4** (11-05-2020)
+
+* Allow to rename functions starting with an uppercase letter.
+
+
+**v0.7.3** (16-12-2019)
+
+* Fix CI and Python 3.8 support.
+
+
+**v0.7.2** (16-12-2019)
+
+* Reflect AST changes in Python 3.8.
+
+
 **v0.7.1** (29-03-2019)
 
 * Fix the overloaded equals operation to be faster in common cases.

@@ -59,7 +59,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'PScript'
-copyright = '2015-2018, PScript contributors'
+copyright = '2015-2020, PScript contributors'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
