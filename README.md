@@ -1,5 +1,5 @@
 PScript
-========
+=======
 
 [![Build Status](https://travis-ci.org/flexxui/pscript.svg)](https://travis-ci.org/flexxui/pscript)
 [![Documentation Status](https://readthedocs.org/projects/pscript/badge/?version=latest)](https://pscript.readthedocs.org)

@@ -69,7 +69,7 @@ description = "Python to JavaScript compiler."
 
 # Get version and docstring (i.e. long description)
 version, doc = get_version_and_doc(os.path.join(THIS_DIR, name, '__init__.py'))
-doc = open(os.path.join(THIS_DIR, 'README.md'), "rb").read().decode()
+doc = ""  # won't render open(os.path.join(THIS_DIR, 'README.md'), "rb").read().decode()
 
 # Support for legacy Python: we install a second package with the
 # translated code. We generate that code when we can. We use
