@@ -49,6 +49,10 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.pyversion }}
+      - uses: actions/setup-node@v2
+        if: matrix.dolint == 1
+        with:
+          node-version: '14'
       - name: Install dependencies (lint and docs)
         if: matrix.dolint == 1
         run: |
