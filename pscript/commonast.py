@@ -12,7 +12,14 @@ from __future__ import print_function, absolute_import
 import sys
 import ast
 import json
-from base64 import encodestring as encodebytes, decodestring as decodebytes
+import base64
+
+if hasattr(base64, "encodebytes"):
+    encodebytes = base64.encodebytes
+    decodebytes = base64.decodebytes
+else:
+    encodebytes = base64.encodestring
+    decodebytes = base64.decodestring
 
 pyversion = sys.version_info
 NoneType = None.__class__
