@@ -3,6 +3,12 @@ Release notes
 -------------
 
 
+**v0.7.5** (04-01-2021)
+
+* Support for Python 3.9.
+* Small docs improvements.
+
+
 **v0.7.4** (11-05-2020)
 
 * Allow to rename functions starting with an uppercase letter.
