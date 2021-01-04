@@ -806,16 +806,16 @@ class Parser1(Parser0):
         code = []
         code += value_list
         
-        if isinstance(node.slice_node, ast.Index):
+        if isinstance(node.slice_node, (ast.Slice, ast.Tuple)):
+            code.append('.slice(')
+            code += slice_list
+            code.append(')')
+        else:
             code.append('[')
             if slice_list[0].startswith('-'):
                 code.append(unify(value_list) + '.length ')
             code += slice_list
             code.append(']')
-        else:  # ast.Slice
-            code.append('.slice(')
-            code += slice_list
-            code.append(')')
         return code
     
     def parse_Index(self, node):
