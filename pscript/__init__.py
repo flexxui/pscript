@@ -106,6 +106,8 @@ plan to make heavy use of PScript.
   or named arguments after ``*args``. Passing keywords to a function that does
   not handle keyword arguments might result in confusing errors.
 * Divide by zero results in `inf` instead of raising ZeroDivisionError.
+* In Python you can do `a_list += a_string` where each character in the string
+  will be added to the list. In PScript this will convert `a_list` to a string.
 
 
 PScript is valid Python
