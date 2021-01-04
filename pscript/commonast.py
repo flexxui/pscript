@@ -932,7 +932,7 @@ class NativeAstConverter:
             assert isinstance(n, ast.Tuple)
             dims = [self._convert_index_like(x) for x in n.elts]
             return Tuple(dims)
-        else: # Num, Unary, Name, or ...
+        else:  # Num, Unary, Name, or ...
             return c(n)
     
     def _convert_Index(self, n):
