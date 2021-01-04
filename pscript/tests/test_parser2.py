@@ -8,8 +8,11 @@ from pscript import RawJS, JSError, py2js, evaljs, evalpy
 def nowhitespace(s):
     return s.replace('\n', '').replace('\t', '').replace(' ', '')
 
+
 def normallist(s):
-    return s.replace('[ ', '[').replace(' ]', ']')
+    s = s.replace('[\n    ', '[').replace('\n]', ']')
+    s = s.replace('[ ', '[').replace(' ]', ']')
+    return s
 
 
 class TestConrolFlow:

@@ -65,7 +65,7 @@ class TestExpressions:
         assert evalpy('4//3') == '1'
         assert evalpy('2**8') == '256'
         assert evalpy('not True') == 'false'  # Unary
-        assert evalpy('- 3') == '-3'
+        assert evalpy('-3') == '-3'
         assert evalpy('True and False') == 'false'  # Boolean
         assert evalpy('True or False') == 'true'
         # Bug
