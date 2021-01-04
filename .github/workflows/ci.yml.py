@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - name: Lint
+            os: ubuntu-latest
+            pyversion: '3.7'
+            dolint: 1
+          - name: Linux py36
+            os: ubuntu-latest
+            pyversion: '3.6'
+            tests: 1
+          - name: Linux py37
+            os: ubuntu-latest
+            pyversion: '3.7'
+            tests: 1
+          - name: Linux py38
+            os: ubuntu-latest
+            pyversion: '3.8'
+            tests: 1
+          - name: Linux pypy3
+            os: ubuntu-latest
+            pyversion: 'pypy3'
+            tests: 1
+          - name: Windows py38
+            os: windows-latest
+            pyversion: '3.8'
+            tests: 1
+          - name: MacOS py38
+            os: macos-latest
+            pyversion: '3.8'
+            tests: 1
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.pyversion }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.pyversion }}
+      - name: Install dependencies (lint and docs)
+        if: matrix.dolint == 1
+        run: |
+            python -m pip install --upgrade pip
+            pip install invoke pycodestyle flake8 sphinx
+      - name: Install dependencies (unit tests)
+        if: matrix.tests == 1
+        run: |
+            python -m pip install --upgrade pip
+            pip install invoke pytest pytest-cov
+      - name: Lint
+        if: matrix.dolint == 1
+        run: |
+            invoke test --style
+      - name: Build docs
+        if: matrix.dolint == 1
+        run: |
+            invoke docs --clean --build
+      - name: Test with pytest
+        if: matrix.tests == 1
+        run: |
+            pip install .
+            rm -rf ./pscript ./build ./egg-info
+            invoke test --unit
