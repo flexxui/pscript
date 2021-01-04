@@ -12,7 +12,14 @@ from __future__ import print_function, absolute_import
 import sys
 import ast
 import json
-from base64 import encodestring as encodebytes, decodestring as decodebytes
+import base64
+
+if hasattr(base64, "encodebytes"):
+    encodebytes = base64.encodebytes
+    decodebytes = base64.decodebytes
+else:
+    encodebytes = base64.encodestring
+    decodebytes = base64.decodestring
 
 pyversion = sys.version_info
 NoneType = None.__class__
@@ -921,15 +928,15 @@ class NativeAstConverter:
         c = self._convert
         if isinstance(n, (ast.Slice, ast.Index, ast.ExtSlice, ast.Ellipsis)):
             return c(n)  # Python < 3.8 (and also 3.8 on Windows?)
-        elif isinstance(n, ast.Num):
-            return Index(c(n))
-        else:
+        elif isinstance(n, ast.Tuple):
             assert isinstance(n, ast.Tuple)
             dims = [self._convert_index_like(x) for x in n.elts]
-            return ExtSlice(dims)
+            return Tuple(dims)
+        else:  # Num, Unary, Name, or ...
+            return c(n)
     
     def _convert_Index(self, n):
-        return Index(self._convert(n.value))
+        return self._convert(n.value)
     
     def _convert_Slice(self, n):
         c = self._convert
@@ -940,7 +947,7 @@ class NativeAstConverter:
         return Slice(c(n.lower), c(n.upper), step)
     
     def _convert_ExtSlice(self, n):
-        return ExtSlice([self._convert_index_like(x) for x in n.dims])
+        return Tuple([self._convert_index_like(x) for x in n.dims])
     
     ## Expressions
     

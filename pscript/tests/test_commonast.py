@@ -223,7 +223,17 @@ def test_compare_print():
     assert n.arg_nodes[1].name == 'bar'
 
 
-def test_consistent_ast():
+def test_consistent_ast0():
+    # Parse the sample file and export as a json string
+    code = ""
+    root = commonast.parse(code)
+    js = root.tojson()
+    # Compare with ref
+    ref = '{\n  "_type": "Module",\n  "body_nodes": []\n}'
+    _compare_large_strings(ref, js)
+
+
+def test_consistent_ast1():
     # Parse the sample file and export as a json string
     code = open(filename1, 'rb').read().decode()
     root = commonast.parse(code)

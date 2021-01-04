@@ -17,13 +17,13 @@ def test_stdlib_full_and_partial():
     assert 'var %shasattr =' % stdlib.FUNCTION_PREFIX in code
     assert 'var %slist =' % stdlib.FUNCTION_PREFIX in code
     assert code.count('var') > 10
-    
-    code = stdlib.get_partial_std_lib(['hasattr'], [], []) 
+
+    code = stdlib.get_partial_std_lib(['hasattr'], [], [])
     assert isinstance(code, str)
     assert 'var %shasattr =' % stdlib.FUNCTION_PREFIX in code
     assert 'var %slist =' % stdlib.FUNCTION_PREFIX not in code
     assert code.count('var') == 1
-    
+
     assert '_hasattr = function' in py2js('hasattr(x, "foo")')
     assert '_hasattr = function' not in py2js('hasattr(x, "foo")', inline_stdlib=False)
 
@@ -48,7 +48,7 @@ def test_stdlib_has_all_str_methods():
     if sys.version_info[0] == 2:
         ignore = 'encode decode'
     else:
-        ignore = 'encode format_map isprintable maketrans isascii'
+        ignore = 'encode format_map isprintable maketrans isascii removeprefix removesuffix'
     for name in ignore.split(' '):
         if name in method_names:
             method_names.remove(name)
