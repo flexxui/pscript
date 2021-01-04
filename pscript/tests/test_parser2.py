@@ -10,8 +10,8 @@ def nowhitespace(s):
 
 
 def normallist(s):
-    s = s.replace('[\n    ', '[').replace('\n]', ']')
-    s = s.replace('[ ', '[').replace(' ]', ']')
+    s = s.replace('[\n  ', '[').replace('\n]', ']').replace('\n  ', ' ')
+    s = s.replace('[ ', '[').replace(' ]', ']').replace("  ", " ")
     return s
 
 
