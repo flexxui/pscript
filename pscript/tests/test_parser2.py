@@ -12,6 +12,7 @@ def nowhitespace(s):
 def normallist(s):
     s = s.replace('[\n  ', '[').replace('\n]', ']').replace('\n  ', ' ')
     s = s.replace('[  ', '[').replace('[ ', '[').replace(' ]', ']')
+    s = s.replace(',   ', ', ').replace(',  ', ', ')
     return s
 
 
