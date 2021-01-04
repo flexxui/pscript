@@ -70,6 +70,4 @@ jobs:
       - name: Test with pytest
         if: matrix.tests == 1
         run: |
-            pip install .
-            rm -rf ./pscript ./build ./egg-info
             invoke test --unit

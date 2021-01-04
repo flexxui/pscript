@@ -5,7 +5,6 @@ PScript setup script.
 """
 
 import os
-import sys
 import shutil
 
 try:
