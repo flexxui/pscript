@@ -1,7 +1,7 @@
 PScript
 =======
 
-[[![Build Status](https://github.com/flexxui/pscript/workflows/CI/badge.svg)](https://github.com/flexxui/pscript/actions)
+[![Build Status](https://github.com/flexxui/pscript/workflows/CI/badge.svg)](https://github.com/flexxui/pscript/actions)
 [![Documentation Status](https://readthedocs.org/projects/pscript/badge/?version=latest)](https://pscript.readthedocs.org)
 
 
