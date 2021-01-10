@@ -379,4 +379,22 @@ def test_python_33_plus():
     assert isinstance(node, commonast.YieldFrom)
 
 
+@skipif(sys.version_info < (3,5), reason='Need Python 3.5+')
+def test_annotated_assignments():
+    # Verify that we treat annotated assignments as regular assingments
+    code = "foo: int = 3"
+    node = commonast.parse(code).body_nodes[0]
+
+    assert isinstance(node, commonast.Assign)
+    assert len(node.target_nodes) == 1
+    assert isinstance(node.target_nodes[0], commonast.Name)
+    assert node.target_nodes[0].name == "foo"
+    assert isinstance(node.value_node, commonast.Num)
+    assert node.value_node.value == 3
+
+    # Verify that we do not support annotated assignments with no value
+    with raises(RuntimeError):
+        commonast.parse("foo: int")
+
+
 run_tests_if_main()

@@ -1034,6 +1034,12 @@ class NativeAstConverter:
     def _convert_AugAssign(self, n):
         op = n.op.__class__.__name__
         return AugAssign(self._convert(n.target), op, self._convert(n.value))
+
+    def _convert_AnnAssign(self, n):
+        if n.value is None:
+            raise RuntimeError("Cannot convert AnnAssign nodes with no assignment!")
+        c = self._convert
+        return Assign([c(n.target)], c(n.value))
     
     def _convert_Print(self, n):  # pragma: no cover - Python 2.x compat
         c = self._convert
