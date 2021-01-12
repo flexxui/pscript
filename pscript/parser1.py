@@ -850,6 +850,9 @@ class Parser1(Parser0):
             return []  # stuff to help the parser
         if node.root == 'time':
             return []  # PScript natively supports time() and perf_counter()
+        if node.root == 'typing':
+            # User is probably importing type annotations. Ignore this import.
+            return []
         raise JSError('PScript does not support imports.')
     
     def parse_Module(self, node):
