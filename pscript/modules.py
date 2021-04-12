@@ -145,7 +145,7 @@ def create_js_module(name, code, imports, exports, type='umd'):
     # Derived information needed to populate the module templates
     save_name = lambda n: n.split('/')[-1].split('.')[0].replace('-', '_')
     dep_strings = ['"%s"' % dep for dep in deps]
-    dep_fullnames = ['root.' + save_name(dep) for dep in deps]
+    dep_fullnames = ['root.' + dep for dep in deps]
     dep_requires = ['require("%s")' % dep for dep in deps]
     
     # Fill in the template
