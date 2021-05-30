@@ -176,7 +176,6 @@ supports/lacks.
 Not currently supported:
 
 * import (maybe we should translate an import to ``require()``?)
-* the ``set`` class (JS has no set, but we could create one?)
 * slicing with steps (JS does not support this)
 * Generators, i.e. ``yield`` (not widely supported in JS)
 

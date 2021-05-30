@@ -141,6 +141,14 @@ FUNCTIONS['op_instantiate'] = """function (ob, args) { // nargs: 2
     }
 }"""
 
+FUNCTIONS['create_set'] = """function () {
+    var s = new Set();
+    for (var i=0; i<arguments.length; i+=2) {
+        if (!s.has(arguments[i]) && !FUNCTION_PREFIXop_contains(arguments[i], s)) { s.add(arguments[i]) };
+    }
+    return s;
+}"""
+
 FUNCTIONS['create_dict'] = """function () {
     var d = {};
     for (var i=0; i<arguments.length; i+=2) { d[arguments[i]] = arguments[i+1]; }
@@ -222,6 +230,16 @@ FUNCTIONS['list'] = """function (x) {
         r.push(x[i]);
     }
     return r;
+}"""
+
+FUNCTIONS['set'] = """function (x) { // nargs: 0 1
+    var s = new Set();
+    if (!x) { return s; };
+    if (typeof x==="object" && !Array.isArray(x)) {x = Object.keys(x)}
+    for (var i=0; i<x.length; i++) {
+        if (!s.has(x[i]) && !FUNCTION_PREFIXop_contains(x[i], s)) { s.add(x[i]) };
+    }
+    return s;
 }"""
 
 FUNCTIONS['range'] = """function (start, end, step) {
@@ -398,6 +416,7 @@ FUNCTIONS['map'] = """function (func, iter) { // nargs: 2
 FUNCTIONS['truthy'] = """function (v) {
     if (v === null || typeof v !== "object") {return v;}
     else if (v.length !== undefined) {return v.length ? v : false;}
+    else if (v.size !== undefined) {return v.size ? v : false;}
     else if (v.byteLength !== undefined) {return v.byteLength ? v : false;}
     else if (v.constructor !== Object) {return true;}
     else {return Object.getOwnPropertyNames(v).length ? v : false;}
@@ -411,6 +430,10 @@ FUNCTIONS['op_equals'] = """function op_equals (a, b) { // nargs: 2
         return a == b;
     }
 
+    if (a && a.constructor === Set && b && b.constructor === Set) {
+        a = Array.from(a);
+        b = Array.from(b);
+    }
     if (a == null || b == null) {
     } else if (Array.isArray(a) && Array.isArray(b)) {
         var i = 0, iseq = a.length == b.length;
@@ -427,6 +450,10 @@ FUNCTIONS['op_equals'] = """function op_equals (a, b) { // nargs: 2
 }"""
 
 FUNCTIONS['op_contains'] = """function op_contains (a, b) { // nargs: 2
+    if (b && b.constructor === Set) {
+        if (b.has(a)) return true;
+        b = Array.from(b);
+    }
     if (b == null) {
     } else if (Array.isArray(b)) {
         for (var i=0; i<b.length; i++) {if (FUNCTION_PREFIXop_equals(a, b[i]))
@@ -458,6 +485,45 @@ FUNCTIONS['op_mult'] = """function (a, b) { // nargs: 2
     } return a * b;
 }"""
 
+FUNCTIONS['op_set_union'] = """function (a, b) { // nargs: 2
+    let _union = new Set(a)
+    for (let elem of b) {
+        if (!_union.has(elem) && !FUNCTION_PREFIXop_contains(elem, _union)) { _union.add(elem) };
+    }
+    return _union;
+}"""
+
+FUNCTIONS['op_set_intersection'] = """function (a, b) { // nargs: 2
+    let _intersection = new Set();
+    for (let elem of b) {
+        if (a.has(elem) && FUNCTION_PREFIXop_contains(elem, a)) {
+            _intersection.add(elem);
+        }
+    }
+    return _intersection;
+}"""
+
+FUNCTIONS['op_set_sym_difference'] = """function (a, b) { // nargs: 2
+    let _difference = new Set(a)
+    for (let elem of b) {
+        if (_difference.has(elem) && FUNCTION_PREFIXop_contains(elem, _difference)) {
+            _difference.delete(elem);
+        } else {
+            _difference.add(elem);
+        }
+    }
+    return _difference;
+}"""
+
+FUNCTIONS['op_set_difference'] = """function (a, b) { // nargs: 2
+    let _difference = new Set(a)
+    for (let elem of b) {
+        if (_difference.has(elem) && FUNCTION_PREFIXop_contains(elem, _difference)) {
+            _difference.delete(elem);
+        }
+    }
+    return _difference;
+}"""
 
 ## ----- Methods
 
