@@ -144,7 +144,10 @@ FUNCTIONS['op_instantiate'] = """function (ob, args) { // nargs: 2
 FUNCTIONS['create_set'] = """function () {
     var s = new Set();
     for (var i=0; i<arguments.length; i+=2) {
-        if (!s.has(arguments[i]) && !FUNCTION_PREFIXop_contains(arguments[i], s)) { s.add(arguments[i]) };
+        if (!s.has(arguments[i]) && !FUNCTION_PREFIXop_contains(arguments[i], s)) {
+            s.add(arguments[i])
+        };
+            
     }
     return s;
 }"""
