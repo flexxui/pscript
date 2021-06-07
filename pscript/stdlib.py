@@ -491,7 +491,9 @@ FUNCTIONS['op_mult'] = """function (a, b) { // nargs: 2
 FUNCTIONS['op_set_union'] = """function (a, b) { // nargs: 2
     let _union = new Set(a)
     for (let elem of b) {
-        if (!_union.has(elem) && !FUNCTION_PREFIXop_contains(elem, _union)) { _union.add(elem) };
+        if (!_union.has(elem) && !FUNCTION_PREFIXop_contains(elem, _union)) {
+            _union.add(elem)
+        };
     }
     return _union;
 }"""
