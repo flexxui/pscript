@@ -415,13 +415,17 @@ class Parser2(Parser1):
         code.append(self.lf('}'))
         
         # Exit
-        code.append(' catch(%s)  { %s=%s; }' % (err_name1, err_name2, err_name1))
+        code.append(' catch(%s)  { %s=%s;' % (err_name1, err_name2, err_name1))
+        code.append(self.lf('} finally {'))
+        self._indent += 1
         code.append(self.lf() + 'if (%s) { '
                     'if (!%s.__exit__(%s.name || "error", %s, null)) '
                     '{ throw %s; }' %
                     (err_name2, context_name, err_name2, err_name2, err_name2))
         code.append(self.lf() + '} else { %s.__exit__(null, null, null); }' % 
                     context_name)
+        self._indent -= 1
+        code.append(self.lf('}'))
         return code
     
     # def parse_Withitem(self, node) -> handled in parse_With
