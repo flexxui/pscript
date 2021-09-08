@@ -355,6 +355,22 @@ class TestExceptions:
             return undefined
         
         assert evaljs(py2js(catchtest, 'f') + 'f(1)').endswith('xx\nyy')
+    
+    def test_finally2(self):
+        # Avoid regression similar to #57
+        def catchtest(x):
+            try:
+                
+                try:
+                    return undefined
+                finally:
+                    print('xx')
+                    
+            except Exception as err:
+                print('yy')
+            return undefined
+        
+        assert evaljs(py2js(catchtest, 'f') + 'f(1)').endswith('xx')
 
 
 class TestContextManagers:
@@ -433,7 +449,21 @@ class TestContextManagers:
         assert evaljs(py2js(contexttest, 'f') + 'f(1)') == 'enter\n42\n43\nnull\n.'
         s = 'enter\n42\nAttributeError\nAttributeError: fooerror\n.'
         assert evaljs(py2js(contexttest, 'f') + 'f(0)') == s
-
+    
+    def test_with_return(self):
+        # Avoid regression of #57
+        def contexttest():
+            c = dict(__enter__=lambda: print('enter'),
+                     __exit__=lambda et, ev, tb: print("exit"))
+            with c:
+                print(42)
+                return undefined
+                print(43)
+            print('.')
+            return undefined
+        
+        assert evaljs(py2js(contexttest, 'f') + 'f(1)') == 'enter\n42\nexit'
+    
 
 def func1():
     return 2 + 3
