@@ -241,7 +241,7 @@ such as renaming function/class definitions, and creating JS modules
 
 """
 
-__version__ = '0.7.5'
+__version__ = '0.7.6'
 
 import sys
 import logging
