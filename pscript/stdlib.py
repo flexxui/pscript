@@ -667,7 +667,8 @@ METHODS['center'] = """function (w, fill) { // nargs: 1 2
 
 METHODS['endswith'] = """function (x) { // nargs: 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
-    return this.lastIndexOf(x) == this.length - x.length;
+    var last_index = this.lastIndexOf(x);
+    return last_index == this.length - x.length && last_index >= 0;
 }"""
 
 METHODS['expandtabs'] = """function (tabsize) { // nargs: 0 1
