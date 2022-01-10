@@ -291,6 +291,40 @@ class Parser1(Parser0):
     def parse_Tuple(self, node):
         return self.parse_List(node)  # tuple = ~ list in JS
     
+    def parse_Set(self, node):
+        use_make_set_func = False
+        code = ['new Set([']
+        for child in node.element_nodes:
+            if isinstance(child, (ast.Num, ast.NameConstant)):
+                result = self.parse(child)
+                assert len(result) == 1
+                if result[0] in code:
+                    use_make_set_func = True
+                    break
+                code += result
+            elif (isinstance(child, ast.Str) and isidentifier1.match(child.value) and
+                  child.value[0] not in '0123456789'):
+                if child.value in code:
+                    use_make_set_func = True
+                    break
+                code += child.value
+            else:
+                use_make_set_func = True
+                break
+            code.append(', ')
+
+        if use_make_set_func:
+            func_args = []
+            for child in node.element_nodes:
+                func_args += [unify(self.parse(child))]
+            self.use_std_function('create_set', [])
+            return stdlib.FUNCTION_PREFIX + 'create_set(' + ', '.join(func_args) + ')'
+
+        if node.element_nodes:
+            code.pop(-1)  # skip last comma
+        code.append('])')
+        return code
+
     def parse_Dict(self, node):
         # Oh JS; without the outer braces, it would only be an Object if used
         # in an assignment ...
@@ -320,9 +354,6 @@ class Parser1(Parser0):
             self.use_std_function('create_dict', [])
             return stdlib.FUNCTION_PREFIX + 'create_dict(' + ', '.join(func_args) + ')'
         return code
-    
-    def parse_Set(self, node):
-        raise JSError('No Set in JS')
     
     ## Variables
     
@@ -408,7 +439,19 @@ class Parser1(Parser0):
             return ["Math.pow(", left, ", ", right, ")"]
         elif node.op == node.OPS.FloorDiv:
             return ["Math.floor(", left, "/", right, ")"]
-        
+
+        C = ast.Set
+        if (isinstance(node.left_node, C) and
+                isinstance(node.right_node, C)):
+            if node.op == node.OPS.BitOr:
+                return self.use_std_function('op_set_union', [left, right])
+            if node.op == node.OPS.BitAnd:
+                return self.use_std_function('op_set_intersection', [left, right])
+            if node.op == node.OPS.BitXor:
+                return self.use_std_function('op_set_sym_difference', [left, right])
+            if node.op == node.OPS.Sub:
+                return self.use_std_function('op_set_difference', [left, right])
+
         op = ' %s ' % self.BINARY_OP[node.op]
         return [left, op, right]
     

@@ -184,6 +184,10 @@ class TestExpressions:
         assert evalpy('3 in [1,2,3,4]') == 'true'
         assert evalpy('9 in [1,2,3,4]') == 'false'
         assert evalpy('9 not in [1,2,3,4]') == 'true'
+
+        assert evalpy('3 in {1,2,3,4}') == 'true'
+        assert evalpy('9 in {1,2,3,4}') == 'false'
+        assert evalpy('9 not in {1,2,3,4}') == 'true'
         
         assert evalpy('"bar" in {"foo": 3}') == 'false'
         assert evalpy('"foo" in {"foo": 3}') == 'true'
@@ -203,6 +207,17 @@ class TestExpressions:
         assert evalpy('[2, 3] == [2, 3]') == 'true'
         assert evalpy('a=' + arr + 'b=' + arr + 'a==b') == 'true'
         
+        # Set
+        arr = '{(1,2), (3,4), (5,6), (1,2), (7,8)}\n'
+        #assert evalpy('a=' + arr + 'a == {(1,2), (3,4), (5,6), (7,8)}') == 'true'
+        assert evalpy('a=' + arr + '(1,2) in a') == 'true'
+        assert evalpy('a=' + arr + '(7,8) in a') == 'true'
+        assert evalpy('a=' + arr + '(3,5) in a') == 'false'
+        assert evalpy('a=' + arr + '3 in a') == 'false'
+
+        assert evalpy('{2, 3} == {2, 3}') == 'true'
+        assert evalpy('a=' + arr + 'b=' + arr + 'a==b') == 'true'
+
         # Dict
         dct = '{"a":7, 3:"foo", "bar": 1, "9": 3}\n'
         assert evalpy('d=' + dct + '"a" in d') == 'true'
@@ -249,7 +264,7 @@ class TestExpressions:
         assert evalpy('None is undefined') == 'false'
         assert evalpy('undefined is undefined') == 'true'
     
-    def test_truthfulness_of_array_and_dict(self):
+    def test_truthfulness_of_containers(self):
         
         # Arrays
         assert evalpy('bool([1])') == 'true'
@@ -268,9 +283,27 @@ class TestExpressions:
         assert evalpy('[2] or 42') == '[ 2 ]'
         assert evalpy('[] or 42') == '42'
         
+        # Set
+        assert evalpy('bool({1})') == 'true'
+        assert evalpy('bool(set())') == 'false'
+        #
+        assert evalpy('"T" if ({1, 2, 3}) else "F"') == 'T'
+        assert evalpy('"T" if (set()) else "F"') == 'F'
+        #
+        assert evalpy('if {1}: "T"\nelse: "F"') == 'T'
+        assert evalpy('if set(): "T"\nelse: "F"') == 'F'
+        #
+        assert evalpy('if {1} and 1: "T"\nelse: "F"') == 'T'
+        assert evalpy('if set() and 1: "T"\nelse: "F"') == 'F'
+        assert evalpy('if set() or 1: "T"\nelse: "F"') == 'T'
+        #
+        assert evalpy('set() or 42') == '42'
+        assert evalpy('{2} or 42') == 'Set(1) { 2 }'
+
         # Dicts
         assert evalpy('bool({1:2})') == 'true'
         assert evalpy('bool({})') == 'false'
+        assert evalpy('bool(dict())') == 'false'
         #
         assert evalpy('"T" if ({"foo": 3}) else "F"') == 'T'
         assert evalpy('"T" if ({}) else "F"') == 'F'
@@ -285,9 +318,9 @@ class TestExpressions:
         assert evalpy('{1:2} or 42') == "{ '1': 2 }"
         assert evalpy('{} or 42') == '42'
         assert evalpy('{} or 0') == '0'
-        assert evalpy('None or []') == '[]'
-        
+
         # Eval extra types
+        assert evalpy('None or []') == '[]'
         assert evalpy('null or 42') == '42'
         assert evalpy('ArrayBuffer(4) or 42') != '42'
         
@@ -298,8 +331,20 @@ class TestExpressions:
         assert py2js('if True: pass').count('_truthy') == 0
         assert py2js('if a == 3: pass').count('_truthy') == 0
         assert py2js('if a is 3: pass').count('_truthy') == 0
-        
-    
+
+    def test_set_operations(self):
+        setA = '{1, 2, 3, 4}'
+        setB = '{3, 4, 5, 6}'
+
+        assert evalpy(setA + '|' + setB) == 'Set(6) { 1, 2, 3, 4, 5, 6 }'
+        assert evalpy(setA + '&' + setB) == 'Set(2) { 3, 4 }'
+        assert evalpy(setA + '^' + setB) == 'Set(4) { 1, 2, 5, 6 }'
+        assert evalpy(setA + '-' + setB) == 'Set(2) { 1, 2 }'
+
+        setC = '{2, 3}'
+
+        assert evalpy(setA + '>=' + setC) == 'true'
+
     def test_indexing_and_slicing(self):
         c = 'a = [1, 2, 3, 4, 5]\n'
         
