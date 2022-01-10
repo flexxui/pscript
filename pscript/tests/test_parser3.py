@@ -536,6 +536,7 @@ class TestStrMethods:
         assert evalpy('"foo".endswith("foo")') == 'true'
         assert evalpy('"".endswith("foo")') == 'false'
         assert evalpy('"".endswith("")') == 'true'
+        assert evalpy('"a".endswith("bb")') == 'false'  # See issue #66
     
     def test_startswith(self):
         assert evalpy('"foobla".startswith("foo")') == 'true'
