@@ -938,17 +938,17 @@ class Parser2(Parser1):
             if not node.kwargs_node:
                 code.append(", '%s'" % func_name or 'anonymous')
             code.append(');')
+            if vararg_code2:
+                code.append(self.lf(vararg_code2))
             # Apply values of positional args
             # inside if, because standard arguments are invalid
             args_var = 'arguments[0].flx_args'
             if len(argnames) > 1:
                 args_var = self.dummy('args')
                 code.append(self.lf('%s = arguments[0].flx_args;' % args_var))
-            for i, name in enumerate(argnames):
+            for i, name in reversed(list(enumerate(argnames))):
                 code.append(self.lf('%s = %s[%i];' % (name, args_var, i)))
             # End if
-            if vararg_code2:
-                code.append(self.lf(vararg_code2))
             self._indent -= 1
             code.append(self.lf('}'))
             if vararg_code1:
