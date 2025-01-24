@@ -83,7 +83,7 @@ def test_Node_creation():
         __slots__ = ()
 
     class MyNode(Node):
-        __slots__ = "bar", "foo_node", "foo_nodes", "name", "op"
+        __slots__ = "name", "op", "foo_node", "foo_nodes", "bar"
 
     stubnode = MyStubNode()
     stubnodes = [MyStubNode(), MyStubNode(), MyStubNode()]

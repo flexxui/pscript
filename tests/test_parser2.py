@@ -345,7 +345,7 @@ class TestExceptions:
                 finally:
                     print("xx")
 
-            except Exception:
+            except Exception as err:
                 print("yy")
             return undefined
 
@@ -360,7 +360,7 @@ class TestExceptions:
                 finally:
                     print("xx")
 
-            except Exception:
+            except Exception as err:
                 print("yy")
             return undefined
 

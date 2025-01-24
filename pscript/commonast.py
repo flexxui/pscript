@@ -43,7 +43,7 @@ def parse(code, comments=False):
 class Node(object):
     """Abstract base class for all Nodes."""
 
-    __slots__ = ["col_offset", "lineno"]
+    __slots__ = ["lineno", "col_offset"]
 
     class OPS:
         """Operator enums:"""
@@ -251,7 +251,7 @@ class FormattedValue(Node):
             set at the same time.
     """
 
-    __slots__ = "conversion", "format_node", "value_node"
+    __slots__ = "value_node", "conversion", "format_node"
 
 
 class JoinedStr(Node):
@@ -357,7 +357,7 @@ class Attribute(Node):
         attr: a string with the name of the attribute.
     """
 
-    __slots__ = "attr", "value_node"
+    __slots__ = "value_node", "attr"
 
 
 class Subscript(Node):
@@ -368,7 +368,7 @@ class Subscript(Node):
         slice_node: An Index, Slice or ExtSlice node.
     """
 
-    __slots__ = "slice_node", "value_node"
+    __slots__ = "value_node", "slice_node"
 
 
 class Index(Node):
@@ -388,7 +388,7 @@ class Slice(Node):
         step_node: slice step.
     """
 
-    __slots__ = "lower_node", "step_node", "upper_node"
+    __slots__ = "lower_node", "upper_node", "step_node"
 
 
 class ExtSlice(Node):
@@ -436,7 +436,7 @@ class BinOp(Node):
         right_node: the node to the right of the operator.
     """
 
-    __slots__ = "left_node", "op", "right_node"
+    __slots__ = "op", "left_node", "right_node"
 
 
 class BoolOp(Node):
@@ -460,7 +460,7 @@ class Compare(Node):
         right_node: the node to the right of the operator.
     """
 
-    __slots__ = "left_node", "op", "right_node"
+    __slots__ = "op", "left_node", "right_node"
 
 
 class Call(Node):
@@ -476,7 +476,7 @@ class Call(Node):
     in arg_nodes, and ``**y`` as a Keyword node with a name being ``None``.
     """
 
-    __slots__ = ("arg_nodes", "func_node", "kwarg_nodes")
+    __slots__ = ("func_node", "arg_nodes", "kwarg_nodes")
 
 
 class Keyword(Node):
@@ -499,7 +499,7 @@ class IfExp(Node):
         else_node: the ``c`` in the above.
     """
 
-    __slots__ = "body_node", "else_node", "test_node"
+    __slots__ = "test_node", "body_node", "else_node"
 
 
 class ListComp(Node):
@@ -510,19 +510,19 @@ class ListComp(Node):
         comp_nodes: a list of Comprehension nodes.
     """
 
-    __slots__ = "comp_nodes", "element_node"
+    __slots__ = "element_node", "comp_nodes"
 
 
 class SetComp(Node):
     """Set comprehension. See ListComp."""
 
-    __slots__ = "comp_nodes", "element_node"
+    __slots__ = "element_node", "comp_nodes"
 
 
 class GeneratorExp(Node):
     """Generor expression. See ListComp."""
 
-    __slots__ = "comp_nodes", "element_node"
+    __slots__ = "element_node", "comp_nodes"
 
 
 class DictComp(Node):
@@ -534,7 +534,7 @@ class DictComp(Node):
         comp_nodes: a list of Comprehension nodes.
     """
 
-    __slots__ = "comp_nodes", "key_node", "value_node"
+    __slots__ = "key_node", "value_node", "comp_nodes"
 
 
 class Comprehension(Node):
@@ -547,7 +547,7 @@ class Comprehension(Node):
         if_nodes: a list of test expressions.
     """
 
-    __slots__ = "if_nodes", "iter_node", "target_node"
+    __slots__ = "target_node", "iter_node", "if_nodes"
 
 
 ## Statements
@@ -573,7 +573,7 @@ class AugAssign(Node):
         value_node: the object to assign.
     """
 
-    __slots__ = "op", "target_node", "value_node"
+    __slots__ = "target_node", "op", "value_node"
 
 
 class Raise(Node):
@@ -585,7 +585,7 @@ class Raise(Node):
         cause_node: the optional part for y in raise x from y.
     """
 
-    __slots__ = "cause_node", "exc_node"
+    __slots__ = "exc_node", "cause_node"
 
 
 class Assert(Node):
@@ -596,7 +596,7 @@ class Assert(Node):
         msg_node: the failure message (commonly a Str node)
     """
 
-    __slots__ = "msg_node", "test_node"
+    __slots__ = "test_node", "msg_node"
 
 
 class Delete(Node):
@@ -627,7 +627,7 @@ class Import(Node):
             absolute import.
     """
 
-    __slots__ = "level", "names", "root"
+    __slots__ = "root", "names", "level"
 
 
 ## Control flow
@@ -646,7 +646,7 @@ class If(Node):
         else_nodes: the body of the else-clause of the if-statement.
     """
 
-    __slots__ = "body_nodes", "else_nodes", "test_node"
+    __slots__ = "test_node", "body_nodes", "else_nodes"
 
 
 class For(Node):
@@ -659,7 +659,7 @@ class For(Node):
         else_nodes: the body of the else-clause of the for-loop.
     """
 
-    __slots__ = "body_nodes", "else_nodes", "iter_node", "target_node"
+    __slots__ = "target_node", "iter_node", "body_nodes", "else_nodes"
 
 
 class While(Node):
@@ -671,7 +671,7 @@ class While(Node):
         else_nodes: the body of the else-clause of the for-loop.
     """
 
-    __slots__ = "body_nodes", "else_nodes", "test_node"
+    __slots__ = "test_node", "body_nodes", "else_nodes"
 
 
 class Break(Node):
@@ -696,7 +696,7 @@ class Try(Node):
         finally_nodes: the body of the finally-clause of the try-block.
     """
 
-    __slots__ = "body_nodes", "else_nodes", "finally_nodes", "handler_nodes"
+    __slots__ = "body_nodes", "handler_nodes", "else_nodes", "finally_nodes"
 
 
 class ExceptHandler(Node):
@@ -710,7 +710,7 @@ class ExceptHandler(Node):
         body_nodes: the body of the except-clause.
     """
 
-    __slots__ = "body_nodes", "name", "type_node"
+    __slots__ = "type_node", "name", "body_nodes"
 
 
 class With(Node):
@@ -721,7 +721,7 @@ class With(Node):
         body_nodes: the body of the with-block.
     """
 
-    __slots__ = "body_nodes", "item_nodes"
+    __slots__ = "item_nodes", "body_nodes"
 
 
 class WithItem(Node):
@@ -732,7 +732,7 @@ class WithItem(Node):
         as_node: a Name, Tuple or List node representing the ``as foo`` part.
     """
 
-    __slots__ = "as_node", "expr_node"
+    __slots__ = "expr_node", "as_node"
 
 
 ## Function and class definitions
@@ -756,14 +756,14 @@ class FunctionDef(Node):
     """
 
     __slots__ = (
+        "name",
+        "decorator_nodes",
         "annotation_node",
         "arg_nodes",
-        "args_node",
-        "body_nodes",
-        "decorator_nodes",
         "kwarg_nodes",
+        "args_node",
         "kwargs_node",
-        "name",
+        "body_nodes",
     )
 
 
@@ -778,7 +778,7 @@ class Lambda(Node):
         body_node: the body of the function (a single node).
     """
 
-    __slots__ = ("arg_nodes", "args_node", "body_node", "kwarg_nodes", "kwargs_node")
+    __slots__ = ("arg_nodes", "kwarg_nodes", "args_node", "kwargs_node", "body_node")
 
 
 class AsyncFunctionDef(Node):
@@ -788,14 +788,14 @@ class AsyncFunctionDef(Node):
     """
 
     __slots__ = (
+        "name",
+        "decorator_nodes",
         "annotation_node",
         "arg_nodes",
-        "args_node",
-        "body_nodes",
-        "decorator_nodes",
         "kwarg_nodes",
+        "args_node",
         "kwargs_node",
-        "name",
+        "body_nodes",
     )
 
 
@@ -808,7 +808,7 @@ class Arg(Node):
         annotation_node: the annotation for this argument (Python3 only).
     """
 
-    __slots__ = ("annotation_node", "name", "value_node")
+    __slots__ = ("name", "value_node", "annotation_node")
 
 
 class Return(Node):
@@ -882,7 +882,7 @@ class ClassDef(Node):
     https://www.python.org/dev/peps/pep-3115/.
     """
 
-    __slots__ = ("arg_nodes", "body_nodes", "decorator_nodes", "kwarg_nodes", "name")
+    __slots__ = ("name", "decorator_nodes", "arg_nodes", "kwarg_nodes", "body_nodes")
 
 
 ## -- (end marker for doc generator)
@@ -1284,6 +1284,7 @@ class NativeAstConverter:
 
         returns = c(n.returns)
         Cls = cls
+
         node = Cls(
             n.name,
             [c(x) for x in n.decorator_list],

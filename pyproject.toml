@@ -52,6 +52,7 @@ ignore = [
     "E731",   # Do not assign a `lambda` expression, use a `def`
     "RUF005", # Consider iterable unpacking instead of concatenation
     "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
+    "RUF023", # __slots__ is not sorted -> our classes rely on slot order
 ]
 
 
