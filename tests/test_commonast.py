@@ -10,9 +10,9 @@ import time
 
 from pscript.testing import run_tests_if_main, raises, skipif
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
-import commonast
-#from pscript import commonast
+# sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+# import commonast
+from pscript import commonast
 
 
 dirname = os.path.dirname(__file__)
@@ -23,10 +23,7 @@ filename3 = os.path.join(dirname, 'python_sample3.py')
 
 def _export_python_sample_ast():
     # Get what to export
-    if sys.version_info > (3, ):
-        filenames = filename1, filename3
-    else:
-        filenames = filename2,
+    filenames = filename1, filename3
     # Write
     for filename in filenames:
         filename_bz2 = filename[:-2] + 'bz2'
@@ -121,7 +118,7 @@ def test_Node_creation():
     raises(AssertionError, MyNode, 'a', 'Add', stubnode, stubnodes, stubnodes)
 
 def test_json_conversion():
-    from commonast import Node, Assign, Name, BinOp, Bytes, Num
+    from pscript.commonast import Node, Assign, Name, BinOp, Bytes, Num
     
     # Test json conversion
     roota = Assign([Name('foo')], BinOp('Add', Name('a'), Num(3)))
@@ -307,7 +304,7 @@ def test_functiondef_some_more():
 
 
 def test_call_some_more():
-    from commonast import Name, Num, Starred, Keyword
+    from pscript.commonast import Name, Num, Starred, Keyword
     
     code = "foo(1, a, *b, c=3, **d)"
     node = commonast.parse(code).body_nodes[0].value_node  # Call is in an Expr
@@ -325,7 +322,7 @@ def test_call_some_more():
 
 @skipif(sys.version_info < (3,5), reason='Need Python 3.5+')
 def test_call_even_some_more():
-    from commonast import Name, Num, Starred, Keyword
+    from pscript.commonast import Name, Num, Starred, Keyword
     
     code = "foo(a, *b, c, *d, **e, **f)"
     node = commonast.parse(code).body_nodes[0].value_node

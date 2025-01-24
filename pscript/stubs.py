@@ -58,9 +58,6 @@ class RawJS:
             raise Exception()
         except Exception as err:
             tb = getattr(err, '__traceback__', None)
-            if tb is None:  # Legacy Python 2.x
-                import sys
-                _, _, tb = sys.exc_info()
             self._globals = tb.tb_frame.f_back.f_globals
             del tb
         self.__module__ = self._globals['__name__']
