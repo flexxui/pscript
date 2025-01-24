@@ -258,7 +258,6 @@ class Parser3(Parser2):
             "[float, int]": "number",
             "float": "number",
             "str": "string",
-            "basestring": "string",
             "string_types": "string",
             "bool": "boolean",
             "FunctionType": "function",

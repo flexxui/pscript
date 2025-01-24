@@ -4,7 +4,6 @@ will mostly test if the implemenation is correct. This module does some
 meta tests.
 """
 
-
 from pscript.testing import run_tests_if_main
 
 from pscript import py2js, stdlib

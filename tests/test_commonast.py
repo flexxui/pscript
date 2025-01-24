@@ -101,13 +101,13 @@ def test_Node_creation():
     raises(AssertionError, MyNode, "a", "Add", stubnode, stubnodes, 1, 2)
 
     # These work
-    node = MyNode("a", "Add", stubnode, stubnodes, 1)
-    node = MyNode("a", "Add", None, stubnodes, 1)
-    node = MyNode("a", "Add", stubnode, [], 1)
-    node = MyNode("a", "Add", stubnode, stubnodes, "bla")
-    node = MyNode("a", "Add", stubnode, stubnodes, [1, 2, 3])
-    node = MyNode("a", "Mult", stubnode, stubnodes, 1)
-    node = MyNode("blas asdasd as", "Mult", stubnode, stubnodes, 1)
+    _node = MyNode("a", "Add", stubnode, stubnodes, 1)
+    _node = MyNode("a", "Add", None, stubnodes, 1)
+    _node = MyNode("a", "Add", stubnode, [], 1)
+    _node = MyNode("a", "Add", stubnode, stubnodes, "bla")
+    _node = MyNode("a", "Add", stubnode, stubnodes, [1, 2, 3])
+    _node = MyNode("a", "Mult", stubnode, stubnodes, 1)
+    _node = MyNode("blas asdasd as", "Mult", stubnode, stubnodes, 1)
     # Name must be a string
     raises(AssertionError, MyNode, 1, "Add", stubnode, stubnodes, 1)
     # op must be an existing operator
@@ -142,12 +142,12 @@ def test_json_conversion():
         assert node2.value_node.left_node == node1.value_node.left_node
         assert node2.value_node.right_node.value == node1.value_node.right_node.value
         # In fact, we can do
-        node1 == node2
+        assert node1 == node2
 
     assert roota != rootb
     assert roota != rootc
     with raises(ValueError):
-        roota == 5
+        roota == 5  # noqa
 
     assert str(roota) == roota.tojson()
     assert len(repr(roota)) < 80

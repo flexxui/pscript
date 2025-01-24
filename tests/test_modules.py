@@ -3,7 +3,6 @@
 Note that some tests in func also implicitly test this.
 """
 
-
 from pscript.testing import run_tests_if_main, raises
 
 from pscript.modules import create_js_module

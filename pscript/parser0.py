@@ -246,7 +246,7 @@ class Parser0:
             try:
                 msg = self._better_js_error(tb)
             except Exception:  # pragma: no cover
-                raise (err)
+                raise (err) from None
             else:
                 err.args = (msg + ":\n" + str(err),)
                 raise (err)

@@ -77,7 +77,7 @@ def py2js(ob=None, new_name=None, **parser_options):
             except Exception as err:
                 raise ValueError(
                     "Could not get source code for object %r: %s" % (ob, err)
-                )
+                ) from None
             if getattr(ob, "__name__", "") in ("", "<lambda>"):
                 raise ValueError(
                     "py2js() got anonymous function from "
@@ -122,7 +122,7 @@ def py2js(ob=None, new_name=None, **parser_options):
         # Collect undefined variables
         # vars_unknown = [name for name, s in p.vars.get_undefined()]
         vars_unknown = set()
-        for name, usages in p.vars.get_undefined():
+        for _name, usages in p.vars.get_undefined():
             for usage in usages:
                 vars_unknown.add(usage)
 
@@ -217,7 +217,7 @@ def js_rename(jscode, cur_name, new_name, type=None):
         jscode = jscode.replace("var %s;\n" % cur_name, "var %s;\n" % new_name, 1)
 
     if "this._Component__properties__" in jscode:
-        1 / 0
+        1 / 0  # noqa
 
     return jscode
 
@@ -297,7 +297,7 @@ def evaljs(jscode, whitespace=True, print_result=True, extra_nodejs_args=None):
         else:
             err = str(err)
         err = err[:400] + "..." if len(err) > 400 else err
-        raise RuntimeError(err)
+        raise RuntimeError(err) from None
     finally:
         if filename is not None:
             try:

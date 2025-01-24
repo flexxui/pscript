@@ -241,6 +241,8 @@ such as renaming function/class definitions, and creating JS modules
 
 """
 
+# ruff: noqa: E402, F401, F403
+
 __version__ = "0.7.7"
 
 import sys

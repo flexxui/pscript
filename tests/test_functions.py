@@ -1,5 +1,7 @@
 """Tests for PScript functions"""
 
+# ruff: noqa: F841
+
 import os
 import tempfile
 
@@ -10,9 +12,9 @@ from pscript import py2js, evaljs, evalpy, script2js
 
 def test_dotted_unknowns():
     def func1():
-        x = ui._layouts.SomeLayout()
-        y = ui.SomeLayout.YYY
-        z = ui.SomeOtherLayout
+        x = ui._layouts.SomeLayout()  # noqa
+        y = ui.SomeLayout.YYY  # noqa
+        z = ui.SomeOtherLayout  # noqa
 
     js = py2js(func1)
     assert js.meta["vars_unknown"] == set(

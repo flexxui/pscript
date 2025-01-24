@@ -24,7 +24,7 @@ PACKAGE_NAME = __name__.split(".")[0]
 # Get project root dir
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
 ROOT_DIR = THIS_DIR
-for i in range(9):
+for _i in range(9):
     ROOT_DIR = os.path.dirname(ROOT_DIR)
     if os.path.basename(ROOT_DIR) == PACKAGE_NAME:
         ROOT_DIR = os.path.dirname(ROOT_DIR)

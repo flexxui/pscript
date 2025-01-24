@@ -1,3 +1,5 @@
+# ruff: noqa: F841
+
 from pscript.testing import run_tests_if_main, raises
 
 
@@ -346,8 +348,8 @@ class TestExpressions:
         assert evalpy("a=[0,0]\na[0]=2\na[1]=3\na", False) == "[2,3]"
 
         # Tuple unpacking
-        evalpy("x=[1,2,3]\na, b, c = x\nb", False) == "2"
-        evalpy("a,b,c = [1,2,3]\nc,b,a = a,b,c\n[a,b,c]", False) == "[3,2,1]"
+        assert evalpy("x=[1,2,3]\na, b, c = x\nb", False) == "2"
+        assert evalpy("a,b,c = [1,2,3]\nc,b,a = a,b,c\n[a,b,c]", False) == "[3,2,1]"
 
         # For unpacking, test that variables are declared, but not when attr or index
         assert py2js("xx, yy = 3, 4").count("xx") == 2
@@ -504,7 +506,7 @@ class TestOverload:
     def test_overload_truthy(self):
         def foo():
             PSCRIPT_OVERLOAD = False
-            for v in [true, 0, "a", "", [], {}]:
+            for v in [true, 0, "a", "", [], {}]:  # noqa
                 if v:
                     print("1")
                 else:
@@ -519,7 +521,7 @@ class TestOverload:
 
         def bar():
             PSCRIPT_OVERLOAD = False
-            for v in [true, 0, "a", "", [], {}]:
+            for v in [true, 0, "a", "", [], {}]:  # noqa
                 if v:
                     print("1" + bool(v))
                 else:
@@ -541,7 +543,7 @@ class TestOverload:
         # Can only use with a bool
         def foo():
             PSCRIPT_OVERLOAD = 0
-            return a + b
+            return a + b  # noqa
 
         with raises(JSError) as err_info:
             py2js(foo)

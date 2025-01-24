@@ -818,7 +818,7 @@ class Parser2(Parser1):
         # Push result
         elt = "".join(self.parse(node.element_node))
         code.append("{%s.push(%s);}" % (result_name, elt))
-        for comprehension in node.comp_nodes:
+        for _comprehension in node.comp_nodes:
             code.append("}")  # end for
 
         self.pop_scope_prefix()
@@ -870,7 +870,7 @@ class Parser2(Parser1):
             )
         # Push result
         code.append("{res.push(%s);}" % elt)
-        for comprehension in node.comp_nodes:
+        for _comprehension in node.comp_nodes:
             code.append("}")  # end for
         # Finalize
         code.append("return res;})")  # end function

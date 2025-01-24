@@ -1,7 +1,9 @@
+# ruff: noqa: F841
 
 from pscript.testing import run_tests_if_main, raises
 
 from pscript import RawJS, JSError, py2js, evaljs, evalpy
+from pscript.stubs import undefined
 
 
 def nowhitespace(s):
@@ -121,7 +123,7 @@ class TestConrolFlow:
         assert evalpy("for i, j, k in [[1, 2, 3], [3, 4, 5]]: print(i+j+k)") == "6\n12"
 
     def method_for(self):
-        for i in range(5):
+        for _i in range(5):
             for j in range(5):
                 if j == 4:
                     break
@@ -133,7 +135,7 @@ class TestConrolFlow:
         for i in range(5):
             if i == 1:
                 break
-            for j in range(5):
+            for _j in range(5):
                 pass
             else:
                 print("ok")
@@ -272,8 +274,8 @@ class TestExceptions:
 
     def test_assert(self):
         assert "throw" in py2js("assert True")
-        evalpy("assert true; 7") == "7"
-        evalpy('assert true, "msg"; 7') == "7"
+        assert evalpy("assert true; 7") == "7"
+        assert evalpy('assert true, "msg"; 7') == "7"
 
         catcher = "try { %s } catch(err) { console.log(err); }"
         assert evaljs(catcher % py2js("assert false")).count("AssertionError")
@@ -282,7 +284,7 @@ class TestExceptions:
     def test_assert_catch(self):
         def catchtest(x):
             try:
-                assert False
+                assert False  # noqa
             except AssertionError:
                 print("assertion-error")
             return undefined
@@ -297,7 +299,7 @@ class TestExceptions:
                 elif x == 2:
                     raise RuntimeError("foo")
                 else:
-                    raise "oh crap"
+                    raise "oh crap"  # noqa
             except ValueError:
                 print("value-error")
             except RuntimeError:
@@ -691,16 +693,16 @@ class TestFunctions:
         def func(self):
             def foo(z):
                 y = 2
-                stub = False  # noqa
-                only_here = 1  # noqa
+                stub = False
+                only_here = 1
                 return x + y + z
 
             x = 1
             y = 0
             y = 1
-            z = 1  # noqa
+            z = 1
             res = foo(3)
-            stub = True  # noqa
+            stub = True
             return res + y  # should return 1+2+3+1 == 7
 
         # Find function start

@@ -2,7 +2,6 @@
 Small sphinx extension to show PScript code and corresponding JS.
 """
 
-
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import HtmlFormatter
@@ -27,7 +26,7 @@ htmlFormatter = HtmlFormatter()
 
 
 def my_highlight(code):
-    return highlight(code, PythonLexer(), HtmlFormatter())
+    return highlight(code, PythonLexer(), HtmlFormatter())  # noqa
 
 
 class pscript_example(nodes.raw):
@@ -65,7 +64,7 @@ def visit_pscript_example_html(self, node):
             lines[0] = "<b>%s</b><br />" % lines[0]
             text = "".join(lines)
             self.body.append(
-                "<tr><td %s>%s</td><td %s></td></tr>" % (td_style, text, td_style)
+                "<tr><td %s>%s</td><td %s></td></tr>" % (td_style1, text, td_style2)
             )
             continue
 
@@ -102,7 +101,7 @@ class PscriptExampleDirective(Directive):
         try:
             height = int(self.content[0])
         except Exception:
-            height = 300
+            height = 300  # noqa
         else:
             code = code.split("\n", 1)[1].strip()
 

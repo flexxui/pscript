@@ -47,7 +47,11 @@ exclude = ["tests/python_sample.py", "tests/python_sample3.py"]
 [tool.ruff.lint]
 select = ["F", "E", "W", "B", "RUF"]
 ignore = [
-    # "RUF005", # Consider iterable unpacking instead of concatenation
+    "W291",   # Trailing whitespace
+    "E501",   # Line too long
+    "E731",   # Do not assign a `lambda` expression, use a `def`
+    "RUF005", # Consider iterable unpacking instead of concatenation
+    "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
 ]
 
 
