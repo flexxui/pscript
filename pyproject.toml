@@ -42,6 +42,7 @@ build-backend = "flit_core.buildapi"
 
 [tool.ruff]
 line-length = 88
+exclude = ["tests/python_sample.py", "tests/python_sample3.py"]
 
 [tool.ruff.lint]
 select = ["F", "E", "W", "B", "RUF"]

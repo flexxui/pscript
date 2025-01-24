@@ -9,24 +9,24 @@ and in combination with browserify and related tools.
 # names without triggering pyflakes (a static Python source analysis tool).
 from pscript import undefined, window  # noqa
 
+
 class Foo:
-    
     a_constant = 1, 2, 3
-    
+
     def ham(self, x):
         self.x = x
-    
+
     def eggs(self, y):
         self.y = self.x * y
         hasattr(y, str)
 
 
 class Bar(Foo):
-    
     def bla(self, z):
         print(z)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from pscript import script2js
-    script2js(__file__, 'mymodule')
+
+    script2js(__file__, "mymodule")

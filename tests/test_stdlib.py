@@ -14,39 +14,43 @@ from pscript import py2js, evaljs, evalpy, Parser3, stdlib
 def test_stdlib_full_and_partial():
     code = stdlib.get_full_std_lib()
     assert isinstance(code, str)
-    assert 'var %shasattr =' % stdlib.FUNCTION_PREFIX in code
-    assert 'var %slist =' % stdlib.FUNCTION_PREFIX in code
-    assert code.count('var') > 10
+    assert "var %shasattr =" % stdlib.FUNCTION_PREFIX in code
+    assert "var %slist =" % stdlib.FUNCTION_PREFIX in code
+    assert code.count("var") > 10
 
-    code = stdlib.get_partial_std_lib(['hasattr'], [], [])
+    code = stdlib.get_partial_std_lib(["hasattr"], [], [])
     assert isinstance(code, str)
-    assert 'var %shasattr =' % stdlib.FUNCTION_PREFIX in code
-    assert 'var %slist =' % stdlib.FUNCTION_PREFIX not in code
-    assert code.count('var') == 1
+    assert "var %shasattr =" % stdlib.FUNCTION_PREFIX in code
+    assert "var %slist =" % stdlib.FUNCTION_PREFIX not in code
+    assert code.count("var") == 1
 
-    assert '_hasattr = function' in py2js('hasattr(x, "foo")')
-    assert '_hasattr = function' not in py2js('hasattr(x, "foo")', inline_stdlib=False)
+    assert "_hasattr = function" in py2js('hasattr(x, "foo")')
+    assert "_hasattr = function" not in py2js('hasattr(x, "foo")', inline_stdlib=False)
+
 
 def test_stdlib_has_all_list_methods():
-    method_names = [m for m in dir(list) if not m.startswith('_')]
+    method_names = [m for m in dir(list) if not m.startswith("_")]
     for method_name in method_names:
         assert method_name in stdlib.METHODS
 
+
 def test_stdlib_has_all_dict_methods():
-    method_names = [m for m in dir(dict) if not m.startswith('_')]
-    ignore = 'fromkeys'
-    for name in ignore.split(' '):
+    method_names = [m for m in dir(dict) if not m.startswith("_")]
+    ignore = "fromkeys"
+    for name in ignore.split(" "):
         method_names.remove(name)
     for method_name in method_names:
         assert method_name in stdlib.METHODS
 
+
 def test_stdlib_has_all_str_methods():
-    method_names = [m for m in dir(str) if not m.startswith('_')]
-    ignore = 'encode format_map isprintable maketrans isascii removeprefix removesuffix'
-    for name in ignore.split(' '):
+    method_names = [m for m in dir(str) if not m.startswith("_")]
+    ignore = "encode format_map isprintable maketrans isascii removeprefix removesuffix"
+    for name in ignore.split(" "):
         if name in method_names:
             method_names.remove(name)
     for method_name in method_names:
         assert method_name in stdlib.METHODS
+
 
 run_tests_if_main()

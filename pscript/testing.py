@@ -19,7 +19,7 @@ import inspect
 import pytest
 
 
-PACKAGE_NAME = __name__.split('.')[0]
+PACKAGE_NAME = __name__.split(".")[0]
 
 # Get project root dir
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -30,8 +30,10 @@ for i in range(9):
         ROOT_DIR = os.path.dirname(ROOT_DIR)
         break
 else:
-    print('testing.py could not find project root dir, '
-          'using testing.py directory instead.')
+    print(
+        "testing.py could not find project root dir, "
+        "using testing.py directory instead."
+    )
     ROOT_DIR = THIS_DIR
 
 
@@ -42,42 +44,55 @@ skip = pytest.skip
 
 
 def run_tests_if_main(show_coverage=False):
-    """ Run tests in a given file if it is run as a script
+    """Run tests in a given file if it is run as a script
 
     Coverage is reported for running this single test. Set show_coverage to
     launch the report in the web browser.
     """
     local_vars = inspect.currentframe().f_back.f_locals
-    if not local_vars.get('__name__', '') == '__main__':
+    if not local_vars.get("__name__", "") == "__main__":
         return
     # we are in a "__main__"
     os.chdir(ROOT_DIR)
-    fname = str(local_vars['__file__'])
+    fname = str(local_vars["__file__"])
     _clear_our_modules()
     _enable_faulthandler()
-    pytest.main(['-v', '-x', '--color=yes', '--cov', PACKAGE_NAME,
-                 '--cov-config', '.coveragerc', '--cov-report', 'html', fname])
+    pytest.main(
+        [
+            "-v",
+            "-x",
+            "--color=yes",
+            "--cov",
+            PACKAGE_NAME,
+            "--cov-config",
+            ".coveragerc",
+            "--cov-report",
+            "html",
+            fname,
+        ]
+    )
     if show_coverage:
         import webbrowser
-        fname = os.path.join(ROOT_DIR, 'htmlcov', 'index.html')
+
+        fname = os.path.join(ROOT_DIR, "htmlcov", "index.html")
         webbrowser.open_new_tab(fname)
 
 
 def _enable_faulthandler():
-    """ Enable faulthandler (if we can), so that we get tracebacks
+    """Enable faulthandler (if we can), so that we get tracebacks
     on segfaults.
     """
     try:
         import faulthandler
+
         faulthandler.enable()
-        print('Faulthandler enabled')
+        print("Faulthandler enabled")
     except Exception:
-        print('Could not enable faulthandler')
+        print("Could not enable faulthandler")
 
 
 def _clear_our_modules():
-    """ Remove ourselves from sys.modules to force an import.
-    """
+    """Remove ourselves from sys.modules to force an import."""
     for key in list(sys.modules.keys()):
-        if key.startswith(PACKAGE_NAME) and 'testing' not in key:
+        if key.startswith(PACKAGE_NAME) and "testing" not in key:
             del sys.modules[key]

@@ -15,21 +15,21 @@ import re
 
 FUNCTIONS = {}
 METHODS = {}
-FUNCTION_PREFIX = '_pyfunc_'
-METHOD_PREFIX = '_pymeth_'
+FUNCTION_PREFIX = "_pyfunc_"
+METHOD_PREFIX = "_pymeth_"
 
 
 def get_std_info(code):
-    """ Given the JS code for a std function or method, determine the
+    """Given the JS code for a std function or method, determine the
     number of arguments, function_deps and method_deps.
     """
-    _, _, nargs = code.splitlines()[0].partition('nargs:')
-    nargs = [int(i.strip()) for i in nargs.strip().replace(',', ' ').split(' ') if i]
+    _, _, nargs = code.splitlines()[0].partition("nargs:")
+    nargs = [int(i.strip()) for i in nargs.strip().replace(",", " ").split(" ") if i]
     # Collect dependencies on other funcs/methods
     sep = FUNCTION_PREFIX
-    function_deps = [part.split('(')[0].strip() for part in code.split(sep)[1:]]
+    function_deps = [part.split("(")[0].strip() for part in code.split(sep)[1:]]
     sep = METHOD_PREFIX
-    method_deps = [part.split('.')[0].strip() for part in code.split(sep)[1:]]
+    method_deps = [part.split(".")[0].strip() for part in code.split(sep)[1:]]
     # Reduce and sort
     function_deps = sorted(set(function_deps))
     method_deps = sorted(set(method_deps))
@@ -45,14 +45,14 @@ def get_std_info(code):
 
     return nargs, sorted(function_deps), sorted(method_deps)
 
+
 def _update_deps(code, function_deps, method_deps):
-    """ Given the code of a dependency, recursively resolve additional dependencies.
-    """
+    """Given the code of a dependency, recursively resolve additional dependencies."""
     # Collect deps
     sep = FUNCTION_PREFIX
-    new_function_deps = [part.split('(')[0].strip() for part in code.split(sep)[1:]]
+    new_function_deps = [part.split("(")[0].strip() for part in code.split(sep)[1:]]
     sep = METHOD_PREFIX
-    new_method_deps = [part.split('.')[0].strip() for part in code.split(sep)[1:]]
+    new_method_deps = [part.split(".")[0].strip() for part in code.split(sep)[1:]]
     # Update
     new_function_deps = set(new_function_deps).difference(function_deps)
     new_method_deps = set(new_method_deps).difference(method_deps)
@@ -66,33 +66,34 @@ def _update_deps(code, function_deps, method_deps):
     return function_deps, method_deps
 
 
-def get_partial_std_lib(func_names, method_names, indent=0,
-                        func_prefix=None, method_prefix=None):
-    """ Get the code for the PScript standard library consisting of
+def get_partial_std_lib(
+    func_names, method_names, indent=0, func_prefix=None, method_prefix=None
+):
+    """Get the code for the PScript standard library consisting of
     the given function and method names. The given indent specifies how
     many sets of 4 spaces to prepend.
     """
-    func_prefix = 'var ' + FUNCTION_PREFIX if (func_prefix is None) else func_prefix
-    method_prefix = 'var ' + METHOD_PREFIX if (method_prefix is None) else method_prefix
+    func_prefix = "var " + FUNCTION_PREFIX if (func_prefix is None) else func_prefix
+    method_prefix = "var " + METHOD_PREFIX if (method_prefix is None) else method_prefix
     lines = []
     for name in sorted(func_names):
         code = FUNCTIONS[name].strip()
-        if '\n' not in code:
-            code = code.rsplit('//', 1)[0].rstrip()  # strip comment from one-liners
-        lines.append('%s%s = %s;' % (func_prefix, name, code))
+        if "\n" not in code:
+            code = code.rsplit("//", 1)[0].rstrip()  # strip comment from one-liners
+        lines.append("%s%s = %s;" % (func_prefix, name, code))
     for name in sorted(method_names):
         code = METHODS[name].strip()
         # lines.append('Object.prototype.%s%s = %s;' % (METHOD_PREFIX, name, code))
-        lines.append('%s%s = %s;' % (method_prefix, name, code))
-    code = '\n'.join(lines)
+        lines.append("%s%s = %s;" % (method_prefix, name, code))
+    code = "\n".join(lines)
     if indent:
-        lines = ['    '*indent + line for line in code.splitlines()]
-        code = '\n'.join(lines)
+        lines = ["    " * indent + line for line in code.splitlines()]
+        code = "\n".join(lines)
     return code
 
 
 def get_full_std_lib(indent=0):
-    """ Get the code for the full PScript standard library.
+    """Get the code for the full PScript standard library.
 
     The given indent specifies how many sets of 4 spaces to prepend.
     If the full stdlib is made available in JavaScript, multiple
@@ -105,26 +106,27 @@ def get_full_std_lib(indent=0):
 # todo: now that we have modules, we can have shorter/no prefixes, right?
 # -> though maybe we use them for string replacement somewhere?
 def get_all_std_names():
-    """ Get list if function names and methods names in std lib.
-    """
-    return ([FUNCTION_PREFIX + f for f in FUNCTIONS],
-            [METHOD_PREFIX + f for f in METHODS])
+    """Get list if function names and methods names in std lib."""
+    return (
+        [FUNCTION_PREFIX + f for f in FUNCTIONS],
+        [METHOD_PREFIX + f for f in METHODS],
+    )
 
 
 ## ----- Functions
 
 ## Special functions: not really in builtins, but important enough to support
 
-FUNCTIONS['perf_counter'] = """function() { // nargs: 0
+FUNCTIONS["perf_counter"] = """function() { // nargs: 0
     if (typeof(process) === "undefined"){return performance.now()*1e-3;}
     else {var t = process.hrtime(); return t[0] + t[1]*1e-9;}
 }"""  # Work in nodejs and browser
 
-FUNCTIONS['time'] = """function () {return Date.now() / 1000;} // nargs: 0"""
+FUNCTIONS["time"] = """function () {return Date.now() / 1000;} // nargs: 0"""
 
 ## Hardcore functions
 
-FUNCTIONS['op_instantiate'] = """function (ob, args) { // nargs: 2
+FUNCTIONS["op_instantiate"] = """function (ob, args) { // nargs: 2
     if ((typeof ob === "undefined") ||
             (typeof window !== "undefined" && window === ob) ||
             (typeof global !== "undefined" && global === ob))
@@ -141,13 +143,13 @@ FUNCTIONS['op_instantiate'] = """function (ob, args) { // nargs: 2
     }
 }"""
 
-FUNCTIONS['create_dict'] = """function () {
+FUNCTIONS["create_dict"] = """function () {
     var d = {};
     for (var i=0; i<arguments.length; i+=2) { d[arguments[i]] = arguments[i+1]; }
     return d;
 }"""
 
-FUNCTIONS['merge_dicts'] = """function () {
+FUNCTIONS["merge_dicts"] = """function () {
     var res = {};
     for (var i=0; i<arguments.length; i++) {
         var d = arguments[i];
@@ -158,7 +160,7 @@ FUNCTIONS['merge_dicts'] = """function () {
 }"""
 
 # args is a list of (name, default) tuples, and is overwritten with names from kwargs
-FUNCTIONS['op_parse_kwargs'] = """
+FUNCTIONS["op_parse_kwargs"] = """
 function (arg_names, arg_values, kwargs, strict) { // nargs: 3
     for (var i=0; i<arg_values.length; i++) {
         var name = arg_names[i];
@@ -175,32 +177,32 @@ function (arg_names, arg_values, kwargs, strict) { // nargs: 3
 }""".lstrip()
 
 
-FUNCTIONS['op_error'] = """function (etype, msg) { // nargs: 2
+FUNCTIONS["op_error"] = """function (etype, msg) { // nargs: 2
     var e = new Error(etype + ': ' + msg);
     e.name = etype
     return e;
 }"""
 
-FUNCTIONS['hasattr'] = """function (ob, name) { // nargs: 2
+FUNCTIONS["hasattr"] = """function (ob, name) { // nargs: 2
     return (ob !== undefined) && (ob !== null) && (ob[name] !== undefined);
 }"""
 
-FUNCTIONS['getattr'] = """function (ob, name, deflt) { // nargs: 2 3
+FUNCTIONS["getattr"] = """function (ob, name, deflt) { // nargs: 2 3
     var has_attr = ob !== undefined && ob !== null && ob[name] !== undefined;
     if (has_attr) {return ob[name];}
     else if (arguments.length == 3) {return deflt;}
     else {var e = Error(name); e.name='AttributeError'; throw e;}
 }"""
 
-FUNCTIONS['setattr'] = """function (ob, name, value) {  // nargs: 3
+FUNCTIONS["setattr"] = """function (ob, name, value) {  // nargs: 3
     ob[name] = value;
 }"""
 
-FUNCTIONS['delattr'] = """function (ob, name) {  // nargs: 2
+FUNCTIONS["delattr"] = """function (ob, name) {  // nargs: 2
     delete ob[name];
 }"""
 
-FUNCTIONS['dict'] = """function (x) {
+FUNCTIONS["dict"] = """function (x) {
     var t, i, keys, r={};
     if (Array.isArray(x)) {
         for (i=0; i<x.length; i++) {
@@ -215,7 +217,7 @@ FUNCTIONS['dict'] = """function (x) {
     return r;
 }"""
 
-FUNCTIONS['list'] = """function (x) {
+FUNCTIONS["list"] = """function (x) {
     var r=[];
     if (typeof x==="object" && !Array.isArray(x)) {x = Object.keys(x)}
     for (var i=0; i<x.length; i++) {
@@ -224,7 +226,7 @@ FUNCTIONS['list'] = """function (x) {
     return r;
 }"""
 
-FUNCTIONS['range'] = """function (start, end, step) {
+FUNCTIONS["range"] = """function (start, end, step) {
     var i, res = [];
     var val = start;
     var n = (end - start) / step;
@@ -235,7 +237,7 @@ FUNCTIONS['range'] = """function (start, end, step) {
     return res;
 }"""
 
-FUNCTIONS['format'] = """function (v, fmt) {  // nargs: 2
+FUNCTIONS["format"] = """function (v, fmt) {  // nargs: 2
     fmt = fmt.toLowerCase();
     var s = String(v);
     if (fmt.indexOf('!r') >= 0) {
@@ -297,60 +299,60 @@ FUNCTIONS['format'] = """function (v, fmt) {  // nargs: 2
 
 ## Normal functions
 
-FUNCTIONS['pow'] = 'Math.pow // nargs: 2'
+FUNCTIONS["pow"] = "Math.pow // nargs: 2"
 
-FUNCTIONS['sum'] = """function (x) {  // nargs: 1
+FUNCTIONS["sum"] = """function (x) {  // nargs: 1
     return x.reduce(function(a, b) {return a + b;});
 }"""
 
-FUNCTIONS['round'] = 'Math.round // nargs: 1'
+FUNCTIONS["round"] = "Math.round // nargs: 1"
 
-FUNCTIONS['int'] = """function (x, base) { // nargs: 1 2
+FUNCTIONS["int"] = """function (x, base) { // nargs: 1 2
     if(base !== undefined) return parseInt(x, base);
     return x<0 ? Math.ceil(x): Math.floor(x);
 }"""
 
-FUNCTIONS['float'] = 'Number // nargs: 1'
+FUNCTIONS["float"] = "Number // nargs: 1"
 
-FUNCTIONS['str'] = 'String // nargs: 0 1'
+FUNCTIONS["str"] = "String // nargs: 0 1"
 
 # Note use of "_IS_COMPONENT" to check for flexx.app component classes.
-FUNCTIONS['repr'] = """function (x) { // nargs: 1
+FUNCTIONS["repr"] = """function (x) { // nargs: 1
     var res; try { res = JSON.stringify(x); } catch (e) { res = undefined; }
     if (typeof res === 'undefined') { res = x._IS_COMPONENT ? x.id : String(x); }
     return res;
 }"""
 
-FUNCTIONS['bool'] = """function (x) { // nargs: 1
+FUNCTIONS["bool"] = """function (x) { // nargs: 1
     return Boolean(FUNCTION_PREFIXtruthy(x));
 }"""
 
-FUNCTIONS['abs'] = 'Math.abs // nargs: 1'
+FUNCTIONS["abs"] = "Math.abs // nargs: 1"
 
-FUNCTIONS['divmod'] = """function (x, y) { // nargs: 2
+FUNCTIONS["divmod"] = """function (x, y) { // nargs: 2
     var m = x % y; return [(x-m)/y, m];
 }"""
 
-FUNCTIONS['all'] = """function (x) { // nargs: 1
+FUNCTIONS["all"] = """function (x) { // nargs: 1
     for (var i=0; i<x.length; i++) {
         if (!FUNCTION_PREFIXtruthy(x[i])){return false;}
     } return true;
 }"""
 
-FUNCTIONS['any'] = """function (x) { // nargs: 1
+FUNCTIONS["any"] = """function (x) { // nargs: 1
     for (var i=0; i<x.length; i++) {
         if (FUNCTION_PREFIXtruthy(x[i])){return true;}
     } return false;
 }"""
 
-FUNCTIONS['enumerate'] = """function (iter) { // nargs: 1
+FUNCTIONS["enumerate"] = """function (iter) { // nargs: 1
     var i, res=[];
     if ((typeof iter==="object") && (!Array.isArray(iter))) {iter = Object.keys(iter);}
     for (i=0; i<iter.length; i++) {res.push([i, iter[i]]);}
     return res;
 }"""
 
-FUNCTIONS['zip'] = """function () { // nargs: 2 3 4 5 6 7 8 9
+FUNCTIONS["zip"] = """function () { // nargs: 2 3 4 5 6 7 8 9
     var i, j, tup, arg, args = [], res = [], len = 1e20;
     for (i=0; i<arguments.length; i++) {
         arg = arguments[i];
@@ -366,12 +368,12 @@ FUNCTIONS['zip'] = """function () { // nargs: 2 3 4 5 6 7 8 9
     return res;
 }"""
 
-FUNCTIONS['reversed'] = """function (iter) { // nargs: 1
+FUNCTIONS["reversed"] = """function (iter) { // nargs: 1
     if ((typeof iter==="object") && (!Array.isArray(iter))) {iter = Object.keys(iter);}
     return iter.slice().reverse();
 }"""
 
-FUNCTIONS['sorted'] = """function (iter, key, reverse) { // nargs: 1 2 3
+FUNCTIONS["sorted"] = """function (iter, key, reverse) { // nargs: 1 2 3
     if ((typeof iter==="object") && (!Array.isArray(iter))) {iter = Object.keys(iter);}
     var comp = function (a, b) {a = key(a); b = key(b);
         if (a<b) {return -1;} if (a>b) {return 1;} return 0;};
@@ -381,13 +383,13 @@ FUNCTIONS['sorted'] = """function (iter, key, reverse) { // nargs: 1 2 3
     return iter;
 }"""
 
-FUNCTIONS['filter'] = """function (func, iter) { // nargs: 2
+FUNCTIONS["filter"] = """function (func, iter) { // nargs: 2
     if (typeof func === "undefined" || func === null) {func = function(x) {return x;}}
     if ((typeof iter==="object") && (!Array.isArray(iter))) {iter = Object.keys(iter);}
     return iter.filter(func);
 }"""
 
-FUNCTIONS['map'] = """function (func, iter) { // nargs: 2
+FUNCTIONS["map"] = """function (func, iter) { // nargs: 2
     if (typeof func === "undefined" || func === null) {func = function(x) {return x;}}
     if ((typeof iter==="object") && (!Array.isArray(iter))) {iter = Object.keys(iter);}
     return iter.map(func);
@@ -395,7 +397,7 @@ FUNCTIONS['map'] = """function (func, iter) { // nargs: 2
 
 ## Other / Helper functions
 
-FUNCTIONS['truthy'] = """function (v) {
+FUNCTIONS["truthy"] = """function (v) {
     if (v === null || typeof v !== "object") {return v;}
     else if (v.length !== undefined) {return v.length ? v : false;}
     else if (v.byteLength !== undefined) {return v.byteLength ? v : false;}
@@ -403,7 +405,7 @@ FUNCTIONS['truthy'] = """function (v) {
     else {return Object.getOwnPropertyNames(v).length ? v : false;}
 }"""
 
-FUNCTIONS['op_equals'] = """function op_equals (a, b) { // nargs: 2
+FUNCTIONS["op_equals"] = """function op_equals (a, b) { // nargs: 2
     var a_type = typeof a;
     // If a (or b actually) is of type string, number or boolean, we don't need
     // to do all the other type checking below.
@@ -426,7 +428,7 @@ FUNCTIONS['op_equals'] = """function op_equals (a, b) { // nargs: 2
     } return a == b;
 }"""
 
-FUNCTIONS['op_contains'] = """function op_contains (a, b) { // nargs: 2
+FUNCTIONS["op_contains"] = """function op_contains (a, b) { // nargs: 2
     if (b == null) {
     } else if (Array.isArray(b)) {
         for (var i=0; i<b.length; i++) {if (FUNCTION_PREFIXop_equals(a, b[i]))
@@ -440,13 +442,13 @@ FUNCTIONS['op_contains'] = """function op_contains (a, b) { // nargs: 2
     } var e = Error('Not a container: ' + b); e.name='TypeError'; throw e;
 }"""
 
-FUNCTIONS['op_add'] = """function (a, b) { // nargs: 2
+FUNCTIONS["op_add"] = """function (a, b) { // nargs: 2
     if (Array.isArray(a) && Array.isArray(b)) {
         return a.concat(b);
     } return a + b;
 }"""
 
-FUNCTIONS['op_mult'] = """function (a, b) { // nargs: 2
+FUNCTIONS["op_mult"] = """function (a, b) { // nargs: 2
     if ((typeof a === 'number') + (typeof b === 'number') === 1) {
         if (a.constructor === String) return METHOD_PREFIXrepeat(a, b);
         if (b.constructor === String) return METHOD_PREFIXrepeat(b, a);
@@ -463,23 +465,23 @@ FUNCTIONS['op_mult'] = """function (a, b) { // nargs: 2
 
 ## List only
 
-METHODS['append'] = """function (x) { // nargs: 1
+METHODS["append"] = """function (x) { // nargs: 1
     if (!Array.isArray(this)) return this.KEY.apply(this, arguments);
     this.push(x);
 }"""
 
-METHODS['extend'] = """function (x) { // nargs: 1
+METHODS["extend"] = """function (x) { // nargs: 1
     if (!Array.isArray(this)) return this.KEY.apply(this, arguments);
     this.push.apply(this, x);
 }"""
 
-METHODS['insert'] = """function (i, x) { // nargs: 2
+METHODS["insert"] = """function (i, x) { // nargs: 2
     if (!Array.isArray(this)) return this.KEY.apply(this, arguments);
     i = (i < 0) ? this.length + i : i;
     this.splice(i, 0, x);
 }"""
 
-METHODS['remove'] = """function (x) { // nargs: 1
+METHODS["remove"] = """function (x) { // nargs: 1
     if (!Array.isArray(this)) return this.KEY.apply(this, arguments);
     for (var i=0; i<this.length; i++) {
         if (FUNCTION_PREFIXop_equals(this[i], x)) {this.splice(i, 1); return;}
@@ -487,11 +489,11 @@ METHODS['remove'] = """function (x) { // nargs: 1
     var e = Error(x); e.name='ValueError'; throw e;
 }"""
 
-METHODS['reverse'] = """function () { // nargs: 0
+METHODS["reverse"] = """function () { // nargs: 0
     this.reverse();
 }"""
 
-METHODS['sort'] = """function (key, reverse) { // nargs: 0 1 2
+METHODS["sort"] = """function (key, reverse) { // nargs: 0 1 2
     if (!Array.isArray(this)) return this.KEY.apply(this, arguments);
     var comp = function (a, b) {a = key(a); b = key(b);
         if (a<b) {return -1;} if (a>b) {return 1;} return 0;};
@@ -502,7 +504,7 @@ METHODS['sort'] = """function (key, reverse) { // nargs: 0 1 2
 
 ## List and dict
 
-METHODS['clear'] = """function () { // nargs: 0
+METHODS["clear"] = """function () { // nargs: 0
     if (Array.isArray(this)) {
         this.splice(0, this.length);
     } else if (this.constructor === Object) {
@@ -511,7 +513,7 @@ METHODS['clear'] = """function () { // nargs: 0
     } else return this.KEY.apply(this, arguments);
 }"""
 
-METHODS['copy'] = """function () { // nargs: 0
+METHODS["copy"] = """function () { // nargs: 0
     if (Array.isArray(this)) {
         return this.slice(0);
     } else if (this.constructor === Object) {
@@ -521,7 +523,7 @@ METHODS['copy'] = """function () { // nargs: 0
     } else return this.KEY.apply(this, arguments);
 }"""
 
-METHODS['pop'] = """function (i, d) { // nargs: 1 2
+METHODS["pop"] = """function (i, d) { // nargs: 1 2
     if (Array.isArray(this)) {
         i = (i === undefined) ? -1 : i;
         i = (i < 0) ? (this.length + i) : i;
@@ -539,7 +541,7 @@ METHODS['pop'] = """function (i, d) { // nargs: 1 2
 ## List and str
 
 # start and stop nor supported for list on Python, but for simplicity, we do
-METHODS['count'] = """function (x, start, stop) { // nargs: 1 2 3
+METHODS["count"] = """function (x, start, stop) { // nargs: 1 2 3
     start = (start === undefined) ? 0 : start;
     stop = (stop === undefined) ? this.length : stop;
     start = Math.max(0, ((start < 0) ? this.length + start : start));
@@ -560,7 +562,7 @@ METHODS['count'] = """function (x, start, stop) { // nargs: 1 2 3
     } else return this.KEY.apply(this, arguments);
 }"""
 
-METHODS['index'] = """function (x, start, stop) { // nargs: 1 2 3
+METHODS["index"] = """function (x, start, stop) { // nargs: 1 2 3
     start = (start === undefined) ? 0 : start;
     stop = (stop === undefined) ? this.length : stop;
     start = Math.max(0, ((start < 0) ? this.length + start : start));
@@ -580,26 +582,26 @@ METHODS['index'] = """function (x, start, stop) { // nargs: 1 2 3
 
 # note: fromkeys is a classmethod, and we dont support it.
 
-METHODS['get'] = """function (key, d) { // nargs: 1 2
+METHODS["get"] = """function (key, d) { // nargs: 1 2
     if (this.constructor !== Object) return this.KEY.apply(this, arguments);
     if (this[key] !== undefined) {return this[key];}
     else if (d !== undefined) {return d;}
     else {return null;}
 }"""
 
-METHODS['items'] = """function () { // nargs: 0
+METHODS["items"] = """function () { // nargs: 0
     if (this.constructor !== Object) return this.KEY.apply(this, arguments);
     var key, keys = Object.keys(this), res = []
     for (var i=0; i<keys.length; i++) {key = keys[i]; res.push([key, this[key]]);}
     return res;
 }"""
 
-METHODS['keys'] = """function () { // nargs: 0
+METHODS["keys"] = """function () { // nargs: 0
     if (typeof this['KEY'] === 'function') return this.KEY.apply(this, arguments);
     return Object.keys(this);
 }"""
 
-METHODS['popitem'] = """function () { // nargs: 0
+METHODS["popitem"] = """function () { // nargs: 0
     if (this.constructor !== Object) return this.KEY.apply(this, arguments);
     var keys, key, val;
     keys = Object.keys(this);
@@ -608,21 +610,21 @@ METHODS['popitem'] = """function () { // nargs: 0
     return [key, val];
 }"""
 
-METHODS['setdefault'] = """function (key, d) { // nargs: 1 2
+METHODS["setdefault"] = """function (key, d) { // nargs: 1 2
     if (this.constructor !== Object) return this.KEY.apply(this, arguments);
     if (this[key] !== undefined) {return this[key];}
     else if (d !== undefined) { this[key] = d; return d;}
     else {return null;}
 }"""
 
-METHODS['update'] = """function (other) { // nargs: 1
+METHODS["update"] = """function (other) { // nargs: 1
     if (this.constructor !== Object) return this.KEY.apply(this, arguments);
     var key, keys = Object.keys(other);
     for (var i=0; i<keys.length; i++) {key = keys[i]; this[key] = other[key];}
     return null;
 }"""
 
-METHODS['values'] = """function () { // nargs: 0
+METHODS["values"] = """function () { // nargs: 0
     if (this.constructor !== Object) return this.KEY.apply(this, arguments);
     var key, keys = Object.keys(this), res = [];
     for (var i=0; i<keys.length; i++) {key = keys[i]; res.push(this[key]);}
@@ -635,7 +637,7 @@ METHODS['values'] = """function () { // nargs: 0
 
 # Not a Python method, but a method that we need, and is only ECMA 6
 # http://stackoverflow.com/a/5450113/2271927
-METHODS['repeat'] = """function(count) { // nargs: 0
+METHODS["repeat"] = """function(count) { // nargs: 0
     if (this.repeat) return this.repeat(count);
     if (count < 1) return '';
     var result = '', pattern = this.valueOf();
@@ -646,17 +648,17 @@ METHODS['repeat'] = """function(count) { // nargs: 0
     return result + pattern;
 }"""
 
-METHODS['capitalize'] = """function () { // nargs: 0
+METHODS["capitalize"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return this.slice(0, 1).toUpperCase() + this.slice(1).toLowerCase();
 }"""
 
-METHODS['casefold'] = """function () { // nargs: 0
+METHODS["casefold"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return this.toLowerCase();
 }"""
 
-METHODS['center'] = """function (w, fill) { // nargs: 1 2
+METHODS["center"] = """function (w, fill) { // nargs: 1 2
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     fill = (fill === undefined) ? ' ' : fill;
     var tofill = Math.max(0, w - this.length);
@@ -665,19 +667,19 @@ METHODS['center'] = """function (w, fill) { // nargs: 1 2
     return METHOD_PREFIXrepeat(fill, left) + this + METHOD_PREFIXrepeat(fill, right);
 }"""
 
-METHODS['endswith'] = """function (x) { // nargs: 1
+METHODS["endswith"] = """function (x) { // nargs: 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     var last_index = this.lastIndexOf(x);
     return last_index == this.length - x.length && last_index >= 0;
 }"""
 
-METHODS['expandtabs'] = """function (tabsize) { // nargs: 0 1
+METHODS["expandtabs"] = """function (tabsize) { // nargs: 0 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     tabsize = (tabsize === undefined) ? 8 : tabsize;
     return this.replace(/\\t/g, METHOD_PREFIXrepeat(' ', tabsize));
 }"""
 
-METHODS['find'] = """function (x, start, stop) { // nargs: 1 2 3
+METHODS["find"] = """function (x, start, stop) { // nargs: 1 2 3
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     start = (start === undefined) ? 0 : start;
     stop = (stop === undefined) ? this.length : stop;
@@ -688,7 +690,7 @@ METHODS['find'] = """function (x, start, stop) { // nargs: 1 2 3
     return -1;
 }"""
 
-METHODS['format'] = """function () {
+METHODS["format"] = """function () {
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     var parts = [], i = 0, i1, i2;
     var itemnr = -1;
@@ -713,28 +715,28 @@ METHODS['format'] = """function () {
     return parts.join('');
 }"""
 
-METHODS['isalnum'] = """function () { // nargs: 0
+METHODS["isalnum"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return Boolean(/^[A-Za-z0-9]+$/.test(this));
 }"""
 
-METHODS['isalpha'] = """function () { // nargs: 0
+METHODS["isalpha"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return Boolean(/^[A-Za-z]+$/.test(this));
 }"""
 
-METHODS['isidentifier'] = """function () { // nargs: 0
+METHODS["isidentifier"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return Boolean(/^[A-Za-z_][A-Za-z0-9_]*$/.test(this));
 }"""
 
-METHODS['islower'] = """function () { // nargs: 0
+METHODS["islower"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     var low = this.toLowerCase(), high = this.toUpperCase();
     return low != high && low == this;
 }"""
 
-METHODS['isdecimal'] = """function () { // nargs: 0
+METHODS["isdecimal"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return Boolean(/^[0-9]+$/.test(this));
 }"""
@@ -751,43 +753,43 @@ METHODS['isdecimal'] = """function () { // nargs: 0
 # isnumeric with isdecimal's implementation, so we provide isnumeric
 # and isdigit as aliases for now.
 
-METHODS['isnumeric'] = METHODS['isdigit'] = METHODS['isdecimal']
+METHODS["isnumeric"] = METHODS["isdigit"] = METHODS["isdecimal"]
 
-METHODS['isspace'] = """function () { // nargs: 0
+METHODS["isspace"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return Boolean(/^\\s+$/.test(this));
 }"""
 
-METHODS['istitle'] = """function () { // nargs: 0
+METHODS["istitle"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     var low = this.toLowerCase(), title = METHOD_PREFIXtitle(this);
     return low != title && title == this;
 }"""
 
-METHODS['isupper'] = """function () { // nargs: 0
+METHODS["isupper"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     var low = this.toLowerCase(), high = this.toUpperCase();
     return low != high && high == this;
 }"""
 
-METHODS['join'] = """function (x) { // nargs: 1
+METHODS["join"] = """function (x) { // nargs: 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return x.join(this);  // call join on the list instead of the string.
 }"""
 
-METHODS['ljust'] = """function (w, fill) { // nargs: 1 2
+METHODS["ljust"] = """function (w, fill) { // nargs: 1 2
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     fill = (fill === undefined) ? ' ' : fill;
     var tofill = Math.max(0, w - this.length);
     return this + METHOD_PREFIXrepeat(fill, tofill);
 }"""
 
-METHODS['lower'] = """function () { // nargs: 0
+METHODS["lower"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return this.toLowerCase();
 }"""
 
-METHODS['lstrip'] = """function (chars) { // nargs: 0 1
+METHODS["lstrip"] = """function (chars) { // nargs: 0 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     chars = (chars === undefined) ? ' \\t\\r\\n' : chars;
     for (var i=0; i<this.length; i++) {
@@ -795,7 +797,7 @@ METHODS['lstrip'] = """function (chars) { // nargs: 0 1
     } return '';
 }"""
 
-METHODS['partition'] = """function (sep) { // nargs: 1
+METHODS["partition"] = """function (sep) { // nargs: 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     if (sep === '') {var e = Error('empty sep'); e.name='ValueError'; throw e;}
     var i1 = this.indexOf(sep);
@@ -804,7 +806,7 @@ METHODS['partition'] = """function (sep) { // nargs: 1
     return [this.slice(0, i1), this.slice(i1, i2), this.slice(i2)];
 }"""
 
-METHODS['replace'] = """function (s1, s2, count) {  // nargs: 2 3
+METHODS["replace"] = """function (s1, s2, count) {  // nargs: 2 3
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     var i = 0, i2, parts = [];
     count = (count === undefined) ? 1e20 : count;
@@ -821,7 +823,7 @@ METHODS['replace'] = """function (s1, s2, count) {  // nargs: 2 3
     return parts.join('');
 }"""
 
-METHODS['rfind'] = """function (x, start, stop) { // nargs: 1 2 3
+METHODS["rfind"] = """function (x, start, stop) { // nargs: 1 2 3
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     start = (start === undefined) ? 0 : start;
     stop = (stop === undefined) ? this.length : stop;
@@ -832,21 +834,21 @@ METHODS['rfind'] = """function (x, start, stop) { // nargs: 1 2 3
     return -1;
 }"""
 
-METHODS['rindex'] = """function (x, start, stop) {  // nargs: 1 2 3
+METHODS["rindex"] = """function (x, start, stop) {  // nargs: 1 2 3
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     var i = METHOD_PREFIXrfind(this, x, start, stop);
     if (i >= 0) return i;
     var e = Error(x); e.name='ValueError'; throw e;
 }"""
 
-METHODS['rjust'] = """function (w, fill) { // nargs: 1 2
+METHODS["rjust"] = """function (w, fill) { // nargs: 1 2
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     fill = (fill === undefined) ? ' ' : fill;
     var tofill = Math.max(0, w - this.length);
     return METHOD_PREFIXrepeat(fill, tofill) + this;
 }"""
 
-METHODS['rpartition'] = """function (sep) { // nargs: 1
+METHODS["rpartition"] = """function (sep) { // nargs: 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     if (sep === '') {var e = Error('empty sep'); e.name='ValueError'; throw e;}
     var i1 = this.lastIndexOf(sep);
@@ -855,7 +857,7 @@ METHODS['rpartition'] = """function (sep) { // nargs: 1
     return [this.slice(0, i1), this.slice(i1, i2), this.slice(i2)];
 }"""
 
-METHODS['rsplit'] = """function (sep, count) { // nargs: 1 2
+METHODS["rsplit"] = """function (sep, count) { // nargs: 1 2
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     sep = (sep === undefined) ? /\\s/ : sep;
     count = Math.max(0, (count === undefined) ? 1e20 : count);
@@ -866,7 +868,7 @@ METHODS['rsplit'] = """function (sep, count) { // nargs: 1 2
     return res;
 }"""
 
-METHODS['rstrip'] = """function (chars) { // nargs: 0 1
+METHODS["rstrip"] = """function (chars) { // nargs: 0 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     chars = (chars === undefined) ? ' \\t\\r\\n' : chars;
     for (var i=this.length-1; i>=0; i--) {
@@ -874,7 +876,7 @@ METHODS['rstrip'] = """function (chars) { // nargs: 0 1
     } return '';
 }"""
 
-METHODS['split'] = """function (sep, count) { // nargs: 0, 1 2
+METHODS["split"] = """function (sep, count) { // nargs: 0, 1 2
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     if (sep === '') {var e = Error('empty sep'); e.name='ValueError'; throw e;}
     sep = (sep === undefined) ? /\\s/ : sep;
@@ -891,7 +893,7 @@ METHODS['split'] = """function (sep, count) { // nargs: 0, 1 2
     return res;
 }"""
 
-METHODS['splitlines'] = """function (keepends) { // nargs: 0 1
+METHODS["splitlines"] = """function (keepends) { // nargs: 0 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     keepends = keepends ? 1 : 0
     var finder = /\\r\\n|\\r|\\n/g;
@@ -908,12 +910,12 @@ METHODS['splitlines'] = """function (keepends) { // nargs: 0 1
     return parts;
 }"""
 
-METHODS['startswith'] = """function (x) { // nargs: 1
+METHODS["startswith"] = """function (x) { // nargs: 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return this.indexOf(x) == 0;
 }"""
 
-METHODS['strip'] = """function (chars) { // nargs: 0 1
+METHODS["strip"] = """function (chars) { // nargs: 0 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     chars = (chars === undefined) ? ' \\t\\r\\n' : chars;
     var i, s1 = this, s2 = '', s3 = '';
@@ -924,7 +926,7 @@ METHODS['strip'] = """function (chars) { // nargs: 0 1
     } return s3;
 }"""
 
-METHODS['swapcase'] = """function () { // nargs: 0
+METHODS["swapcase"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     var c, res = [];
     for (var i=0; i<this.length; i++) {
@@ -934,7 +936,7 @@ METHODS['swapcase'] = """function () { // nargs: 0
     } return res.join('');
 }"""
 
-METHODS['title'] = """function () { // nargs: 0
+METHODS["title"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     var i0, res = [], tester = /^[^A-Za-z]?[A-Za-z]$/;
     for (var i=0; i<this.length; i++) {
@@ -944,7 +946,7 @@ METHODS['title'] = """function () { // nargs: 0
     } return res.join('');
 }"""
 
-METHODS['translate'] = """function (table) { // nargs: 1
+METHODS["translate"] = """function (table) { // nargs: 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     var c, res = [];
     for (var i=0; i<this.length; i++) {
@@ -954,30 +956,36 @@ METHODS['translate'] = """function (table) { // nargs: 1
     } return res.join('');
 }"""
 
-METHODS['upper'] = """function () { // nargs: 0
+METHODS["upper"] = """function () { // nargs: 0
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return this.toUpperCase();
 }"""
 
-METHODS['zfill'] = """function (width) { // nargs: 1
+METHODS["zfill"] = """function (width) { // nargs: 1
     if (this.constructor !== String) return this.KEY.apply(this, arguments);
     return METHOD_PREFIXrjust(this, width, '0');
 }"""
 
 
 for key in METHODS:
-    METHODS[key] = re.subn(r'METHOD_PREFIX(.+?)\(',
-                           r'METHOD_PREFIX\1.call(', METHODS[key])[0]
-    METHODS[key] = METHODS[key].replace(
-        'KEY', key).replace(
-        'FUNCTION_PREFIX', FUNCTION_PREFIX).replace(
-        'METHOD_PREFIX', METHOD_PREFIX).replace(
-        ', )', ')')
+    METHODS[key] = re.subn(
+        r"METHOD_PREFIX(.+?)\(", r"METHOD_PREFIX\1.call(", METHODS[key]
+    )[0]
+    METHODS[key] = (
+        METHODS[key]
+        .replace("KEY", key)
+        .replace("FUNCTION_PREFIX", FUNCTION_PREFIX)
+        .replace("METHOD_PREFIX", METHOD_PREFIX)
+        .replace(", )", ")")
+    )
 
 for key in FUNCTIONS:
-    FUNCTIONS[key] = re.subn(r'METHOD_PREFIX(.+?)\(',
-                             r'METHOD_PREFIX\1.call(', FUNCTIONS[key])[0]
-    FUNCTIONS[key] = FUNCTIONS[key].replace(
-        'KEY', key).replace(
-        'FUNCTION_PREFIX', FUNCTION_PREFIX).replace(
-        'METHOD_PREFIX', METHOD_PREFIX)
+    FUNCTIONS[key] = re.subn(
+        r"METHOD_PREFIX(.+?)\(", r"METHOD_PREFIX\1.call(", FUNCTIONS[key]
+    )[0]
+    FUNCTIONS[key] = (
+        FUNCTIONS[key]
+        .replace("KEY", key)
+        .replace("FUNCTION_PREFIX", FUNCTION_PREFIX)
+        .replace("METHOD_PREFIX", METHOD_PREFIX)
+    )
