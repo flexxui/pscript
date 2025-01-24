@@ -39,7 +39,8 @@ sys.path.insert(0, os.path.abspath("scripts"))
 sphinxver = sphinx.version_info
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.napoleon" if sphinxver >= (1, 3) else "sphinxcontrib.napoleon",
+    "sphinx.ext.napoleon",
+    "sphinx_rtd_theme",
     "pscriptexample",
 ]
 
@@ -65,3 +66,7 @@ exclude_patterns = ["_build"]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
+
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
+html_theme = "sphinx_rtd_theme"

@@ -21,7 +21,7 @@ dependencies = []
 [project.optional-dependencies]
 lint = ["ruff"]
 tests = ["pytest"]
-docs = ["sphinx"]
+docs = ["sphinx", "sphinx_rtd_theme"]
 dev = ["pscript[lint,tests, docs]"]
 
 [project.urls]
