@@ -1,6 +1,5 @@
-import sys
 
-from pscript.testing import run_tests_if_main, raises, skipif
+from pscript.testing import run_tests_if_main, raises
 
 from pscript import RawJS, JSError, py2js, evaljs, evalpy
 
@@ -344,7 +343,7 @@ class TestExceptions:
                 finally:
                     print("xx")
 
-            except Exception as err:
+            except Exception:
                 print("yy")
             return undefined
 
@@ -359,7 +358,7 @@ class TestExceptions:
                 finally:
                     print("xx")
 
-            except Exception as err:
+            except Exception:
                 print("yy")
             return undefined
 
@@ -698,7 +697,7 @@ class TestFunctions:
 
             x = 1
             y = 0
-            y = 1  # noqa
+            y = 1
             z = 1  # noqa
             res = foo(3)
             stub = True  # noqa

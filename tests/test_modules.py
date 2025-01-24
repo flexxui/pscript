@@ -3,8 +3,6 @@
 Note that some tests in func also implicitly test this.
 """
 
-import os
-import tempfile
 
 from pscript.testing import run_tests_if_main, raises
 

@@ -1,5 +1,4 @@
-import sys
-from pscript.testing import run_tests_if_main, raises, skip
+from pscript.testing import run_tests_if_main, raises
 
 from pscript import JSError, py2js, evaljs, evalpy, RawJS
 

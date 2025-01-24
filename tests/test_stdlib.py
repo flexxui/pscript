@@ -4,11 +4,10 @@ will mostly test if the implemenation is correct. This module does some
 meta tests.
 """
 
-import sys
 
-from pscript.testing import run_tests_if_main, raises
+from pscript.testing import run_tests_if_main
 
-from pscript import py2js, evaljs, evalpy, Parser3, stdlib
+from pscript import py2js, stdlib
 
 
 def test_stdlib_full_and_partial():

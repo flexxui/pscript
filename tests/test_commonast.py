@@ -1,11 +1,10 @@
 import os
-import sys
 import bz2
 import ast
 import json
 import time
 
-from pscript.testing import run_tests_if_main, raises, skipif
+from pscript.testing import run_tests_if_main, raises
 
 # sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 # import commonast
@@ -84,7 +83,7 @@ def test_Node_creation():
         __slots__ = ()
 
     class MyNode(Node):
-        __slots__ = "name", "op", "foo_node", "foo_nodes", "bar"
+        __slots__ = "bar", "foo_node", "foo_nodes", "name", "op"
 
     stubnode = MyStubNode()
     stubnodes = [MyStubNode(), MyStubNode(), MyStubNode()]
@@ -300,7 +299,7 @@ def test_functiondef_some_more():
 
 
 def test_call_some_more():
-    from pscript.commonast import Name, Num, Starred, Keyword
+    from pscript.commonast import Name, Num, Starred
 
     code = "foo(1, a, *b, c=3, **d)"
     node = commonast.parse(code).body_nodes[0].value_node  # Call is in an Expr
@@ -318,7 +317,7 @@ def test_call_some_more():
 
 
 def test_call_even_some_more():
-    from pscript.commonast import Name, Num, Starred, Keyword
+    from pscript.commonast import Name, Starred, Keyword
 
     code = "foo(a, *b, c, *d, **e, **f)"
     node = commonast.parse(code).body_nodes[0].value_node

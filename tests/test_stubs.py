@@ -1,6 +1,5 @@
 from pscript.testing import run_tests_if_main, raises
 
-import sys
 import pscript
 from pscript import RawJS
 

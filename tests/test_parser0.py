@@ -1,6 +1,6 @@
-from pscript.testing import run_tests_if_main, raises
+from pscript.testing import run_tests_if_main
 
-from pscript.parser0 import JSError, unify
+from pscript.parser0 import unify
 
 
 def test_unify():

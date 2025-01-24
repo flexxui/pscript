@@ -64,7 +64,7 @@ def test_py2js_on_function():
     jscode = py2js(foo, "bar.bla")
     assert jscode.meta["pycode"].startswith("def foo")
     assert "foo" not in jscode
-    assert not "var bar.bla" in jscode
+    assert "var bar.bla" not in jscode
     assert "bar.bla = function " in jscode
 
     # Skip decorators
@@ -118,7 +118,7 @@ def test_py2js_on_class():
     jscode = py2js(Foo1, "Bar.bla", inline_stdlib=False)
     assert jscode.meta["pycode"].startswith("class Foo")
     assert "Foo" not in jscode
-    assert not "var Bar.bla" in jscode
+    assert "var Bar.bla" not in jscode
     assert "Bar.bla = function " in jscode
 
 

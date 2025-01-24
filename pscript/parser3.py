@@ -189,7 +189,7 @@ Aside from ``window``, ``pscript`` also provides ``undefined``,
 
 from . import commonast as ast
 from . import stdlib
-from .parser2 import Parser2, JSError, unify  # noqa
+from .parser2 import Parser2, JSError, unify
 from .stubs import RawJS
 
 

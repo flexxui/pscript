@@ -22,7 +22,6 @@ ROOT_DIR = os.path.abspath(os.path.join(__file__, "..", ".."))
 sys.path.insert(0, ROOT_DIR)
 sys.path.insert(0, os.path.abspath("scripts"))
 
-import pscript
 
 
 # If extensions (or modules to document with autodoc) are in another directory,

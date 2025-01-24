@@ -189,7 +189,7 @@ import re
 
 from . import commonast as ast
 from . import stdlib
-from .parser0 import Parser0, JSError, unify, reprs  # noqa
+from .parser0 import Parser0, JSError, unify, reprs
 
 
 # Define builtin stuff for which we know that it returns a bool or int

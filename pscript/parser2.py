@@ -225,7 +225,7 @@ Globals and nonlocal
 from . import commonast as ast
 from . import stdlib
 from . import logger
-from .parser1 import Parser1, JSError, unify, reprs  # noqa
+from .parser1 import Parser1, JSError, unify, reprs
 
 
 RAW_DOC_WARNING = (

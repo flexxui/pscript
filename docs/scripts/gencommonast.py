@@ -2,7 +2,6 @@
 
 import os
 import sys
-from types import ModuleType
 from pscript import commonast
 
 # Hack

@@ -2,8 +2,6 @@
 Small sphinx extension to show PScript code and corresponding JS.
 """
 
-import os
-import hashlib
 
 from pygments import highlight
 from pygments.lexers import get_lexer_by_name
