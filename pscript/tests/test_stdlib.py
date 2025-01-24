@@ -34,10 +34,7 @@ def test_stdlib_has_all_list_methods():
 
 def test_stdlib_has_all_dict_methods():
     method_names = [m for m in dir(dict) if not m.startswith('_')]
-    if sys.version_info[0] == 2:
-        ignore = 'fromkeys has_key viewitems viewkeys viewvalues iteritems iterkeys itervalues'
-    else:
-        ignore = 'fromkeys'
+    ignore = 'fromkeys'
     for name in ignore.split(' '):
         method_names.remove(name)
     for method_name in method_names:
@@ -45,10 +42,7 @@ def test_stdlib_has_all_dict_methods():
 
 def test_stdlib_has_all_str_methods():
     method_names = [m for m in dir(str) if not m.startswith('_')]
-    if sys.version_info[0] == 2:
-        ignore = 'encode decode'
-    else:
-        ignore = 'encode format_map isprintable maketrans isascii removeprefix removesuffix'
+    ignore = 'encode format_map isprintable maketrans isascii removeprefix removesuffix'
     for name in ignore.split(' '):
         if name in method_names:
             method_names.remove(name)

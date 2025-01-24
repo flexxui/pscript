@@ -43,21 +43,6 @@ def package_tree(pkgroot):
     return subdirs
 
 
-def copy_for_legacy_python(src_dir, dest_dir):
-    from translate_to_legacy import LegacyPythonTranslator
-    # Dirs and files to explicitly not translate
-    skip = ['tests/python_sample.py',
-            'tests/python_sample2.py',
-            'tests/python_sample3.py']
-    # Make a fresh copy of the package
-    if os.path.isdir(dest_dir):
-        shutil.rmtree(dest_dir)
-    ignore = lambda src, names: [n for n in names if n == '__pycache__']
-    shutil.copytree(src_dir, dest_dir, ignore=ignore)
-    # Translate in-place
-    LegacyPythonTranslator.translate_dir(dest_dir, skip=skip)
-
-
 ## Collect info for setup()
 
 THIS_DIR = os.path.dirname(__file__)
@@ -69,14 +54,6 @@ description = "Python to JavaScript compiler."
 # Get version and docstring (i.e. long description)
 version, doc = get_version_and_doc(os.path.join(THIS_DIR, name, '__init__.py'))
 doc = ""  # won't render open(os.path.join(THIS_DIR, 'README.md'), "rb").read().decode()
-
-# Support for legacy Python: we install a second package with the
-# translated code. We generate that code when we can. We use
-# "name_legacy" below in "packages", "package_dir", and "package_data".
-name_legacy = name + '_legacy'
-if os.path.isfile(os.path.join(THIS_DIR, 'translate_to_legacy.py')):
-    copy_for_legacy_python(os.path.join(THIS_DIR, name),
-                           os.path.join(THIS_DIR, name_legacy))
 
 
 ## Setup
@@ -96,8 +73,8 @@ setup(
     platforms='any',
     provides=[name],
     install_requires=[],
-    packages=package_tree(name) + package_tree(name_legacy),
-    package_dir={name: name, name_legacy: name_legacy},
+    packages=package_tree(name),
+    package_dir={name: name},
     # entry_points={'console_scripts': ['pscript = pscript.__main__:main'], },
     zip_safe=True,
     classifiers=[

@@ -23,10 +23,7 @@ filename3 = os.path.join(dirname, 'python_sample3.py')
 
 def _export_python_sample_ast():
     # Get what to export
-    if sys.version_info > (3, ):
-        filenames = filename1, filename3
-    else:
-        filenames = filename2,
+    filenames = filename1, filename3
     # Write
     for filename in filenames:
         filename_bz2 = filename[:-2] + 'bz2'

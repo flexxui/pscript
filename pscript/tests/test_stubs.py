@@ -6,8 +6,6 @@ from pscript import RawJS
 
 
 def test_stubs():
-    if sys.version_info[0] == 2:
-        return  # hard
     from pscript.stubs import window, undefined, omgnotaname
     assert isinstance(window, pscript.JSConstant)
     assert isinstance(undefined, pscript.JSConstant)

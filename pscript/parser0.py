@@ -152,7 +152,6 @@ class Parser0:
         'True'  : 'true',
         'False' : 'false',
         'None'  : 'null',
-        'unicode': 'str',  # legacy Py compat
         'unichr': 'chr',
         'xrange': 'range',
         'self': 'this',
@@ -208,12 +207,7 @@ class Parser0:
             self._pysource = str(pysource[0]), int(pysource[1])
         elif pysource is not None:
             logger.warning('Parser ignores pysource; it must be str or (str, int).')
-        if sys.version_info[0] == 2:
-            fut = 'from __future__ import unicode_literals, print_function\n'
-            code = fut + code
         self._root = ast.parse(code)
-        if sys.version_info[0] == 2:
-            self._root.body_nodes.pop(0)  # remove that import node we added
         self._stack = []
         self._indent = indent
         self._dummy_counter = 0

@@ -512,16 +512,14 @@ class TestFunctions:
         assert 'kw_values' not in code
         
         # We do for keyword only args
-        if sys.version_info > (3, ):
-            code = py2js('def foo(a, *, b=1, c="foo"): pass')
-            assert 'parse_kwargs' in code
-            assert 'kw_values' in code
+        code = py2js('def foo(a, *, b=1, c="foo"): pass')
+        assert 'parse_kwargs' in code
+        assert 'kw_values' in code
         
         # We do for keyword only args and **kwargs
-        if sys.version_info > (3, ):
-            code = py2js('def foo(a, *, b=1, c="foo", **d): pass')
-            assert 'parse_kwargs' in code
-            assert 'kw_values' in code
+        code = py2js('def foo(a, *, b=1, c="foo", **d): pass')
+        assert 'parse_kwargs' in code
+        assert 'kw_values' in code
     
     def test_func1(self):
         code = py2js(func1)
@@ -560,7 +558,6 @@ class TestFunctions:
         assert evalpy(code + 'foo()') == '9'
         assert evalpy(code + 'd.foo()') == '9'
     
-    @skipif(sys.version_info < (3,), reason='no keyword only args in legacy py')
     def test_function_call_keyword_only_args(self):
         code = "def foo(*, a=2, b=3, c=4): return a+b+c;\nd = {'foo':foo}\n"
         assert evalpy(code + 'foo(a=1, b=2, c=3)') == '6'
@@ -615,7 +612,6 @@ class TestFunctions:
         assert evalpy(code + 'foo(1, 2, 3, **{"b":4})') == '{ b: 4 }'
         assert evalpy(code + 'foo(a=3, **{"b":4})') == '{ a: 3, b: 4 }'
     
-    @skipif(sys.version_info < (3,), reason='no keyword only args in legacy py')
     def test_function_call_keyword_only_args_and_kwargs(self):
         code = "def foo(*, a=3, b=4, **x): return repr([a, b]) + repr(x);\nd = {'foo':foo}\n"
         assert evalpy(code + 'foo(1)') == '[3,4]{}'
@@ -790,7 +786,6 @@ class TestFunctions:
         assert evaljs(py2js(func1)+'func1()') == '2'
         assert evaljs(py2js(func2)+'func2()') == '3'
     
-    @skipif(sys.version_info < (3,), reason='no nonlocal on legacy Python')
     def test_nonlocal(self):
         assert py2js('nonlocal foo;foo = 3').strip() == 'foo = 3;'
         
@@ -804,7 +799,6 @@ class TestFunctions:
         """
         assert evaljs(py2js(func3_code)+'func3()') == '3'
     
-    @skipif(sys.version_info < (3,), reason='no nonlocal on legacy Python')
     def test_global_vs_nonlocal(self):
         js1 = py2js('global foo;foo = 3')
         js2 = py2js('nonlocal foo;foo = 3')
@@ -955,7 +949,7 @@ class TestClasses:
                 super().addTwo()
                 self.bar += 1  # haha, we add four!
             def addFour(self):
-                super(MyClass3, self).add(4)  # Use legacy Python syntax
+                super(MyClass3, self).add(4)  # Use older syntax
         
         code = py2js(MyClass1) + py2js(MyClass2) + py2js(MyClass3)
         code += 'var m1=new MyClass1(), m2=new MyClass2(), m3=new MyClass3();'

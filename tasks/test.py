@@ -38,11 +38,10 @@ def test_unit(rel_path='.'):
     except ImportError:
         sys.exit('Cannot do unit tests, pytest not installed')
     # Get path to test
-    py2 = sys.version_info[0] == 2
-    rel_path = 'pscript_legacy/' + rel_path if py2 else 'pscript/' + rel_path
+    rel_path = 'pscript/' + rel_path
     test_path = os.path.join(ROOT_DIR, rel_path)
     # Import from installed, or from ROOT_DIR
-    if py2 or os.getenv('TEST_INSTALL', '').lower() in ('1', 'yes', 'true'):
+    if os.getenv('TEST_INSTALL', '').lower() in ('1', 'yes', 'true'):
         if ROOT_DIR in sys.path:
             sys.path.remove(ROOT_DIR)
         os.chdir(os.path.expanduser('~'))

@@ -279,8 +279,6 @@ def evaljs(jscode, whitespace=True, print_result=True, extra_nodejs_args=None):
         filename = None
         p_or_e = ['-p', '-e'] if print_result else ['-e']
         cmd += ['--use_strict'] + p_or_e + [jscode]
-        if sys.version_info[0] < 3:
-            cmd = [c.encode('raw_unicode_escape') for c in cmd]
     
     # Call node
     try:
