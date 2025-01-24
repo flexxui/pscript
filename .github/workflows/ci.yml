@@ -22,7 +22,7 @@ jobs:
         python-version: 3.12
     - name: Set up Node
       uses: actions/setup-node@v4
-        with:
+      with:
           node-version: '18'
     - name: Install dependencies
       run: |
