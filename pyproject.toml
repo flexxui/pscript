@@ -1,0 +1,74 @@
+# Notes on how to do a release.
+#
+# * Bump `__version__` and commit.
+# * git tag vx.y
+# * git push origin main vx.y
+# * flit publish
+
+# ===== Project info
+
+[project]
+dynamic = ["version"]
+name = "pscript"
+description = "Python to JavaScript compiler."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Almar Klein" }]
+keywords = ["Python", "JavaScript", "compiler", "transpiler", "parser"]
+requires-python = ">= 3.6"
+dependencies = []
+[project.optional-dependencies]
+lint = ["ruff"]
+tests = ["pytest"]
+docs = ["sphinx"]
+dev = ["pscript[lint,tests, docs]"]
+
+[project.urls]
+Homepage = "https://github.com/flexxui/pscript"
+Documentation = "http://pscript.readthedocs.io"
+Repository = "https://github.com/flexxui/pscript"
+
+
+# ===== Building
+
+# Flit is great solution for simple pure-Python projects.
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+
+# ===== Tooling
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "B", "RUF"]
+ignore = [
+    # "RUF005", # Consider iterable unpacking instead of concatenation
+]
+
+
+[tool.coverage.report]
+
+exclude_also = [
+    # Have to re-enable the standard pragma, plus a less-ugly flavor
+    "pragma: no cover",
+    "no-cover",
+    "raise NotImplementedError",
+    "raise AssertionError",
+    "raise JSError",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if False:",
+    "if __name__ == .__main__.:",
+    "if this_is_js():",
+
+    # Don't complain for platform specific code
+    "sys\\.platform.startswith\\(\\'win\\'\\)",
+    "sys\\.platform.startswith\\(\\'darwin\\'\\)",
+    "getattr\\(sys, \\'frozen\\'\\,\\ None\\)",
+
+    # Don't complain about caught import fails
+    "except ImportError:",
+]
