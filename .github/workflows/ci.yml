@@ -35,7 +35,7 @@ jobs:
       run: |
           ruff format --check .
 
- docs:
+  docs:
     name: Docs
     runs-on: ubuntu-latest
     strategy:
