@@ -246,6 +246,8 @@ __version__ = '0.7.7'
 import sys
 import logging
 
+logger = logging.getLogger(__name__)
+
 
 # NOTE: The code for the parser is quite long, especially if you want
 # to document it well. Therefore it is split in multiple modules, which
@@ -269,7 +271,5 @@ from .functions import script2js, js_rename, create_js_module
 from .stdlib import get_full_std_lib, get_all_std_names
 from .stubs import RawJS, JSConstant, window, undefined
 
-
-logger = logging.getLogger(__name__)
 
 del logging, sys
