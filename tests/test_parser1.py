@@ -91,9 +91,6 @@ class TestExpressions:
         assert py2jslight("'hi %f %1.2f' % (a, b)") == py2jslight("'hi {:f} {:1.2f}'.format(a, b)")
         assert py2jslight("'hi %s %r' % (a, b)") == py2jslight("'hi {} {!r}'.format(a, b)")
         
-        if sys.version_info < (3, 6):
-            return
-        
         # Verify that f-string formatting produces same JS as str.format - Python 3.6+
         assert py2jslight("f'hi {a:i}'") == py2jslight("'hi {:i}'.format(a)")
         assert py2js("f'hi {a:i} {b:+i}'") == py2js("'hi {:i} {:+i}'.format(a, b)")

@@ -1,5 +1,6 @@
 # Notes on how to do a release.
 #
+# * Write release notes in docs/releasenotes.txt
 # * Bump `__version__` and commit.
 # * git tag vx.y
 # * git push origin main vx.y

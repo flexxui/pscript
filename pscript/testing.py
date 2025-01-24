@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-# Copyright (c) 2016, Almar Klein
-# Distributed under the (new) BSD License.
-
 """
 Functionality used for testing, based on pytest. This module is designed
 to just work, without modification, in most projects.
@@ -15,9 +11,6 @@ Write your tests like this:
 Then you can run the test file as a script, which will run all tests
 and report coverage. Magic!
 """
-
-
-from __future__ import absolute_import, print_function, division
 
 import os
 import sys
@@ -50,7 +43,7 @@ skip = pytest.skip
 
 def run_tests_if_main(show_coverage=False):
     """ Run tests in a given file if it is run as a script
-    
+
     Coverage is reported for running this single test. Set show_coverage to
     launch the report in the web browser.
     """
