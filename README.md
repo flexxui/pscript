@@ -15,7 +15,7 @@ also be useful by itself.
 Installation
 ------------
 
-PScript is pure Python and requires Python 2.7 or 3.5+ (including Pypy).
+PScript is pure Python and requires Python 3.6+ (including Pypy).
 It has no further dependencies.
 
 * ``pip install pscript``, or

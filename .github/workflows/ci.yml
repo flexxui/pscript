@@ -96,4 +96,4 @@ jobs:
       - name: Test with pytest
         run: |
             python -c "import sys; print(sys.version, '\n', sys.prefix)";
-            pytest -v --cov pscript --cov-config=.coveragerc --cov-report=term --cov-report=html tests
+            pytest -v --cov pscript --cov-report=term --cov-report=html tests
