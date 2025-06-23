@@ -7,7 +7,7 @@ PScript
 
 PScript is a Python to JavaScript compiler, and is also the name of the subset
 of Python that this compiler supports. It was originally developed as a part of
-[Flexx]https://github.com/flexxui/flexx) and is now a project on its own.
+[Flexx](https://github.com/flexxui/flexx) and is now a project on its own.
 
 
 Installation
