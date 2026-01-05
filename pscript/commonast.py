@@ -1032,7 +1032,7 @@ class NativeAstConverter:
 
     def _convert_index_like(self, n):
         c = self._convert
-        if isinstance(n, (ast.Slice, ast.Index, ast.ExtSlice, ast.Ellipsis)):
+        if isinstance(n, (ast.Slice, ast.Index, ast.ExtSlice, ast.Constant)):
             return c(n)  # Python < 3.8 (and also 3.8 on Windows?)
         elif isinstance(n, ast.Tuple):
             assert isinstance(n, ast.Tuple)
