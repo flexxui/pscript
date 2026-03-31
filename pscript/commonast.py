@@ -29,6 +29,14 @@ _Ellipsis = Ellipsis
 docheck = "pytest" in sys.modules
 
 
+# For older Pythons. Since some of these classes are deprecated or removed in later Python versions, we play it safe.
+old_index_types = tuple(
+    getattr(ast, x)
+    for x in ("Slice", "Index", "ExtSlice", "Ellipsis")
+    if getattr(ast, x, None) is not None
+)
+
+
 def parse(code, comments=False):
     """Parse Python code to produce a common AST tree.
 
@@ -1032,7 +1040,7 @@ class NativeAstConverter:
 
     def _convert_index_like(self, n):
         c = self._convert
-        if isinstance(n, (ast.Slice, ast.Index, ast.ExtSlice, ast.Ellipsis)):
+        if isinstance(n, old_index_types):
             return c(n)  # Python < 3.8 (and also 3.8 on Windows?)
         elif isinstance(n, ast.Tuple):
             assert isinstance(n, ast.Tuple)
