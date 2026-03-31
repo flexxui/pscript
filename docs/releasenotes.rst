@@ -2,6 +2,24 @@
 Release notes
 -------------
 
+
+**v0.8.1** (31-03-2026)
+
+- Support Python 3.14.
+- Fixed some Ruff linting warnings.
+
+
+**v0.8.0** (27-01-2025)
+
+- Modernize repo.
+- Officially support Python up to 3.13.
+
+
+**v0.7.7** (10-01-2022)
+
+* Fix endswith false positives
+
+
 **v0.7.6** (09-09-2021)
 
 * Fix for with-statement when ``return`` is used in the context.
