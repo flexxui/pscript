@@ -1177,7 +1177,7 @@ class Parser2(Parser1):
 
         # Find the class of this function. Using this._base_class would work
         # in simple situations, but not when there's two levels of super().
-        nstype1, nsname1, _ = self._stack[-1]
+        nstype1, _nsname1, _ = self._stack[-1]
         nstype2, nsname2, _ = self._stack[-2]
         if not (nstype1 == "function" and nstype2 == "class"):
             raise JSError("can only use super() inside a method.")

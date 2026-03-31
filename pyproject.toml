@@ -16,7 +16,7 @@ readme = "README.md"
 license = { file = "LICENSE" }
 authors = [{ name = "Almar Klein" }]
 keywords = ["Python", "JavaScript", "compiler", "transpiler", "parser"]
-requires-python = ">= 3.6"
+requires-python = ">= 3.8"
 dependencies = []
 [project.optional-dependencies]
 lint = ["ruff"]

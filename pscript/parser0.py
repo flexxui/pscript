@@ -317,7 +317,7 @@ class Parser0:
     def pop_stack(self):
         """Pop the current stack and return the namespace."""
         # Pop
-        nstype, nsname, ns = self._stack.pop(-1)
+        _nstype, _nsname, ns = self._stack.pop(-1)
         self.vars.leak_stack(ns)
         return ns
 
@@ -337,7 +337,7 @@ class Parser0:
 
     def with_prefix(self, name, new=False):
         """Add class prefix to a variable name if necessary."""
-        nstype, nsname, ns = self._stack[-1]
+        nstype, nsname, _ns = self._stack[-1]
         if nstype == "class":
             if name.startswith("__") and not name.endswith("__"):
                 name = "_" + nsname + name  # Double underscore name mangling
@@ -362,7 +362,7 @@ class Parser0:
         return name
 
     def _handle_std_deps(self, code):
-        nargs, function_deps, method_deps = stdlib.get_std_info(code)
+        _nargs, function_deps, method_deps = stdlib.get_std_info(code)
         for dep in function_deps:
             self.use_std_function(dep, [])
         for dep in method_deps:

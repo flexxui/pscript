@@ -58,7 +58,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "PScript"
-copyright = "2015-2025, Almar Klein"
+copyright = "2015-2026, Almar Klein"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
