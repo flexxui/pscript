@@ -1,4 +1,3 @@
-# ruff: noqa: F841
 
 from pscript.testing import run_tests_if_main
 
